@@ -85,7 +85,7 @@ export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDis
               transition={{ duration: 1.5, repeat: Infinity }}
               className="text-xs text-primary font-semibold"
             >
-              Tap to flip
+              Tap to start
             </motion.span>
           )}
         </div>

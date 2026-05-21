@@ -31,12 +31,14 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
   const handlePlay = () => {
     if (flippedCard && selectedRow !== null) {
       onPlayCard(selectedRow, flippedCard);
+      setTimeout(() => onFlipCard(), 400);
     }
   };
 
   const handleDiscard = () => {
     if (flippedCard) {
       onDiscardCard(flippedCard);
+      setTimeout(() => onFlipCard(), 400);
     }
   };
 
