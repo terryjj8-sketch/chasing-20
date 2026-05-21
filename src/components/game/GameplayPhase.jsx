@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import GameRow from './GameRow';
 import DeckPile from './DeckPile';
+import GameTimer from './GameTimer';
 import { canPlayCard } from '@/lib/deckUtils';
 
 const rowAccents = ['row-1', 'row-2', 'row-3', 'row-4'];
 
-export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard }) {
+export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard, elapsedSeconds }) {
   const { drawPile, discardPile, rows, flippedCard } = gameState;
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -43,9 +44,12 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
       {/* Title + Stats */}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-primary">Chasing 20</h1>
-        <div className="bg-white/10 px-3 py-1.5 rounded-lg text-sm">
-          <span className="text-foreground/50">Discarded</span>
-          <span className="text-foreground font-bold ml-2">{discardPile.length}</span>
+        <div className="flex items-center gap-2">
+          <GameTimer elapsedSeconds={elapsedSeconds} />
+          <div className="bg-white/10 px-3 py-1.5 rounded-lg text-sm">
+            <span className="text-foreground/50">Discarded</span>
+            <span className="text-foreground font-bold ml-2">{discardPile.length}</span>
+          </div>
         </div>
       </div>
 

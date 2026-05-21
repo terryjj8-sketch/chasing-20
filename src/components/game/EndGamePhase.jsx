@@ -2,13 +2,34 @@ import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
+import { formatTime } from './GameTimer';
+import { Trophy, Timer } from 'lucide-react';
 
-export default function EndGamePhase({ rows, onPlayAgain }) {
+const BEST_TIME_KEY = 'chasing20_best_time';
+
+export default function EndGamePhase({ rows, onPlayAgain, finalTime }) {
   const [result, setResult] = useState(null);
+  const [bestTime, setBestTime] = useState(null);
+  const [isNewBest, setIsNewBest] = useState(false);
 
   useEffect(() => {
     const winningRows = rows.filter(r => r.cards.length >= 20);
     const isWin = winningRows.length > 0;
+
+    // Handle best time (only track wins)
+    const stored = parseInt(localStorage.getItem(BEST_TIME_KEY) || '0', 10);
+    if (isWin && finalTime > 0) {
+      if (!stored || finalTime < stored) {
+        localStorage.setItem(BEST_TIME_KEY, String(finalTime));
+        setBestTime(finalTime);
+        setIsNewBest(true);
+      } else {
+        setBestTime(stored);
+        setIsNewBest(false);
+      }
+    } else if (stored) {
+      setBestTime(stored);
+    }
 
     setResult({
       isWin,
@@ -21,11 +42,7 @@ export default function EndGamePhase({ rows, onPlayAgain }) {
 
     if (isWin) {
       setTimeout(() => {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-        });
+        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
       }, 300);
     }
   }, [rows]);
@@ -108,11 +125,35 @@ export default function EndGamePhase({ rows, onPlayAgain }) {
         })}
       </motion.div>
 
+      {/* Time Stats */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="flex gap-4 mb-8"
+      >
+        {finalTime > 0 && (
+          <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg">
+            <Timer className="w-4 h-4 text-foreground/50" />
+            <span className="text-foreground/60 text-sm">This game</span>
+            <span className="text-foreground font-bold font-mono">{formatTime(finalTime)}</span>
+          </div>
+        )}
+        {bestTime && (
+          <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${isNewBest ? 'bg-secondary/20 border border-secondary' : 'bg-white/10'}`}>
+            <Trophy className={`w-4 h-4 ${isNewBest ? 'text-secondary' : 'text-foreground/50'}`} />
+            <span className="text-foreground/60 text-sm">Best</span>
+            <span className={`font-bold font-mono ${isNewBest ? 'text-secondary' : 'text-foreground'}`}>{formatTime(bestTime)}</span>
+            {isNewBest && <span className="text-xs text-secondary font-bold">NEW!</span>}
+          </div>
+        )}
+      </motion.div>
+
       {/* Play Again Button */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
+        transition={{ delay: 0.6 }}
       >
         <Button
           onClick={onPlayAgain}

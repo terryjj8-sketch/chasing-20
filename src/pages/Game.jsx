@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SetupPhase from '../components/game/SetupPhase';
 import GameplayPhase from '../components/game/GameplayPhase';
 import EndGamePhase from '../components/game/EndGamePhase';
@@ -6,12 +6,34 @@ import { initializeDeck, shuffleDeck } from '../lib/deckUtils';
 
 export default function Game() {
   const [gameState, setGameState] = useState(null);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const timerRef = useRef(null);
+  const startTimeRef = useRef(null);
 
   useEffect(() => {
     resetGame();
   }, []);
 
+  const startTimer = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setElapsedSeconds(0);
+    startTimeRef.current = Date.now();
+    timerRef.current = setInterval(() => {
+      setElapsedSeconds(Math.floor((Date.now() - startTimeRef.current) / 1000));
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+  };
+
+  useEffect(() => {
+    return () => stopTimer();
+  }, []);
+
   const resetGame = () => {
+    stopTimer();
+    setElapsedSeconds(0);
     const deck = initializeDeck();
     shuffleDeck(deck);
     setGameState({
@@ -29,6 +51,7 @@ export default function Game() {
   };
 
   const handleSetupComplete = (selectedIndices) => {
+    startTimer();
     setGameState(prev => {
       const setupCards = prev.drawPile.slice(0, 6);
       const startingCards = selectedIndices.map(i => setupCards[i]);
@@ -76,6 +99,7 @@ export default function Game() {
       });
 
       const deckEmpty = prev.drawPile.length === 0;
+      if (deckEmpty) stopTimer();
       return {
         ...prev,
         rows: newRows,
@@ -89,6 +113,7 @@ export default function Game() {
     setGameState(prev => {
       const newDiscard = [...prev.discardPile, card];
       const deckEmpty = prev.drawPile.length === 0;
+      if (deckEmpty) stopTimer();
       return {
         ...prev,
         discardPile: newDiscard,
@@ -111,11 +136,12 @@ export default function Game() {
         onFlipCard={handleFlipCard}
         onPlayCard={handlePlayCard}
         onDiscardCard={handleDiscardCard}
+        elapsedSeconds={elapsedSeconds}
       />
     );
   }
 
   if (gameState.phase === 'ended') {
-    return <EndGamePhase rows={gameState.rows} onPlayAgain={resetGame} />;
+    return <EndGamePhase rows={gameState.rows} onPlayAgain={resetGame} finalTime={elapsedSeconds} />;
   }
 }
