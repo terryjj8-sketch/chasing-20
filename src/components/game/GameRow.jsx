@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const accentMap = {
   'row-1': '#B833FF',
@@ -11,6 +11,14 @@ const accentMap = {
 export default function GameRow({ rowIndex, row, accentColor, isValid, isSelected, onTap }) {
   const hex = accentMap[accentColor] || '#8B5CF6';
   const topCard = row.cards[row.cards.length - 1];
+  const [flashKey, setFlashKey] = useState(0);
+  const cardCount = row.cards.length;
+
+  useEffect(() => {
+    if (cardCount > 0) {
+      setFlashKey(k => k + 1);
+    }
+  }, [cardCount]);
 
   return (
     <motion.div
@@ -19,7 +27,7 @@ export default function GameRow({ rowIndex, row, accentColor, isValid, isSelecte
       transition={{ delay: rowIndex * 0.08 }}
       onClick={isValid ? onTap : undefined}
       whileTap={isValid ? { scale: 0.97 } : {}}
-      className="rounded-xl p-3 flex flex-col gap-2 backdrop-blur transition-all duration-150"
+      className="relative rounded-xl p-3 flex flex-col gap-2 backdrop-blur transition-all duration-150"
       style={{
         border: `2px solid ${isSelected ? '#ffffff' : hex}`,
         background: isSelected ? `${hex}35` : `${hex}10`,
@@ -28,17 +36,20 @@ export default function GameRow({ rowIndex, row, accentColor, isValid, isSelecte
         opacity: isValid === false && isValid !== undefined ? 0.5 : 1,
       }}
     >
-      {/* Flash effect on card play */}
-      <motion.div
-        key={`flash-${row.cards.length}`}
-        initial={{ opacity: 0.8, scale: 1 }}
-        animate={{ opacity: 0, scale: 1.05 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="absolute inset-0 rounded-xl pointer-events-none"
-        style={{
-          background: `radial-gradient(circle, ${hex}40 0%, transparent 70%)`,
-        }}
-      />
+      {/* Flash burst on card play */}
+      <AnimatePresence>
+        <motion.div
+          key={flashKey}
+          initial={{ opacity: 1, scale: 0.6 }}
+          animate={{ opacity: 0, scale: 2.2 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          className="absolute inset-0 rounded-xl pointer-events-none"
+          style={{
+            background: `radial-gradient(circle, ${hex}90 0%, ${hex}40 40%, transparent 70%)`,
+            zIndex: 10,
+          }}
+        />
+      </AnimatePresence>
       {/* Row label */}
       <div className="flex items-center justify-between">
         <span className="text-xs font-bold uppercase tracking-wider" style={{ color: hex }}>
