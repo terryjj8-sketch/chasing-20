@@ -28,6 +28,17 @@ export default function GameRow({ rowIndex, row, accentColor, isValid, isSelecte
         opacity: isValid === false && isValid !== undefined ? 0.5 : 1,
       }}
     >
+      {/* Flash effect on card play */}
+      <motion.div
+        key={`flash-${row.cards.length}`}
+        initial={{ opacity: 0.8, scale: 1 }}
+        animate={{ opacity: 0, scale: 1.05 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="absolute inset-0 rounded-xl pointer-events-none"
+        style={{
+          background: `radial-gradient(circle, ${hex}40 0%, transparent 70%)`,
+        }}
+      />
       {/* Row label */}
       <div className="flex items-center justify-between">
         <span className="text-xs font-bold uppercase tracking-wider" style={{ color: hex }}>
