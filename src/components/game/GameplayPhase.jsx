@@ -47,7 +47,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-primary">Chasing 20</h1>
-          <p className="text-sm text-foreground/60 mt-1">choose four cards. Build your rose. Beat the deck.</p>
+          <p className="text-sm text-foreground/60 mt-1">choose 4 cards, build your rows, Beat the deck.</p>
         </div>
         <div className="flex items-center gap-2" style={{ alignSelf: 'flex-start' }}>
           <GameTimer elapsedSeconds={elapsedSeconds} />
