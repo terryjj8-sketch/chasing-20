@@ -37,7 +37,6 @@ export default function SetupPhase({ drawPile, onComplete }) {
         className="text-center mb-12"
       >
         <h1 className="text-5xl font-bold text-primary mb-3">Chasing 20</h1>
-        <p className="text-lg text-foreground/70 mb-2">the most addictive game you'll ever play.</p>
         <p className="text-sm text-foreground/60 mb-4">Finally, a better solitaire game.</p>
         <p className="text-lg text-foreground/70">Choose four cards, build your rows, beat the deck.</p>
         <button
