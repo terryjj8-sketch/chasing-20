@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
 import GameRow from './GameRow';
 import DeckPile from './DeckPile';
 import { canPlayCard } from '@/lib/deckUtils';
@@ -8,14 +7,26 @@ const rowAccents = ['row-1', 'row-2', 'row-3', 'row-4'];
 
 export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard }) {
   const { drawPile, discardPile, rows, flippedCard } = gameState;
+  const [selectedRow, setSelectedRow] = useState(null);
+
+  // Clear selection when flipped card changes
+  useEffect(() => {
+    setSelectedRow(null);
+  }, [flippedCard]);
 
   const validRows = flippedCard
     ? rows.map((row, idx) => canPlayCard(flippedCard, row) ? idx : null).filter(idx => idx !== null)
     : [];
 
-  const handlePlayOnRow = (rowIndex) => {
-    if (flippedCard && validRows.includes(rowIndex)) {
-      onPlayCard(rowIndex, flippedCard);
+  const handleRowTap = (idx) => {
+    if (!flippedCard) return;
+    if (!validRows.includes(idx)) return;
+    setSelectedRow(prev => prev === idx ? null : idx);
+  };
+
+  const handlePlay = () => {
+    if (flippedCard && selectedRow !== null) {
+      onPlayCard(selectedRow, flippedCard);
     }
   };
 
@@ -43,7 +54,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
         </div>
       </div>
 
-      {/* Rows — spread horizontally across top */}
+      {/* Rows — tappable when a card is flipped */}
       <div className="grid grid-cols-4 gap-3">
         {rows.map((row, idx) => (
           <GameRow
@@ -51,20 +62,22 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
             rowIndex={idx}
             row={row}
             accentColor={rowAccents[idx]}
+            isValid={validRows.includes(idx)}
+            isSelected={selectedRow === idx}
+            onTap={() => handleRowTap(idx)}
           />
         ))}
       </div>
 
-      {/* Deck & Flip area — center stage */}
+      {/* Deck & Flip area */}
       <div className="flex-1 flex items-center justify-center">
         <DeckPile
           deckCount={drawPile.length}
           flippedCard={flippedCard}
           onFlip={onFlipCard}
-          onPlayOnRow={handlePlayOnRow}
+          onPlay={handlePlay}
           onDiscard={handleDiscard}
-          validRows={validRows}
-          rowAccents={rowAccents}
+          canPlay={selectedRow !== null}
         />
       </div>
     </div>

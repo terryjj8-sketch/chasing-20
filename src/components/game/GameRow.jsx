@@ -8,7 +8,7 @@ const accentMap = {
   'row-4': '#00D4FF',
 };
 
-export default function GameRow({ rowIndex, row, accentColor }) {
+export default function GameRow({ rowIndex, row, accentColor, isValid, isSelected, onTap }) {
   const hex = accentMap[accentColor] || '#8B5CF6';
   const topCard = row.cards[row.cards.length - 1];
 
@@ -17,10 +17,15 @@ export default function GameRow({ rowIndex, row, accentColor }) {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: rowIndex * 0.08 }}
-      className="rounded-xl p-3 flex flex-col gap-2 backdrop-blur"
+      onClick={isValid ? onTap : undefined}
+      whileTap={isValid ? { scale: 0.97 } : {}}
+      className="rounded-xl p-3 flex flex-col gap-2 backdrop-blur transition-all duration-150"
       style={{
-        border: `2px solid ${hex}`,
-        background: `${hex}10`,
+        border: `2px solid ${isSelected ? '#ffffff' : hex}`,
+        background: isSelected ? `${hex}35` : `${hex}10`,
+        cursor: isValid ? 'pointer' : 'default',
+        boxShadow: isSelected ? `0 0 16px ${hex}80` : undefined,
+        opacity: isValid === false && isValid !== undefined ? 0.5 : 1,
       }}
     >
       {/* Row label */}
@@ -74,8 +79,19 @@ export default function GameRow({ rowIndex, row, accentColor }) {
         </div>
       </div>
 
+      {/* Selected indicator */}
+      {isSelected && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center text-[10px] font-bold text-white"
+        >
+          ✓ Selected
+        </motion.div>
+      )}
+
       {/* Reset pending indicator */}
-      {row.resetPending && (
+      {row.resetPending && !isSelected && (
         <motion.div
           animate={{ opacity: [0.5, 1, 0.5] }}
           transition={{ duration: 1.5, repeat: Infinity }}

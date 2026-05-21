@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function DeckPile({ deckCount, onFlip, flippedCard, onPlayOnRow, onDiscard, validRows, rowAccents }) {
+export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDiscard, canPlay }) {
   const [isFlipping, setIsFlipping] = useState(false);
 
   const handleTap = () => {
@@ -149,11 +149,11 @@ export default function DeckPile({ deckCount, onFlip, flippedCard, onPlayOnRow, 
           >
             <motion.button
               whileTap={{ scale: 0.95 }}
-              onClick={() => validRows.length > 0 && onPlayOnRow(validRows[0])}
-              disabled={validRows.length === 0}
+              onClick={onPlay}
+              disabled={!canPlay}
               className="px-6 py-2 rounded-lg text-sm font-bold text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
-                background: validRows.length > 0 ? '#10B981' : '#6B7280',
+                background: canPlay ? '#10B981' : '#6B7280',
               }}
             >
               Play
