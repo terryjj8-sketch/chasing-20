@@ -75,7 +75,6 @@ export default function Game() {
   };
 
   const handleSetupComplete = (selectedIndices) => {
-    startTimer();
     setGameState(prev => {
       const setupCards = prev.drawPile.slice(0, 6);
       const startingCards = selectedIndices.map(i => setupCards[i]);
@@ -106,8 +105,11 @@ export default function Game() {
     setGameState(prev => {
       if (prev.drawPile.length === 0 || prev.flippedCard) return prev;
       setHistory(h => [...h, prev]);
+      if (!prev.timerStarted) {
+        startTimer();
+      }
       const [top, ...rest] = prev.drawPile;
-      return { ...prev, flippedCard: top, drawPile: rest };
+      return { ...prev, flippedCard: top, drawPile: rest, timerStarted: true };
     });
   };
 
