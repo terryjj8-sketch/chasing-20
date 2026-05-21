@@ -26,22 +26,9 @@ function TickRing({ size = 16, cx = 8, cy = 8, r = 5, ticks = 20 }) {
 }
 
 export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDiscard, canPlay, isPaused }) {
-  const [isFlipping, setIsFlipping] = useState(false);
-
   const handleTap = () => {
-    if (deckCount === 0 || flippedCard || isFlipping || isPaused) return;
-    setIsFlipping(true);
-    setTimeout(() => {
-      onFlip();
-      setIsFlipping(false);
-    }, 300);
-  };
-
-  const accentHex = {
-    'row-1': '#B833FF',
-    'row-2': '#FF3399',
-    'row-3': '#FFD700',
-    'row-4': '#00D4FF',
+    if (deckCount === 0 || flippedCard || isPaused) return;
+    onFlip();
   };
 
   return (
@@ -76,9 +63,7 @@ export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDis
 
             {/* Top card */}
             {deckCount > 0 ? (
-              <motion.div
-                animate={isFlipping ? { rotateY: 90 } : { rotateY: 0 }}
-                transition={{ duration: 0.3 }}
+              <div
                 className="absolute rounded-lg flex items-center justify-center overflow-hidden"
                 style={{
                   width: 80, height: 120,
@@ -87,12 +72,16 @@ export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDis
                   boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
                 }}
               >
-                {/* Card back design */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <TickRing size={40} cx={20} cy={20} r={15} ticks={20} />
+                {/* Card back branding */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 pointer-events-none">
+                  <TickRing size={36} cx={18} cy={18} r={14} ticks={20} />
+                  <div className="text-center leading-tight">
+                    <div className="text-white/70 text-[7px] font-black uppercase tracking-widest">Chasing</div>
+                    <div className="text-white/70 text-[10px] font-black uppercase tracking-widest">20</div>
+                  </div>
                 </div>
-                <div className="absolute bottom-2 right-2 text-white/20 text-xs font-bold">{deckCount}</div>
-              </motion.div>
+                <div className="absolute bottom-1.5 right-1.5 text-white/20 text-[9px] font-bold">{deckCount}</div>
+              </div>
             ) : (
               <div className="absolute rounded-lg flex items-center justify-center" style={{
                 width: 80, height: 120,
