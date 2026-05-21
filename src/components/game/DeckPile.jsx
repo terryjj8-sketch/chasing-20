@@ -88,7 +88,7 @@ export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDis
                 }}
               >
                 {/* Card back design */}
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <TickRing size={40} cx={20} cy={20} r={15} ticks={20} />
                 </div>
                 <div className="absolute bottom-2 right-2 text-white/20 text-xs font-bold">{deckCount}</div>
