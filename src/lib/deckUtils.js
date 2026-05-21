@@ -25,21 +25,17 @@ export function shuffleDeck(deck) {
 }
 
 export function canPlayCard(card, row) {
-  // Zero cards cannot start an empty row or resolve a reset
   if (card.value === 0) {
-    if (row.cards.length === 0) return false;  // can't start a row with zero
-    if (row.resetPending) return false;          // can't play zero on a reset-pending row
+    // Zeros can't start an empty row, but otherwise reset any row (max 3 per row)
+    if (row.cards.length === 0) return false;
     return row.zeroCount < 3;
   }
 
   if (row.resetPending) {
-    // Any numbered card can resolve a reset
+    // Any numbered card resolves a reset
     return true;
   }
 
-  // Empty row: any numbered card is valid
-  if (row.cards.length === 0) return true;
-
-  // Numbered cards: must be ±1 or same
+  // Numbered cards: must be ±1 of current top
   return Math.abs(card.value - row.currentNumber) <= 1;
 }
