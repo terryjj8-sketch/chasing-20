@@ -26,12 +26,18 @@ export default function Card({ value, rowIndex = 0, isSelected = false, size = '
 
       <div className="absolute inset-1 rounded-md border-2 border-slate-300" />
 
+      {/* Corner ornaments */}
+      <div className="absolute top-2 left-2 text-slate-400 text-xs">◆</div>
+      <div className="absolute top-2 right-2 text-slate-400 text-xs">◆</div>
+      <div className="absolute bottom-2 left-2 text-slate-400 text-xs">◆</div>
+      <div className="absolute bottom-2 right-2 text-slate-400 text-xs">◆</div>
+
       <div className="relative z-10 text-center">
-        <div className="text-black text-xl font-bold">
+        <div className="text-black text-6xl font-black">
           {isZero ? '0' : value}
         </div>
         {isZero && (
-          <div className="text-black/70 text-xs font-semibold mt-1">RESET</div>
+          <div className="text-black/70 text-sm font-semibold mt-2">RESET</div>
         )}
       </div>
     </motion.div>

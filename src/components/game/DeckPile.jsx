@@ -63,9 +63,12 @@ export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDis
                   boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
                 }}
               >
-                {/* Card back pattern */}
-                <div className="absolute inset-2 rounded border-2 border-white/20 flex items-center justify-center">
-                  <div className="text-white/30 text-3xl font-bold">✦</div>
+                {/* Card back design */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-white/40 text-center">
+                    <div className="text-xs font-bold tracking-wider">CHASING</div>
+                    <div className="text-2xl font-black mt-0.5">20</div>
+                  </div>
                 </div>
                 <div className="absolute bottom-2 right-2 text-white/20 text-xs font-bold">{deckCount}</div>
               </motion.div>
