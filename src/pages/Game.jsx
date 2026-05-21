@@ -142,7 +142,7 @@ export default function Game() {
       {/* Scroll Banner */}
       <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 border-b border-primary/30 px-4 py-3 text-center backdrop-blur">
         <div className="text-sm font-semibold tracking-widest text-primary">
-          Chasing 20 — The Most Difficult Card Game You'll Ever Play
+          chasing 20 the most difficult solitaire game you'll ever play
         </div>
       </div>
 
