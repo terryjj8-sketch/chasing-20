@@ -1,6 +1,30 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+function TickRing({ size = 16, cx = 8, cy = 8, r = 5, ticks = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      {Array.from({ length: ticks }).map((_, i) => {
+        const angle = (i / ticks) * 2 * Math.PI - Math.PI / 2;
+        const inner = r - 1.5;
+        const x1 = cx + inner * Math.cos(angle);
+        const y1 = cy + inner * Math.sin(angle);
+        const x2 = cx + r * Math.cos(angle);
+        const y2 = cy + r * Math.sin(angle);
+        return (
+          <line
+            key={i}
+            x1={x1} y1={y1} x2={x2} y2={y2}
+            stroke="rgba(255,255,255,0.3)"
+            strokeWidth={i % 5 === 0 ? 1 : 0.6}
+            strokeLinecap="round"
+          />
+        );
+      })}
+    </svg>
+  );
+}
+
 export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDiscard, canPlay, isPaused }) {
   const [isFlipping, setIsFlipping] = useState(false);
 
@@ -65,10 +89,7 @@ export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDis
               >
                 {/* Card back design */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-white/40 text-center">
-                    <div className="text-xs font-bold tracking-wider">CHASING</div>
-                    <div className="text-2xl font-black mt-0.5">20</div>
-                  </div>
+                  <TickRing size={40} cx={20} cy={20} r={15} ticks={20} />
                 </div>
                 <div className="absolute bottom-2 right-2 text-white/20 text-xs font-bold">{deckCount}</div>
               </motion.div>
