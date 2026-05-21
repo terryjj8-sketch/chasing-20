@@ -90,32 +90,37 @@ export default function Game() {
         currentNumber: startingCards[idx].value,
       }));
 
+      // Auto-flip the first card immediately
+      const [firstCard, ...remainingDeck] = newDrawPile;
+
       return {
         ...prev,
         phase: 'playing',
-        drawPile: newDrawPile,
+        drawPile: remainingDeck,
         rows: newRows,
-        flippedCard: null,
+        flippedCard: firstCard,
+        timerStarted: false,
       };
     });
   };
 
-  // Player taps the deck to flip the top card
+  // Manual flip (used for undo recovery or if needed)
   const handleFlipCard = () => {
     setGameState(prev => {
       if (prev.drawPile.length === 0 || prev.flippedCard) return prev;
       setHistory(h => [...h, prev]);
-      if (!prev.timerStarted) {
-        startTimer();
-      }
       const [top, ...rest] = prev.drawPile;
-      return { ...prev, flippedCard: top, drawPile: rest, timerStarted: true };
+      return { ...prev, flippedCard: top, drawPile: rest };
     });
   };
 
   const handlePlayCard = (rowIndex, card) => {
     setGameState(prev => {
       setHistory(h => [...h, prev]);
+
+      // Start timer on first play/discard
+      if (!prev.timerStarted) startTimer();
+
       const newRows = prev.rows.map((r, i) => {
         if (i !== rowIndex) return r;
         const updatedCards = [...r.cards, card];
@@ -128,10 +133,17 @@ export default function Game() {
 
       const deckEmpty = prev.drawPile.length === 0;
       if (deckEmpty) stopTimer();
+
+      // Auto-flip next card
+      const nextFlipped = (!deckEmpty && prev.drawPile.length > 0) ? prev.drawPile[0] : null;
+      const newDrawPile = nextFlipped ? prev.drawPile.slice(1) : prev.drawPile;
+
       return {
         ...prev,
         rows: newRows,
-        flippedCard: null,
+        flippedCard: nextFlipped,
+        drawPile: newDrawPile,
+        timerStarted: true,
         phase: deckEmpty ? 'ended' : 'playing',
       };
     });
@@ -140,13 +152,24 @@ export default function Game() {
   const handleDiscardCard = (card) => {
     setGameState(prev => {
       setHistory(h => [...h, prev]);
+
+      // Start timer on first play/discard
+      if (!prev.timerStarted) startTimer();
+
       const newDiscard = [...prev.discardPile, card];
       const deckEmpty = prev.drawPile.length === 0;
       if (deckEmpty) stopTimer();
+
+      // Auto-flip next card
+      const nextFlipped = (!deckEmpty && prev.drawPile.length > 0) ? prev.drawPile[0] : null;
+      const newDrawPile = nextFlipped ? prev.drawPile.slice(1) : prev.drawPile;
+
       return {
         ...prev,
         discardPile: newDiscard,
-        flippedCard: null,
+        flippedCard: nextFlipped,
+        drawPile: newDrawPile,
+        timerStarted: true,
         phase: deckEmpty ? 'ended' : 'playing',
       };
     });

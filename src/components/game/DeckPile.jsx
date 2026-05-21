@@ -92,15 +92,7 @@ export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDis
             )}
           </motion.div>
 
-          {deckCount > 0 && !flippedCard && (
-            <motion.span
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              className="text-xs text-primary font-semibold"
-            >
-              Tap to start
-            </motion.span>
-          )}
+          <span className="text-xs text-foreground/40 font-medium">{deckCount} left</span>
         </div>
 
         {/* Flipped Card Area */}
