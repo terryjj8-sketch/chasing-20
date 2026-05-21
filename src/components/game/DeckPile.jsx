@@ -145,26 +145,23 @@ export default function DeckPile({ deckCount, onFlip, flippedCard, onPlayOnRow, 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="flex flex-wrap gap-2 justify-center"
+            className="flex gap-3 justify-center"
           >
-            {validRows.map(rowIdx => (
-              <motion.button
-                key={rowIdx}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => onPlayOnRow(rowIdx)}
-                className="px-4 py-2 rounded-lg text-sm font-bold text-white shadow-lg"
-                style={{
-                  background: accentHex[rowAccents[rowIdx]],
-                  boxShadow: `0 0 12px ${accentHex[rowAccents[rowIdx]]}60`,
-                }}
-              >
-                Row {rowIdx + 1}
-              </motion.button>
-            ))}
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => validRows.length > 0 && onPlayOnRow(validRows[0])}
+              disabled={validRows.length === 0}
+              className="px-6 py-2 rounded-lg text-sm font-bold text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                background: validRows.length > 0 ? '#10B981' : '#6B7280',
+              }}
+            >
+              Play
+            </motion.button>
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={onDiscard}
-              className="px-4 py-2 rounded-lg text-sm font-bold bg-white/10 text-white border border-white/20"
+              className="px-6 py-2 rounded-lg text-sm font-bold bg-white/10 text-white border border-white/20"
             >
               Discard
             </motion.button>
