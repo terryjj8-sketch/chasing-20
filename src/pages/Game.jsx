@@ -16,28 +16,26 @@ export default function Game() {
     shuffleDeck(deck);
     setGameState({
       phase: 'setup',
-      deck,
       drawPile: [...deck],
       discardPile: [],
-      currentCard: null,
+      flippedCard: null,
       rows: [
         { cards: [], currentNumber: null, zeroCount: 0, resetPending: false },
         { cards: [], currentNumber: null, zeroCount: 0, resetPending: false },
         { cards: [], currentNumber: null, zeroCount: 0, resetPending: false },
         { cards: [], currentNumber: null, zeroCount: 0, resetPending: false },
       ],
-      setupCards: [],
     });
   };
 
   const handleSetupComplete = (selectedIndices) => {
     setGameState(prev => {
-      const setupCards = prev.drawPile.splice(0, 6);
+      const setupCards = prev.drawPile.slice(0, 6);
       const startingCards = selectedIndices.map(i => setupCards[i]);
       const remainingSetupCards = setupCards.filter((_, i) => !selectedIndices.includes(i));
-      
-      // Shuffle remaining cards back into draw pile
-      const newDrawPile = [...remainingSetupCards, ...prev.drawPile];
+
+      // Put the 2 unchosen cards back and shuffle
+      const newDrawPile = [...remainingSetupCards, ...prev.drawPile.slice(6)];
       shuffleDeck(newDrawPile);
 
       const newRows = prev.rows.map((row, idx) => ({
@@ -51,66 +49,51 @@ export default function Game() {
         phase: 'playing',
         drawPile: newDrawPile,
         rows: newRows,
-        setupCards: [],
+        flippedCard: null,
       };
+    });
+  };
+
+  // Player taps the deck to flip the top card
+  const handleFlipCard = () => {
+    setGameState(prev => {
+      if (prev.drawPile.length === 0 || prev.flippedCard) return prev;
+      const [top, ...rest] = prev.drawPile;
+      return { ...prev, flippedCard: top, drawPile: rest };
     });
   };
 
   const handlePlayCard = (rowIndex, card) => {
     setGameState(prev => {
-      const newRows = prev.rows.map(r => ({ ...r }));
-      const row = newRows[rowIndex];
+      const newRows = prev.rows.map((r, i) => {
+        if (i !== rowIndex) return r;
+        const updatedCards = [...r.cards, card];
+        if (card.value === 0) {
+          return { ...r, cards: updatedCards, zeroCount: r.zeroCount + 1, resetPending: true };
+        } else {
+          return { ...r, cards: updatedCards, currentNumber: card.value, resetPending: false };
+        }
+      });
 
-      row.cards.push(card);
-
-      if (card.value === 0) {
-        row.zeroCount += 1;
-        row.resetPending = true;
-      } else {
-        row.currentNumber = card.value;
-        row.resetPending = false;
-      }
-
-      const newDiscardPile = [...prev.discardPile];
-      const newDrawPile = [...prev.drawPile];
-
-      if (newDrawPile.length > 0) {
-        return {
-          ...prev,
-          rows: newRows,
-          currentCard: newDrawPile[0],
-        };
-      } else {
-        return {
-          ...prev,
-          rows: newRows,
-          phase: 'ended',
-          currentCard: null,
-        };
-      }
+      const deckEmpty = prev.drawPile.length === 0;
+      return {
+        ...prev,
+        rows: newRows,
+        flippedCard: null,
+        phase: deckEmpty ? 'ended' : 'playing',
+      };
     });
   };
 
   const handleDiscardCard = (card) => {
     setGameState(prev => {
-      const newDiscardPile = [...prev.discardPile, card];
-      const newDrawPile = prev.drawPile.slice(1);
-
-      if (newDrawPile.length === 0) {
-        return {
-          ...prev,
-          discardPile: newDiscardPile,
-          drawPile: newDrawPile,
-          currentCard: null,
-          phase: 'ended',
-        };
-      }
-
+      const newDiscard = [...prev.discardPile, card];
+      const deckEmpty = prev.drawPile.length === 0;
       return {
         ...prev,
-        discardPile: newDiscardPile,
-        drawPile: newDrawPile,
-        currentCard: newDrawPile[0],
+        discardPile: newDiscard,
+        flippedCard: null,
+        phase: deckEmpty ? 'ended' : 'playing',
       };
     });
   };
@@ -125,6 +108,7 @@ export default function Game() {
     return (
       <GameplayPhase
         gameState={gameState}
+        onFlipCard={handleFlipCard}
         onPlayCard={handlePlayCard}
         onDiscardCard={handleDiscardCard}
       />
