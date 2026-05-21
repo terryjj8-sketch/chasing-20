@@ -7,17 +7,17 @@ import { useNavigate } from 'react-router-dom';
 const DIFFICULTIES = [
   {
     id: 'easy',
-    label: 'Easy',
+    label: 'Water',
     description: 'Valid rows highlighted · Deck count shown',
   },
   {
     id: 'medium',
-    label: 'Medium',
+    label: 'Coffee',
     description: 'Valid rows highlighted · Deck count hidden',
   },
   {
     id: 'hard',
-    label: 'Hard',
+    label: 'Espresso',
     description: 'No hints · Deck count hidden',
   },
 ];
@@ -86,6 +86,7 @@ export default function SetupPhase({ drawPile, onComplete }) {
           >
             <span className="font-bold text-sm">{d.label}</span>
             <span className="text-[10px] mt-1 text-center leading-tight opacity-80">{d.description}</span>
+            <span className="text-[8px] mt-2 text-center leading-tight opacity-50">think before you drink</span>
           </button>
         ))}
       </motion.div>
