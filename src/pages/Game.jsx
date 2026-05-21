@@ -137,25 +137,59 @@ export default function Game() {
 
   if (!gameState) return null;
 
-  if (gameState.phase === 'setup') {
-    return <SetupPhase drawPile={gameState.drawPile} onComplete={handleSetupComplete} />;
-  }
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/80 flex flex-col">
+      {/* Scroll Banner */}
+      <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 border-b border-primary/30 px-4 py-3 text-center backdrop-blur">
+        <div className="text-sm font-semibold tracking-widest text-primary">
+          Chasing 20 — The Most Difficult Card Game You'll Ever Play
+        </div>
+      </div>
 
-  if (gameState.phase === 'playing') {
-    return (
-      <GameplayPhase
-        gameState={gameState}
-        onFlipCard={handleFlipCard}
-        onPlayCard={handlePlayCard}
-        onDiscardCard={handleDiscardCard}
-        onUndo={handleUndo}
-        canUndo={history.length > 0}
-        elapsedSeconds={elapsedSeconds}
-      />
-    );
-  }
+      {/* Game Content */}
+      <div className="flex-1">
+        {gameState.phase === 'setup' ? (
+          <GameSetupContent gameState={gameState} onSetupComplete={handleSetupComplete} />
+        ) : gameState.phase === 'playing' ? (
+          <GamePlayContent 
+            gameState={gameState}
+            onFlipCard={handleFlipCard}
+            onPlayCard={handlePlayCard}
+            onDiscardCard={handleDiscardCard}
+            onUndo={handleUndo}
+            canUndo={history.length > 0}
+            elapsedSeconds={elapsedSeconds}
+          />
+        ) : (
+          <GameEndContent rows={gameState.rows} onPlayAgain={resetGame} finalTime={elapsedSeconds} />
+        )}
+      </div>
+    </div>
+  );
+};
 
-  if (gameState.phase === 'ended') {
-    return <EndGamePhase rows={gameState.rows} onPlayAgain={resetGame} finalTime={elapsedSeconds} />;
-  }
+function GameSetupContent({ gameState, onSetupComplete }) {
+  return (
+    <SetupPhase drawPile={gameState.drawPile} onComplete={onSetupComplete} />
+  );
+}
+
+function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onUndo, canUndo, elapsedSeconds }) {
+  return (
+    <GameplayPhase
+      gameState={gameState}
+      onFlipCard={onFlipCard}
+      onPlayCard={onPlayCard}
+      onDiscardCard={onDiscardCard}
+      onUndo={onUndo}
+      canUndo={canUndo}
+      elapsedSeconds={elapsedSeconds}
+    />
+  );
+}
+
+function GameEndContent({ rows, onPlayAgain, finalTime }) {
+  return (
+    <EndGamePhase rows={rows} onPlayAgain={onPlayAgain} finalTime={finalTime} />
+  );
 }
