@@ -66,17 +66,31 @@ export default function GameRow({ rowIndex, row, accentColor, isValid, isSelecte
             initial={{ scale: 0.7, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', bounce: 0.5 }}
-            className="w-16 h-24 rounded-lg flex items-center justify-center shadow-lg"
+            className="w-16 h-24 rounded-lg flex items-center justify-center shadow-lg relative overflow-hidden"
             style={{
-              background: topCard.value === 0
-                ? 'linear-gradient(135deg, #9b59b6, #e91e8c)'
-                : `linear-gradient(135deg, ${hex}cc, ${hex}66)`,
-              border: '2px solid rgba(255,255,255,0.3)',
+              background: '#ffffff',
+              border: '2px solid #e2e8f0',
             }}
           >
-            <div className="text-center">
-              <div className="text-white text-2xl font-black">{topCard.value}</div>
-              {topCard.value === 0 && <div className="text-white/70 text-[9px] font-bold">RESET</div>}
+            <div className="absolute inset-1 rounded-md border border-slate-300" />
+            {/* Corner tick rings */}
+            {[['top-0.5 left-0.5'], ['top-0.5 right-0.5'], ['bottom-0.5 left-0.5'], ['bottom-0.5 right-0.5']].map((pos, pi) => (
+              <div key={pi} className={`absolute ${pos[0]} pointer-events-none`}>
+                <svg width="14" height="14" viewBox="0 0 20 20">
+                  {Array.from({ length: 20 }).map((_, i) => {
+                    const angle = (i / 20) * 2 * Math.PI - Math.PI / 2;
+                    const x1 = 10 + 3 * Math.cos(angle);
+                    const y1 = 10 + 3 * Math.sin(angle);
+                    const x2 = 10 + 5 * Math.cos(angle);
+                    const y2 = 10 + 5 * Math.sin(angle);
+                    return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#94a3b8" strokeWidth={i % 5 === 0 ? 1.5 : 0.8} strokeLinecap="round" />;
+                  })}
+                </svg>
+              </div>
+            ))}
+            <div className="relative z-10 text-center">
+              <div className="text-black text-2xl font-black">{topCard.value}</div>
+              {topCard.value === 0 && <div className="text-black/70 text-[9px] font-bold">RESET</div>}
             </div>
           </motion.div>
         ) : (
