@@ -178,6 +178,7 @@ export default function Game() {
             elapsedSeconds={elapsedSeconds}
             isPaused={isPaused}
             onTogglePause={togglePause}
+            onRestart={resetGame}
           />
         ) : (
           <GameEndContent rows={gameState.rows} onPlayAgain={resetGame} finalTime={elapsedSeconds} />
@@ -200,7 +201,7 @@ function GameSetupContent({ gameState, onSetupComplete }) {
   );
 }
 
-function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause }) {
+function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart }) {
   return (
     <GameplayPhase
       gameState={gameState}
@@ -212,6 +213,7 @@ function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onU
       elapsedSeconds={elapsedSeconds}
       isPaused={isPaused}
       onTogglePause={onTogglePause}
+      onRestart={onRestart}
     />
   );
 }

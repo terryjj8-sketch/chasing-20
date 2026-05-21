@@ -4,11 +4,11 @@ import DeckPile from './DeckPile';
 import GameTimer from './GameTimer';
 import { canPlayCard } from '@/lib/deckUtils';
 import { Button } from '@/components/ui/button';
-import { Undo2, Pause, Play } from 'lucide-react';
+import { Undo2, Pause, Play, RotateCcw } from 'lucide-react';
 
 const rowAccents = ['row-1', 'row-2', 'row-3', 'row-4'];
 
-export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause }) {
+export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart }) {
   const { drawPile, discardPile, rows, flippedCard } = gameState;
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -64,6 +64,15 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
             title="Undo last move"
           >
             <Undo2 className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onRestart}
+            className="bg-white/10 hover:bg-white/20 text-foreground px-2"
+            title="Restart game"
+          >
+            <RotateCcw className="w-4 h-4" />
           </Button>
         </div>
       </div>
