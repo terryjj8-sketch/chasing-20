@@ -4,11 +4,11 @@ import DeckPile from './DeckPile';
 import GameTimer from './GameTimer';
 import { canPlayCard } from '@/lib/deckUtils';
 import { Button } from '@/components/ui/button';
-import { Undo2 } from 'lucide-react';
+import { Undo2, Pause, Play } from 'lucide-react';
 
 const rowAccents = ['row-1', 'row-2', 'row-3', 'row-4'];
 
-export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard, onUndo, canUndo, elapsedSeconds }) {
+export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause }) {
   const { drawPile, discardPile, rows, flippedCard } = gameState;
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -84,7 +84,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
       </div>
 
       {/* Deck & Flip area */}
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center relative">
         <DeckPile
           deckCount={drawPile.length}
           flippedCard={flippedCard}
@@ -92,7 +92,19 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
           onPlay={handlePlay}
           onDiscard={handleDiscard}
           canPlay={selectedRow !== null}
+          isPaused={isPaused}
         />
+        
+        {/* Pause Button - Lower Right */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onTogglePause}
+          className="absolute bottom-4 right-4 bg-white/10 hover:bg-white/20 text-foreground"
+          title={isPaused ? "Resume" : "Pause"}
+        >
+          {isPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
+        </Button>
       </div>
     </div>
   );

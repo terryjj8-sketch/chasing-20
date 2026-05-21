@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDiscard, canPlay }) {
+export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDiscard, canPlay, isPaused }) {
   const [isFlipping, setIsFlipping] = useState(false);
 
   const handleTap = () => {
-    if (deckCount === 0 || flippedCard || isFlipping) return;
+    if (deckCount === 0 || flippedCard || isFlipping || isPaused) return;
     setIsFlipping(true);
     setTimeout(() => {
       onFlip();

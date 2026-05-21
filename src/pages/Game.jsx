@@ -8,6 +8,7 @@ export default function Game() {
   const [gameState, setGameState] = useState(null);
   const [history, setHistory] = useState([]);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
 
@@ -28,9 +29,23 @@ export default function Game() {
     if (timerRef.current) clearInterval(timerRef.current);
   };
 
+  const togglePause = () => {
+    setIsPaused(!isPaused);
+  };
+
   useEffect(() => {
+    if (isPaused && timerRef.current) {
+      clearInterval(timerRef.current);
+    } else if (!isPaused && gameState?.phase === 'playing') {
+      if (!timerRef.current) {
+        startTimeRef.current = Date.now() - elapsedSeconds * 1000;
+        timerRef.current = setInterval(() => {
+          setElapsedSeconds(Math.floor((Date.now() - startTimeRef.current) / 1000));
+        }, 1000);
+      }
+    }
     return () => stopTimer();
-  }, []);
+  }, [isPaused, gameState?.phase]);
 
   const handleUndo = () => {
     if (history.length === 0) return;
@@ -159,6 +174,8 @@ export default function Game() {
             onUndo={handleUndo}
             canUndo={history.length > 0}
             elapsedSeconds={elapsedSeconds}
+            isPaused={isPaused}
+            onTogglePause={togglePause}
           />
         ) : (
           <GameEndContent rows={gameState.rows} onPlayAgain={resetGame} finalTime={elapsedSeconds} />
@@ -181,7 +198,7 @@ function GameSetupContent({ gameState, onSetupComplete }) {
   );
 }
 
-function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onUndo, canUndo, elapsedSeconds }) {
+function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause }) {
   return (
     <GameplayPhase
       gameState={gameState}
@@ -191,6 +208,8 @@ function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onU
       onUndo={onUndo}
       canUndo={canUndo}
       elapsedSeconds={elapsedSeconds}
+      isPaused={isPaused}
+      onTogglePause={onTogglePause}
     />
   );
 }
