@@ -84,8 +84,11 @@ export default function HowToPlay() {
               <div className="text-xs text-foreground/60 mt-1">The same as the row's current number</div>
             </div>
           </div>
-          <p className="text-foreground/70 text-sm">
+          <p className="text-foreground/70 text-sm mb-2">
             Example: if a row's current card is <strong>7</strong>, you can play a <strong>6</strong>, <strong>7</strong>, or <strong>8</strong> on it.
+          </p>
+          <p className="text-foreground/70 text-sm">
+            You can also play a <strong>0</strong> on any row to reset it — the next card can be any value.
           </p>
         </Section>
 
