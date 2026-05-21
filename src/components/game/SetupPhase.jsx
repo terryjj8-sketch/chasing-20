@@ -35,7 +35,7 @@ export default function SetupPhase({ drawPile, onComplete }) {
         className="text-center mb-12"
       >
         <h1 className="text-5xl font-bold text-primary mb-2">Chasing 20</h1>
-        <p className="text-lg text-foreground/70">Choose your 4 starting cards</p>
+        <p className="text-lg text-foreground/70">choose four cards, build your rows, beat the deck.</p>
       </motion.div>
 
       <motion.div
