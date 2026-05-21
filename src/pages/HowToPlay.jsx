@@ -51,6 +51,7 @@ export default function HowToPlay() {
           <ul className="text-foreground/80 space-y-2 leading-relaxed list-disc list-inside">
             <li>You are dealt <strong>6 cards</strong> face up.</li>
             <li>Pick <strong>4 of them</strong> — one to start each of your four rows.</li>
+            <li><strong>Zeros cannot start your rows</strong> — you must pick numbered cards.</li>
             <li>The 2 unchosen cards go back into the deck, which is then shuffled.</li>
           </ul>
         </Section>
