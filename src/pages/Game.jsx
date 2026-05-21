@@ -9,6 +9,7 @@ export default function Game() {
   const [history, setHistory] = useState([]);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [difficulty, setDifficulty] = useState('easy');
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
 
@@ -74,7 +75,8 @@ export default function Game() {
     });
   };
 
-  const handleSetupComplete = (selectedIndices) => {
+  const handleSetupComplete = (selectedIndices, chosenDifficulty) => {
+    setDifficulty(chosenDifficulty);
     setGameState(prev => {
       const setupCards = prev.drawPile.slice(0, 6);
       const startingCards = selectedIndices.map(i => setupCards[i]);
@@ -202,6 +204,7 @@ export default function Game() {
             isPaused={isPaused}
             onTogglePause={togglePause}
             onRestart={resetGame}
+            difficulty={difficulty}
           />
         ) : (
           <GameEndContent rows={gameState.rows} onPlayAgain={resetGame} finalTime={elapsedSeconds} />
@@ -224,7 +227,7 @@ function GameSetupContent({ gameState, onSetupComplete }) {
   );
 }
 
-function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart }) {
+function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart, difficulty }) {
   return (
     <GameplayPhase
       gameState={gameState}
@@ -237,6 +240,7 @@ function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onU
       isPaused={isPaused}
       onTogglePause={onTogglePause}
       onRestart={onRestart}
+      difficulty={difficulty}
     />
   );
 }

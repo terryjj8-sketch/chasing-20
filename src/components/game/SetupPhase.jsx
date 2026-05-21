@@ -4,10 +4,29 @@ import Card from './Card';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
+const DIFFICULTIES = [
+  {
+    id: 'easy',
+    label: 'Easy',
+    description: 'Valid rows highlighted · Deck count shown',
+  },
+  {
+    id: 'medium',
+    label: 'Medium',
+    description: 'Valid rows highlighted · Deck count hidden',
+  },
+  {
+    id: 'hard',
+    label: 'Hard',
+    description: 'No hints · Deck count hidden',
+  },
+];
+
 export default function SetupPhase({ drawPile, onComplete }) {
   const navigate = useNavigate();
   const [displayCards, setDisplayCards] = useState([]);
   const [selectedIndices, setSelectedIndices] = useState(new Set());
+  const [difficulty, setDifficulty] = useState('easy');
 
   useEffect(() => {
     setDisplayCards(drawPile.slice(0, 6));
@@ -25,7 +44,7 @@ export default function SetupPhase({ drawPile, onComplete }) {
 
   const handleStart = () => {
     if (selectedIndices.size === 4) {
-      onComplete(Array.from(selectedIndices));
+      onComplete(Array.from(selectedIndices), difficulty);
     }
   };
 
@@ -45,6 +64,30 @@ export default function SetupPhase({ drawPile, onComplete }) {
         >
           How to Play
         </button>
+      </motion.div>
+
+      {/* Difficulty Selector */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.15 }}
+        className="flex gap-3 mb-10"
+      >
+        {DIFFICULTIES.map(d => (
+          <button
+            key={d.id}
+            onClick={() => setDifficulty(d.id)}
+            className="flex flex-col items-center px-5 py-3 rounded-xl border-2 transition-all duration-150"
+            style={{
+              borderColor: difficulty === d.id ? 'hsl(var(--primary))' : 'rgba(255,255,255,0.15)',
+              background: difficulty === d.id ? 'hsl(var(--primary) / 0.2)' : 'rgba(255,255,255,0.05)',
+              color: difficulty === d.id ? 'hsl(var(--primary))' : 'rgba(255,255,255,0.5)',
+            }}
+          >
+            <span className="font-bold text-sm">{d.label}</span>
+            <span className="text-[10px] mt-1 text-center leading-tight opacity-80">{d.description}</span>
+          </button>
+        ))}
       </motion.div>
 
       <motion.div

@@ -25,7 +25,7 @@ function TickRing({ size = 16, cx = 8, cy = 8, r = 5, ticks = 20 }) {
   );
 }
 
-export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDiscard, canPlay, isPaused }) {
+export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDiscard, canPlay, isPaused, showDeckCount }) {
   const handleTap = () => {
     if (deckCount === 0 || flippedCard || isPaused) return;
     onFlip();
@@ -92,7 +92,7 @@ export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDis
             )}
           </motion.div>
 
-          <span className="text-xs text-foreground/40 font-medium">{deckCount} left</span>
+          {showDeckCount && <span className="text-xs text-foreground/40 font-medium">{deckCount} left</span>}
         </div>
 
         {/* Flipped Card Area */}

@@ -8,8 +8,10 @@ import { Undo2, Pause, Play, RotateCcw } from 'lucide-react';
 
 const rowAccents = ['row-1', 'row-2', 'row-3', 'row-4'];
 
-export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart }) {
+export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart, difficulty }) {
   const { drawPile, discardPile, rows, flippedCard } = gameState;
+  const showRowHints = difficulty !== 'hard';
+  const showDeckCount = difficulty === 'easy';
   const [selectedRow, setSelectedRow] = useState(null);
 
   // Clear selection when flipped card changes (use card value/suit as stable key)
@@ -85,7 +87,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
             rowIndex={idx}
             row={row}
             accentColor={rowAccents[idx]}
-            isValid={flippedCard ? validRows.includes(idx) : undefined}
+            isValid={flippedCard && showRowHints ? validRows.includes(idx) : undefined}
             isSelected={selectedRow === idx}
             onTap={() => handleRowTap(idx)}
           />
@@ -102,6 +104,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
           onDiscard={handleDiscard}
           canPlay={selectedRow !== null}
           isPaused={isPaused}
+          showDeckCount={showDeckCount}
         />
         
         {/* Pause Button - Lower Right */}
