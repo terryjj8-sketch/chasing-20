@@ -4,6 +4,12 @@ module.exports = {
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
   	extend: {
+  		colors: {
+  			'row-1': 'hsl(var(--row-1))',
+  			'row-2': 'hsl(var(--row-2))',
+  			'row-3': 'hsl(var(--row-3))',
+  			'row-4': 'hsl(var(--row-4))',
+  		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
