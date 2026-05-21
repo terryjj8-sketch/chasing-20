@@ -9,10 +9,11 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
   const { drawPile, discardPile, rows, flippedCard } = gameState;
   const [selectedRow, setSelectedRow] = useState(null);
 
-  // Clear selection when flipped card changes
+  // Clear selection when flipped card changes (use card value/suit as stable key)
+  const flippedCardKey = flippedCard ? `${flippedCard.value}-${flippedCard.suit}` : null;
   useEffect(() => {
     setSelectedRow(null);
-  }, [flippedCard]);
+  }, [flippedCardKey]);
 
   const validRows = flippedCard
     ? rows.map((row, idx) => canPlayCard(flippedCard, row) ? idx : null).filter(idx => idx !== null)
@@ -56,7 +57,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
             rowIndex={idx}
             row={row}
             accentColor={rowAccents[idx]}
-            isValid={validRows.includes(idx)}
+            isValid={flippedCard ? validRows.includes(idx) : undefined}
             isSelected={selectedRow === idx}
             onTap={() => handleRowTap(idx)}
           />
