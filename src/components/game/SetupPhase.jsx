@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import Card from './Card';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 export default function SetupPhase({ drawPile, onComplete }) {
+  const navigate = useNavigate();
   const [displayCards, setDisplayCards] = useState([]);
   const [selectedIndices, setSelectedIndices] = useState(new Set());
 
@@ -36,6 +38,12 @@ export default function SetupPhase({ drawPile, onComplete }) {
       >
         <h1 className="text-5xl font-bold text-primary mb-2">Chasing 20</h1>
         <p className="text-lg text-foreground/70">choose four cards, build your rows, beat the deck.</p>
+        <button
+          onClick={() => navigate('/how-to-play')}
+          className="mt-3 text-sm text-primary/70 underline underline-offset-2 hover:text-primary transition-colors"
+        >
+          How to Play
+        </button>
       </motion.div>
 
       <motion.div
