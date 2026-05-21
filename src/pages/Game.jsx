@@ -164,6 +164,13 @@ export default function Game() {
           <GameEndContent rows={gameState.rows} onPlayAgain={resetGame} finalTime={elapsedSeconds} />
         )}
       </div>
+
+      {/* Footer */}
+      <div className="border-t border-primary/30 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 backdrop-blur px-4 py-3 text-center">
+        <div className="text-xs text-foreground/50 tracking-wide">
+          Copyright © 2026 TWSS Guide, LLC. All rights reserved.
+        </div>
+      </div>
     </div>
   );
 };
