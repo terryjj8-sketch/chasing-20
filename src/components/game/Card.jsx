@@ -33,7 +33,7 @@ export default function Card({ value, rowIndex = 0, isSelected = false, size = '
       <div className="absolute bottom-2 right-2 text-slate-400 text-xs">◆</div>
 
       <div className="relative z-10 text-center">
-        <div className="text-black text-6xl font-black">
+        <div className="text-black text-4xl font-black">
           {isZero ? '0' : value}
         </div>
         {isZero && (
