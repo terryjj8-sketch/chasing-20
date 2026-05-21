@@ -6,6 +6,7 @@ import { initializeDeck, shuffleDeck } from '../lib/deckUtils';
 
 export default function Game() {
   const [gameState, setGameState] = useState(null);
+  const [history, setHistory] = useState([]);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
@@ -31,9 +32,17 @@ export default function Game() {
     return () => stopTimer();
   }, []);
 
+  const handleUndo = () => {
+    if (history.length === 0) return;
+    const prev = history[history.length - 1];
+    setHistory(h => h.slice(0, -1));
+    setGameState(prev);
+  };
+
   const resetGame = () => {
     stopTimer();
     setElapsedSeconds(0);
+    setHistory([]);
     const deck = initializeDeck();
     shuffleDeck(deck);
     setGameState({
@@ -81,6 +90,7 @@ export default function Game() {
   const handleFlipCard = () => {
     setGameState(prev => {
       if (prev.drawPile.length === 0 || prev.flippedCard) return prev;
+      setHistory(h => [...h, prev]);
       const [top, ...rest] = prev.drawPile;
       return { ...prev, flippedCard: top, drawPile: rest };
     });
@@ -88,6 +98,7 @@ export default function Game() {
 
   const handlePlayCard = (rowIndex, card) => {
     setGameState(prev => {
+      setHistory(h => [...h, prev]);
       const newRows = prev.rows.map((r, i) => {
         if (i !== rowIndex) return r;
         const updatedCards = [...r.cards, card];
@@ -111,6 +122,7 @@ export default function Game() {
 
   const handleDiscardCard = (card) => {
     setGameState(prev => {
+      setHistory(h => [...h, prev]);
       const newDiscard = [...prev.discardPile, card];
       const deckEmpty = prev.drawPile.length === 0;
       if (deckEmpty) stopTimer();
@@ -136,6 +148,8 @@ export default function Game() {
         onFlipCard={handleFlipCard}
         onPlayCard={handlePlayCard}
         onDiscardCard={handleDiscardCard}
+        onUndo={handleUndo}
+        canUndo={history.length > 0}
         elapsedSeconds={elapsedSeconds}
       />
     );

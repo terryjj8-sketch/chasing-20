@@ -3,10 +3,12 @@ import GameRow from './GameRow';
 import DeckPile from './DeckPile';
 import GameTimer from './GameTimer';
 import { canPlayCard } from '@/lib/deckUtils';
+import { Button } from '@/components/ui/button';
+import { Undo2 } from 'lucide-react';
 
 const rowAccents = ['row-1', 'row-2', 'row-3', 'row-4'];
 
-export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard, elapsedSeconds }) {
+export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard, onUndo, canUndo, elapsedSeconds }) {
   const { drawPile, discardPile, rows, flippedCard } = gameState;
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -50,6 +52,16 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
             <span className="text-foreground/50">Discarded</span>
             <span className="text-foreground font-bold ml-2">{discardPile.length}</span>
           </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onUndo}
+            disabled={!canUndo}
+            className="bg-white/10 hover:bg-white/20 text-foreground disabled:opacity-30 px-2"
+            title="Undo last move"
+          >
+            <Undo2 className="w-4 h-4" />
+          </Button>
         </div>
       </div>
 
