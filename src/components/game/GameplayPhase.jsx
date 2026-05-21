@@ -42,15 +42,9 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
       {/* Title + Stats */}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-primary">Chasing 20</h1>
-        <div className="flex gap-3 text-sm">
-          <div className="bg-white/10 px-3 py-1.5 rounded-lg">
-            <span className="text-foreground/50">Deck</span>
-            <span className="text-foreground font-bold ml-2">{drawPile.length}</span>
-          </div>
-          <div className="bg-white/10 px-3 py-1.5 rounded-lg">
-            <span className="text-foreground/50">Discarded</span>
-            <span className="text-foreground font-bold ml-2">{discardPile.length}</span>
-          </div>
+        <div className="bg-white/10 px-3 py-1.5 rounded-lg text-sm">
+          <span className="text-foreground/50">Discarded</span>
+          <span className="text-foreground font-bold ml-2">{discardPile.length}</span>
         </div>
       </div>
 
