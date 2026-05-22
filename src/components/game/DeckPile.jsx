@@ -263,34 +263,24 @@ export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDis
         </div>
       </div>
 
-      {/* Action Buttons */}
+      {/* Discard Button */}
       <AnimatePresence>
         {flippedCard && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="flex gap-3 justify-center"
+          <motion.button
+            initial={{ opacity: 0, y: 10, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.8 }}
+            whileTap={{ scale: 0.92 }}
+            whileHover={{ scale: 1.08 }}
+            onClick={onDiscard}
+            className="px-8 py-3 rounded-xl text-lg font-bold text-white shadow-xl"
+            style={{
+              background: 'linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%)',
+              boxShadow: '0 6px 20px rgba(255, 107, 107, 0.4)',
+            }}
           >
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={onPlay}
-              disabled={!canPlay}
-              className="px-6 py-2 rounded-lg text-sm font-bold text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{
-                background: canPlay ? '#10B981' : '#6B7280',
-              }}
-            >
-              Play
-            </motion.button>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={onDiscard}
-              className="px-6 py-2 rounded-lg text-sm font-bold bg-white/10 text-white border border-white/20"
-            >
-              Discard
-            </motion.button>
-          </motion.div>
+            ✕ Discard
+          </motion.button>
         )}
       </AnimatePresence>
     </div>
