@@ -55,44 +55,69 @@ export default function GameRow({ rowIndex, row, accentColor, isValid, isSelecte
         <span className="text-xs font-bold uppercase tracking-wider" style={{ color: hex }}>
           Row {rowIndex + 1}
         </span>
-        <span className="text-sm font-bold text-white/90">{row.cards.length}</span>
+        <span className="text-sm font-black px-1.5 py-0.5 rounded" style={{ color: hex, background: `${hex}25` }}>
+          {row.cards.length}
+        </span>
       </div>
 
-      {/* Top card display */}
+      {/* Staggered card stack + top card */}
       <div className="flex justify-center">
         {topCard ? (
-          <motion.div
-            key={row.cards.length}
-            initial={{ scale: 0.7, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', bounce: 0.5 }}
-            className="w-16 h-24 rounded-lg flex items-center justify-center shadow-lg relative overflow-hidden"
-            style={{
-              background: '#ffffff',
-              border: '2px solid #e2e8f0',
-            }}
-          >
-            <div className="absolute inset-1 rounded-md border border-slate-300" />
-            {/* Corner tick rings */}
-            {[['top-0.5 left-0.5'], ['top-0.5 right-0.5'], ['bottom-0.5 left-0.5'], ['bottom-0.5 right-0.5']].map((pos, pi) => (
-              <div key={pi} className={`absolute ${pos[0]} pointer-events-none`}>
-                <svg width="14" height="14" viewBox="0 0 20 20">
-                  {Array.from({ length: 20 }).map((_, i) => {
-                    const angle = (i / 20) * 2 * Math.PI - Math.PI / 2;
-                    const x1 = 10 + 3 * Math.cos(angle);
-                    const y1 = 10 + 3 * Math.sin(angle);
-                    const x2 = 10 + 5 * Math.cos(angle);
-                    const y2 = 10 + 5 * Math.sin(angle);
-                    return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#94a3b8" strokeWidth={i % 5 === 0 ? 1.5 : 0.8} strokeLinecap="round" />;
-                  })}
-                </svg>
+          <div className="relative" style={{ width: 64, height: 96 }}>
+            {/* Staggered shadow cards behind */}
+            {cardCount > 2 && (
+              <div className="absolute rounded-lg" style={{
+                width: 64, height: 96,
+                top: -6, left: 6,
+                background: '#1a5f7a',
+                border: '2px solid rgba(255,255,255,0.25)',
+                transform: 'rotate(4deg)',
+              }} />
+            )}
+            {cardCount > 1 && (
+              <div className="absolute rounded-lg" style={{
+                width: 64, height: 96,
+                top: -3, left: 3,
+                background: '#1a5f7a',
+                border: '2px solid rgba(255,255,255,0.25)',
+                transform: 'rotate(2deg)',
+              }} />
+            )}
+            {/* Top (face-up) card */}
+            <motion.div
+              key={row.cards.length}
+              initial={{ scale: 0.7, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', bounce: 0.5 }}
+              className="absolute rounded-lg flex items-center justify-center shadow-lg overflow-hidden"
+              style={{
+                width: 64, height: 96,
+                background: '#ffffff',
+                border: '2px solid #e2e8f0',
+                top: 0, left: 0,
+              }}
+            >
+              <div className="absolute inset-1 rounded-md border border-slate-300" />
+              {[['top-0.5 left-0.5'], ['top-0.5 right-0.5'], ['bottom-0.5 left-0.5'], ['bottom-0.5 right-0.5']].map((pos, pi) => (
+                <div key={pi} className={`absolute ${pos[0]} pointer-events-none`}>
+                  <svg width="14" height="14" viewBox="0 0 20 20">
+                    {Array.from({ length: 20 }).map((_, i) => {
+                      const angle = (i / 20) * 2 * Math.PI - Math.PI / 2;
+                      const x1 = 10 + 3 * Math.cos(angle);
+                      const y1 = 10 + 3 * Math.sin(angle);
+                      const x2 = 10 + 5 * Math.cos(angle);
+                      const y2 = 10 + 5 * Math.sin(angle);
+                      return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#94a3b8" strokeWidth={i % 5 === 0 ? 1.5 : 0.8} strokeLinecap="round" />;
+                    })}
+                  </svg>
+                </div>
+              ))}
+              <div className="relative z-10 text-center">
+                <div className="text-black text-2xl font-black">{topCard.value}</div>
+                {topCard.value === 0 && <div className="text-black/70 text-[9px] font-bold">RESET</div>}
               </div>
-            ))}
-            <div className="relative z-10 text-center">
-              <div className="text-black text-2xl font-black">{topCard.value}</div>
-              {topCard.value === 0 && <div className="text-black/70 text-[9px] font-bold">RESET</div>}
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         ) : (
           <div className="w-16 h-24 rounded-lg border-2 border-dashed flex items-center justify-center"
             style={{ borderColor: `${hex}40` }}>
