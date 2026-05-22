@@ -55,7 +55,7 @@ export default function GameRow({ rowIndex, row, accentColor, isValid, isSelecte
         <span className="text-xs font-bold uppercase tracking-wider" style={{ color: hex }}>
           Row {rowIndex + 1}
         </span>
-        <span className="text-xs text-foreground/50">{row.cards.length} cards</span>
+        <span className="text-sm font-bold text-white/90">{row.cards.length}</span>
       </div>
 
       {/* Top card display */}
@@ -102,13 +102,7 @@ export default function GameRow({ rowIndex, row, accentColor, isValid, isSelecte
       </div>
 
       {/* Stats row */}
-      <div className="flex justify-between text-center text-xs">
-        <div>
-          <div className="text-foreground/40">Current</div>
-          <div className="font-bold text-foreground">
-            {row.resetPending ? '?' : (row.currentNumber ?? '—')}
-          </div>
-        </div>
+      <div className="flex justify-center text-center text-xs">
         <div>
           <div className="text-foreground/40">Zeros</div>
           <div className="font-bold text-purple-300">{row.zeroCount}/3</div>

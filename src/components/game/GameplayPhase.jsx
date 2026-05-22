@@ -5,6 +5,7 @@ import GameTimer from './GameTimer';
 import { canPlayCard } from '@/lib/deckUtils';
 import { Button } from '@/components/ui/button';
 import { Undo2, Pause, Play, RotateCcw } from 'lucide-react';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 const rowAccents = ['row-1', 'row-2', 'row-3', 'row-4'];
 
@@ -42,7 +43,15 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
     }
   };
 
+  const handleDragEnd = (result) => {
+    if (!result.destination || !flippedCard) return;
+    const rowIdx = parseInt(result.destination.droppableId.replace('row-', ''), 10);
+    if (!validRows.includes(rowIdx)) return;
+    onPlayCard(rowIdx, flippedCard);
+  };
+
   return (
+    <DragDropContext onDragEnd={handleDragEnd}>
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80 flex flex-col p-4 gap-6">
 
       {/* Title + Stats */}
@@ -79,33 +88,54 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
         </div>
       </div>
 
-      {/* Rows — tappable when a card is flipped */}
+      {/* Rows — tappable or drag-target when a card is flipped */}
       <div className="grid grid-cols-4 gap-3">
         {rows.map((row, idx) => (
-          <GameRow
-            key={idx}
-            rowIndex={idx}
-            row={row}
-            accentColor={rowAccents[idx]}
-            isValid={flippedCard && showRowHints ? validRows.includes(idx) : undefined}
-            isSelected={selectedRow === idx}
-            onTap={() => handleRowTap(idx)}
-          />
+          <Droppable droppableId={`row-${idx}`} key={idx}>
+            {(provided, snapshot) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                style={{ position: 'relative' }}
+              >
+                <GameRow
+                  rowIndex={idx}
+                  row={row}
+                  accentColor={rowAccents[idx]}
+                  isValid={flippedCard && showRowHints ? validRows.includes(idx) : undefined}
+                  isSelected={selectedRow === idx || (snapshot.isDraggingOver && validRows.includes(idx))}
+                  onTap={() => handleRowTap(idx)}
+                />
+                <div style={{ display: 'none' }}>{provided.placeholder}</div>
+              </div>
+            )}
+          </Droppable>
         ))}
       </div>
 
       {/* Deck & Flip area */}
       <div className="flex-1 flex items-center justify-center relative">
-        <DeckPile
-          deckCount={drawPile.length}
-          flippedCard={flippedCard}
-          onFlip={onFlipCard}
-          onPlay={handlePlay}
-          onDiscard={handleDiscard}
-          canPlay={selectedRow !== null}
-          isPaused={isPaused}
-          showDeckCount={showDeckCount}
-        />
+        <Draggable draggableId="flipped-card" index={0} isDragDisabled={!flippedCard || isPaused}>
+          {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              style={{ ...provided.draggableProps.style, cursor: flippedCard ? 'grab' : 'default' }}
+            >
+              <DeckPile
+                deckCount={drawPile.length}
+                flippedCard={flippedCard}
+                onFlip={onFlipCard}
+                onPlay={handlePlay}
+                onDiscard={handleDiscard}
+                canPlay={selectedRow !== null}
+                isPaused={isPaused}
+                showDeckCount={showDeckCount}
+              />
+            </div>
+          )}
+        </Draggable>
         
         {/* Pause Button - Lower Right */}
         <Button
@@ -119,5 +149,6 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
         </Button>
       </div>
     </div>
+    </DragDropContext>
   );
 }
