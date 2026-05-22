@@ -64,21 +64,21 @@ export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDis
             {/* Top card */}
             {deckCount > 0 ? (
               <div
-                className="absolute rounded-lg flex items-center justify-center overflow-hidden"
+                className="absolute rounded-lg flex items-center justify-center overflow-hidden relative"
                 style={{
                   width: 80, height: 120,
-                  background: 'linear-gradient(135deg, #6a38c0 0%, #3a1880 100%)',
-                  border: '2px solid rgba(255,255,255,0.2)',
+                  background: '#1a5f7a',
+                  border: '2px solid rgba(255,255,255,0.3)',
                   boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
                 }}
               >
                 {/* Card back branding */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 pointer-events-none">
-                  <TickRing size={36} cx={18} cy={18} r={14} ticks={20} />
-                  <div className="text-center leading-tight">
-                    <div className="text-white/70 text-[7px] font-black uppercase tracking-widest">Chasing</div>
-                    <div className="text-white/70 text-[10px] font-black uppercase tracking-widest">20</div>
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-0 pointer-events-none">
+                  <div className="text-center">
+                    <div className="text-amber-50 text-[6px] font-black uppercase tracking-widest leading-tight">Chasing</div>
+                    <div className="text-yellow-400 text-[16px] font-black leading-none">20</div>
                   </div>
+                  <div className="text-amber-50 text-[5px] font-bold uppercase tracking-wider mt-1 leading-tight">A New Twist</div>
                 </div>
                 <div className="absolute bottom-1.5 right-1.5 text-white/20 text-[9px] font-bold">{deckCount}</div>
               </div>
