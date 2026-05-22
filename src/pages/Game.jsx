@@ -13,6 +13,7 @@ export default function Game() {
   const [isPaused, setIsPaused] = useState(false);
   const [difficulty, setDifficulty] = useState('easy');
   const [soundEnabled, setSoundEnabled] = useState(false);
+  const [completedRowAlert, setCompletedRowAlert] = useState(null);
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
   const sounds = useSounds(soundEnabled);
@@ -64,6 +65,7 @@ export default function Game() {
     stopTimer();
     setElapsedSeconds(0);
     setHistory([]);
+    setCompletedRowAlert(null);
     const deck = initializeDeck();
     shuffleDeck(deck);
     sounds.playShuffle();
@@ -141,7 +143,15 @@ export default function Game() {
         }
       });
 
+      // Detect a row just hitting 20 cards mid-game
+      const prevRowCount = prev.rows[rowIndex].cards.length;
+      const newRowCount = newRows[rowIndex].cards.length;
       const deckEmpty = prev.drawPile.length === 0;
+      if (newRowCount === 20 && prevRowCount === 19 && !deckEmpty) {
+        sounds.playRowComplete();
+        setCompletedRowAlert(rowIndex);
+      }
+
       if (deckEmpty) stopTimer();
 
       // Auto-flip next card
@@ -224,6 +234,8 @@ export default function Game() {
             onTogglePause={togglePause}
             onRestart={resetGame}
             difficulty={difficulty}
+            completedRowAlert={completedRowAlert}
+            onClearRowAlert={() => setCompletedRowAlert(null)}
           />
         ) : (
           <GameEndContent rows={gameState.rows} onPlayAgain={resetGame} finalTime={elapsedSeconds} />
@@ -246,7 +258,7 @@ function GameSetupContent({ gameState, onSetupComplete }) {
   );
 }
 
-function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart, difficulty }) {
+function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart, difficulty, completedRowAlert, onClearRowAlert }) {
   return (
     <GameplayPhase
       gameState={gameState}
@@ -260,6 +272,8 @@ function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onU
       onTogglePause={onTogglePause}
       onRestart={onRestart}
       difficulty={difficulty}
+      completedRowAlert={completedRowAlert}
+      onClearRowAlert={onClearRowAlert}
     />
   );
 }

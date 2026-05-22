@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import SolitaireRow from './SolitaireRow';
 import SolitaireDeck from './SolitaireDeck';
 import GameTimer from './GameTimer';
+import RowCompleteToast from './RowCompleteToast';
 import { canPlayCard } from '@/lib/deckUtils';
 import { Button } from '@/components/ui/button';
 import { Undo2, Pause, Play, RotateCcw } from 'lucide-react';
 
 const rowAccents = ['row-1', 'row-2', 'row-3', 'row-4'];
 
-export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart, difficulty }) {
+export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart, difficulty, completedRowAlert, onClearRowAlert }) {
   const { drawPile, discardPile, rows, flippedCard } = gameState;
   const showRowHints = difficulty !== 'hard';
   const showDeckCount = difficulty === 'easy';
@@ -52,6 +53,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
         background: 'radial-gradient(ellipse at 50% 30%, #1a4a2e 0%, #0f2d1a 60%, #081a0e 100%)',
       }}
     >
+      <RowCompleteToast completedRow={completedRowAlert} onDone={onClearRowAlert} />
       {/* Top bar */}
       <div className="flex items-center justify-between px-4 pt-3 pb-2">
         <div className="flex items-center gap-2">

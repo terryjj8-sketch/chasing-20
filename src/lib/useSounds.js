@@ -74,5 +74,17 @@ export function useSounds(enabled) {
     playTone(ctx, { frequency: 500, type: 'sine', duration: 0.1, gain: 0.2, rampTo: 350 });
   }, [enabled, getCtx]);
 
-  return { playCardFlip, playCardPlay, playDiscard, playShuffle, playWin, playUndo };
+  const playRowComplete = useCallback(() => {
+    if (!enabled) return;
+    const ctx = getCtx();
+    // Triumphant ascending fanfare
+    const notes = [523, 659, 784, 1047, 1319];
+    notes.forEach((freq, i) => {
+      setTimeout(() => playTone(ctx, { frequency: freq, type: 'sine', duration: 0.25, gain: 0.35 }), i * 90);
+    });
+    // Extra sparkle on top
+    setTimeout(() => playTone(ctx, { frequency: 1568, type: 'triangle', duration: 0.4, gain: 0.2 }), 500);
+  }, [enabled, getCtx]);
+
+  return { playCardFlip, playCardPlay, playDiscard, playShuffle, playWin, playUndo, playRowComplete };
 }
