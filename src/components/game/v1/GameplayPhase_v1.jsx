@@ -1,0 +1,120 @@
+// FIRST VERSION - saved backup
+// This is the original GameplayPhase before the classic solitaire redesign.
+// To restore: copy contents back to components/game/GameplayPhase.jsx
+
+import React, { useState, useEffect } from 'react';
+import GameRow from '../GameRow';
+import DeckPile from '../DeckPile';
+import GameTimer from '../GameTimer';
+import { canPlayCard } from '@/lib/deckUtils';
+import { Button } from '@/components/ui/button';
+import { Undo2, Pause, Play, RotateCcw } from 'lucide-react';
+import { DragDropContext, Droppable } from '@hello-pangea/dnd';
+
+const rowAccents = ['row-1', 'row-2', 'row-3', 'row-4'];
+
+export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart, difficulty }) {
+  const { drawPile, discardPile, rows, flippedCard } = gameState;
+  const showRowHints = difficulty !== 'hard';
+  const showDeckCount = difficulty === 'easy';
+  const [selectedRow, setSelectedRow] = useState(null);
+
+  const flippedCardKey = flippedCard ? `${flippedCard.value}-${flippedCard.suit}` : null;
+  useEffect(() => {
+    setSelectedRow(null);
+  }, [flippedCardKey]);
+
+  const validRows = flippedCard
+    ? rows.map((row, idx) => canPlayCard(flippedCard, row) ? idx : null).filter(idx => idx !== null)
+    : [];
+
+  const handleRowTap = (idx) => {
+    if (!flippedCard) return;
+    if (!validRows.includes(idx)) return;
+    if (selectedRow === idx) {
+      onPlayCard(idx, flippedCard);
+    } else {
+      setSelectedRow(idx);
+    }
+  };
+
+  const handlePlay = () => {
+    if (flippedCard && selectedRow !== null) {
+      onPlayCard(selectedRow, flippedCard);
+    }
+  };
+
+  const handleDiscard = () => {
+    if (flippedCard) {
+      onDiscardCard(flippedCard);
+    }
+  };
+
+  const handleDragEnd = (result) => {
+    if (!result.destination || !flippedCard) return;
+    const rowIdx = parseInt(result.destination.droppableId.replace('row-', ''), 10);
+    if (!validRows.includes(rowIdx)) return;
+    onPlayCard(rowIdx, flippedCard);
+  };
+
+  return (
+    <DragDropContext onDragEnd={handleDragEnd}>
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/80 flex flex-col p-4 gap-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-primary">Chasing 20</h1>
+          <p className="text-sm text-foreground/60 mt-1">choose 4 cards, build your rows, Beat the deck.</p>
+        </div>
+        <div className="flex items-center gap-2" style={{ alignSelf: 'flex-start' }}>
+          <GameTimer elapsedSeconds={elapsedSeconds} />
+          <div className="bg-white/10 px-3 py-1.5 rounded-lg text-sm">
+            <span className="text-foreground/50">Discarded</span>
+            <span className="text-foreground font-bold ml-2">{discardPile.length}</span>
+          </div>
+          <Button variant="ghost" size="sm" onClick={onUndo} disabled={!canUndo} className="bg-white/10 hover:bg-white/20 text-foreground disabled:opacity-30 px-2" title="Undo last move">
+            <Undo2 className="w-4 h-4" />
+          </Button>
+          <Button variant="ghost" size="sm" onClick={onRestart} className="bg-white/10 hover:bg-white/20 text-foreground px-2" title="Restart game">
+            <RotateCcw className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
+      <div className="grid grid-cols-4 gap-3">
+        {rows.map((row, idx) => (
+          <Droppable droppableId={`row-${idx}`} key={idx}>
+            {(provided, snapshot) => (
+              <div ref={provided.innerRef} {...provided.droppableProps} style={{ position: 'relative' }}>
+                <GameRow
+                  rowIndex={idx}
+                  row={row}
+                  accentColor={rowAccents[idx]}
+                  isValid={flippedCard ? (showRowHints ? validRows.includes(idx) : (validRows.includes(idx) ? true : undefined)) : undefined}
+                  isSelected={selectedRow === idx || (snapshot.isDraggingOver && validRows.includes(idx))}
+                  onTap={() => handleRowTap(idx)}
+                />
+                <div style={{ display: 'none' }}>{provided.placeholder}</div>
+              </div>
+            )}
+          </Droppable>
+        ))}
+      </div>
+      <div className="flex-1 flex items-center justify-center relative">
+        <DeckPile
+          deckCount={drawPile.length}
+          flippedCard={flippedCard}
+          onFlip={onFlipCard}
+          onPlay={handlePlay}
+          onDiscard={handleDiscard}
+          canPlay={selectedRow !== null}
+          onCardTap={selectedRow !== null ? handlePlay : undefined}
+          isPaused={isPaused}
+          showDeckCount={showDeckCount}
+        />
+        <Button variant="ghost" size="icon" onClick={onTogglePause} className="absolute bottom-4 right-4 bg-white/10 hover:bg-white/20 text-foreground" title={isPaused ? "Resume" : "Pause"}>
+          {isPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
+        </Button>
+      </div>
+    </div>
+    </DragDropContext>
+  );
+}

@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import GameRow from './GameRow';
-import DeckPile from './DeckPile';
+import SolitaireRow from './SolitaireRow';
+import SolitaireDeck from './SolitaireDeck';
 import GameTimer from './GameTimer';
 import { canPlayCard } from '@/lib/deckUtils';
 import { Button } from '@/components/ui/button';
 import { Undo2, Pause, Play, RotateCcw } from 'lucide-react';
-import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 
 const rowAccents = ['row-1', 'row-2', 'row-3', 'row-4'];
 
@@ -15,7 +14,6 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
   const showDeckCount = difficulty === 'easy';
   const [selectedRow, setSelectedRow] = useState(null);
 
-  // Clear selection when flipped card changes (use card value/suit as stable key)
   const flippedCardKey = flippedCard ? `${flippedCard.value}-${flippedCard.suit}` : null;
   useEffect(() => {
     setSelectedRow(null);
@@ -28,7 +26,6 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
   const handleRowTap = (idx) => {
     if (!flippedCard) return;
     if (!validRows.includes(idx)) return;
-    // Tap once to select, tap again to play immediately
     if (selectedRow === idx) {
       onPlayCard(idx, flippedCard);
     } else {
@@ -48,102 +45,108 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
     }
   };
 
-  const handleDragEnd = (result) => {
-    if (!result.destination || !flippedCard) return;
-    const rowIdx = parseInt(result.destination.droppableId.replace('row-', ''), 10);
-    if (!validRows.includes(rowIdx)) return;
-    onPlayCard(rowIdx, flippedCard);
-  };
-
   return (
-    <DragDropContext onDragEnd={handleDragEnd}>
-    <div className="min-h-screen bg-gradient-to-b from-background to-background/80 flex flex-col p-4 gap-6">
-
-      {/* Title + Stats */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-primary">Chasing 20</h1>
-          <p className="text-sm text-foreground/60 mt-1">choose 4 cards, build your rows, Beat the deck.</p>
-        </div>
-        <div className="flex items-center gap-2" style={{ alignSelf: 'flex-start' }}>
+    <div
+      className="min-h-screen flex flex-col"
+      style={{
+        background: 'radial-gradient(ellipse at 50% 30%, #1a4a2e 0%, #0f2d1a 60%, #081a0e 100%)',
+      }}
+    >
+      {/* Top bar */}
+      <div className="flex items-center justify-between px-4 pt-3 pb-2">
+        <div className="flex items-center gap-2">
           <GameTimer elapsedSeconds={elapsedSeconds} />
-          <div className="bg-white/10 px-3 py-1.5 rounded-lg text-sm">
-            <span className="text-foreground/50">Discarded</span>
-            <span className="text-foreground font-bold ml-2">{discardPile.length}</span>
+          <div className="bg-black/30 px-2.5 py-1 rounded-lg text-xs border border-white/10">
+            <span className="text-foreground/50">Disc.</span>
+            <span className="text-foreground font-bold ml-1">{discardPile.length}</span>
           </div>
+        </div>
+        <div className="flex items-center gap-1.5">
           <Button
             variant="ghost"
             size="sm"
             onClick={onUndo}
             disabled={!canUndo}
-            className="bg-white/10 hover:bg-white/20 text-foreground disabled:opacity-30 px-2"
-            title="Undo last move"
+            className="bg-black/30 hover:bg-black/50 text-foreground disabled:opacity-30 px-2 border border-white/10 h-7"
+            title="Undo"
           >
-            <Undo2 className="w-4 h-4" />
+            <Undo2 className="w-3.5 h-3.5" />
           </Button>
           <Button
             variant="ghost"
             size="sm"
             onClick={onRestart}
-            className="bg-white/10 hover:bg-white/20 text-foreground px-2"
-            title="Restart game"
+            className="bg-black/30 hover:bg-black/50 text-foreground px-2 border border-white/10 h-7"
+            title="Restart"
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-3.5 h-3.5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onTogglePause}
+            className="bg-black/30 hover:bg-black/50 text-foreground px-2 border border-white/10 h-7"
+            title={isPaused ? 'Resume' : 'Pause'}
+          >
+            {isPaused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
           </Button>
         </div>
       </div>
 
-      {/* Rows — tappable or drag-target when a card is flipped */}
-      <div className="grid grid-cols-4 gap-3">
-        {rows.map((row, idx) => (
-          <Droppable droppableId={`row-${idx}`} key={idx}>
-            {(provided, snapshot) => (
-              <div
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                style={{ position: 'relative' }}
-              >
-                <GameRow
+      {/* Main table area */}
+      <div className="flex-1 flex flex-col px-3 gap-4 pb-4">
+
+        {/* Top section: Deck on left, row columns on right */}
+        <div className="flex gap-4 items-start">
+          {/* Deck / waste area */}
+          <div className="flex-shrink-0">
+            <SolitaireDeck
+              deckCount={drawPile.length}
+              flippedCard={flippedCard}
+              onFlip={onFlipCard}
+              onDiscard={handleDiscard}
+              onCardTap={selectedRow !== null ? handlePlay : undefined}
+              isPlayable={selectedRow !== null}
+              showDeckCount={showDeckCount}
+            />
+          </div>
+
+          {/* Divider */}
+          <div className="w-px self-stretch bg-white/10 mx-1" />
+
+          {/* Row columns — horizontal scroll on very small screens */}
+          <div className="flex-1 overflow-x-auto">
+            <div className="flex gap-3 min-w-0 justify-center">
+              {rows.map((row, idx) => (
+                <SolitaireRow
+                  key={idx}
                   rowIndex={idx}
                   row={row}
                   accentColor={rowAccents[idx]}
-                  isValid={flippedCard ? (showRowHints ? validRows.includes(idx) : (validRows.includes(idx) ? true : undefined)) : undefined}
-                  isSelected={selectedRow === idx || (snapshot.isDraggingOver && validRows.includes(idx))}
+                  isValid={flippedCard
+                    ? (showRowHints ? validRows.includes(idx) : (validRows.includes(idx) ? true : undefined))
+                    : undefined}
+                  isSelected={selectedRow === idx}
                   onTap={() => handleRowTap(idx)}
+                  showHints={showRowHints}
                 />
-                <div style={{ display: 'none' }}>{provided.placeholder}</div>
-              </div>
-            )}
-          </Droppable>
-        ))}
-      </div>
+              ))}
+            </div>
+          </div>
+        </div>
 
-      {/* Deck & Flip area */}
-      <div className="flex-1 flex items-center justify-center relative">
-        <DeckPile
-          deckCount={drawPile.length}
-          flippedCard={flippedCard}
-          onFlip={onFlipCard}
-          onPlay={handlePlay}
-          onDiscard={handleDiscard}
-          canPlay={selectedRow !== null}
-          onCardTap={selectedRow !== null ? handlePlay : undefined}
-          isPaused={isPaused}
-          showDeckCount={showDeckCount}
-        />
-        
-        {/* Pause Button - Lower Right */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onTogglePause}
-          className="absolute bottom-4 right-4 bg-white/10 hover:bg-white/20 text-foreground"
-          title={isPaused ? "Resume" : "Pause"}
-        >
-          {isPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
-        </Button>
+        {/* Instruction hint at bottom */}
+        {flippedCard && selectedRow === null && validRows.length > 0 && (
+          <div className="text-center text-xs text-foreground/40 mt-auto">
+            tap a highlighted column to place the card
+          </div>
+        )}
+        {flippedCard && selectedRow !== null && (
+          <div className="text-center text-xs text-foreground/60 mt-auto">
+            tap the column again to confirm • or tap the card to play
+          </div>
+        )}
       </div>
     </div>
-    </DragDropContext>
   );
 }
