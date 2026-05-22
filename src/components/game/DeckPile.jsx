@@ -48,16 +48,16 @@ export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDis
               <div className="absolute rounded-lg" style={{
                 width: 80, height: 120,
                 top: -4, left: 4,
-                background: 'linear-gradient(135deg, #3a2060 0%, #1e1040 100%)',
-                border: '2px solid rgba(255,255,255,0.1)',
+                background: '#1a5f7a',
+                border: '2px solid rgba(255,255,255,0.3)',
               }} />
             )}
             {deckCount > 1 && (
               <div className="absolute rounded-lg" style={{
                 width: 80, height: 120,
                 top: -2, left: 2,
-                background: 'linear-gradient(135deg, #4a2880 0%, #2a1660 100%)',
-                border: '2px solid rgba(255,255,255,0.1)',
+                background: '#1a5f7a',
+                border: '2px solid rgba(255,255,255,0.3)',
               }} />
             )}
 
