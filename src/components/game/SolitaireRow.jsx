@@ -107,10 +107,6 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isValid, isSe
                     width={CARD_W}
                     height={CARD_H}
                     isNew={isNewTop}
-                    width={CARD_W}
-                    height={CARD_H}
-                    glowing={isSelected && isTopCard}
-                    glowColor={hex}
                   />
                 </div>
               );

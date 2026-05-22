@@ -7,16 +7,14 @@ export default function SolitaireCard({ value, width = 52, height = 72, animate 
 
   const inner = (
     <div
-      className="rounded-md flex items-center justify-center relative overflow-hidden select-none"
+      className="rounded-lg flex items-center justify-center relative overflow-hidden select-none"
       style={{
         width,
         height,
         background: '#fff',
-        border: glowing ? `2px solid ${glowColor}` : '1.5px solid #cbd5e1',
-        boxShadow: glowing
-          ? `0 0 10px ${glowColor}88, 0 2px 6px rgba(0,0,0,0.3)`
-          : '0 2px 6px rgba(0,0,0,0.25)',
-        opacity: dimmed ? 0.4 : 1,
+        border: '2px solid #e2e8f0',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+        opacity: 1,
         flexShrink: 0,
       }}
     >
@@ -25,23 +23,23 @@ export default function SolitaireCard({ value, width = 52, height = 72, animate 
         style={{ inset: 3, border: '1px solid #e2e8f0' }} />
 
       {/* Corner value - top left */}
-      <div className="absolute top-1 left-1.5 text-black font-black leading-none"
-        style={{ fontSize: width < 44 ? 9 : 11 }}>
+      <div className="absolute top-1.5 left-2 text-black font-black leading-none"
+        style={{ fontSize: width < 60 ? 10 : 13 }}>
         {isZero ? '0' : value}
       </div>
       {/* Corner value - bottom right (rotated) */}
-      <div className="absolute bottom-1 right-1.5 text-black font-black leading-none rotate-180"
-        style={{ fontSize: width < 44 ? 9 : 11 }}>
+      <div className="absolute bottom-1.5 right-2 text-black font-black leading-none rotate-180"
+        style={{ fontSize: width < 60 ? 10 : 13 }}>
         {isZero ? '0' : value}
       </div>
 
       {/* Center */}
       <div className="text-center z-10">
-        <div className="text-black font-black" style={{ fontSize: width < 44 ? 16 : 22 }}>
+        <div className="text-black font-black" style={{ fontSize: width < 60 ? 20 : 32 }}>
           {isZero ? '0' : value}
         </div>
         {isZero && (
-          <div className="text-black/50 font-bold" style={{ fontSize: 7, marginTop: -2 }}>RESET</div>
+          <div className="text-black/50 font-bold" style={{ fontSize: width < 60 ? 7 : 9, marginTop: -2 }}>RESET</div>
         )}
       </div>
     </div>
