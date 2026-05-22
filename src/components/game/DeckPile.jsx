@@ -25,7 +25,7 @@ function TickRing({ size = 16, cx = 8, cy = 8, r = 5, ticks = 20 }) {
   );
 }
 
-export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDiscard, canPlay, isPaused, showDeckCount }) {
+export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDiscard, canPlay, isPaused, showDeckCount, onCardTap }) {
   const handleTap = () => {
     if (deckCount === 0 || flippedCard || isPaused) return;
     onFlip();
@@ -137,11 +137,15 @@ export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDis
                 animate={{ rotateY: 0, opacity: 1 }}
                 exit={{ scale: 0.8, opacity: 0 }}
                 transition={{ duration: 0.35, type: 'spring' }}
+                onClick={onCardTap}
+                whileTap={onCardTap ? { scale: 0.95 } : {}}
                 className="rounded-lg flex items-center justify-center shadow-lg relative overflow-hidden"
                 style={{
                   width: 100, height: 148,
                   background: '#ffffff',
-                  border: '2px solid #e2e8f0',
+                  border: onCardTap ? '2px solid #10B981' : '2px solid #e2e8f0',
+                  cursor: onCardTap ? 'pointer' : 'default',
+                  boxShadow: onCardTap ? '0 0 12px rgba(16,185,129,0.5)' : undefined,
                 }}
               >
                 <div className="absolute inset-1 rounded-md border-2 border-slate-300" />

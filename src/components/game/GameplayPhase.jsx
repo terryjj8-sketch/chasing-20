@@ -28,7 +28,12 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
   const handleRowTap = (idx) => {
     if (!flippedCard) return;
     if (!validRows.includes(idx)) return;
-    setSelectedRow(prev => prev === idx ? null : idx);
+    // Tap once to select, tap again to play immediately
+    if (selectedRow === idx) {
+      onPlayCard(idx, flippedCard);
+    } else {
+      setSelectedRow(idx);
+    }
   };
 
   const handlePlay = () => {
@@ -102,7 +107,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
                   rowIndex={idx}
                   row={row}
                   accentColor={rowAccents[idx]}
-                  isValid={flippedCard && showRowHints ? validRows.includes(idx) : undefined}
+                  isValid={flippedCard ? (showRowHints ? validRows.includes(idx) : (validRows.includes(idx) ? true : undefined)) : undefined}
                   isSelected={selectedRow === idx || (snapshot.isDraggingOver && validRows.includes(idx))}
                   onTap={() => handleRowTap(idx)}
                 />
@@ -122,6 +127,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
           onPlay={handlePlay}
           onDiscard={handleDiscard}
           canPlay={selectedRow !== null}
+          onCardTap={selectedRow !== null ? handlePlay : undefined}
           isPaused={isPaused}
           showDeckCount={showDeckCount}
         />
