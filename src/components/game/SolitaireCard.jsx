@@ -35,7 +35,7 @@ export default function SolitaireCard({ value, width = 52, height = 72, animate 
 
       {/* Center */}
       <div className="text-center z-10">
-        <div className="text-black font-black" style={{ fontSize: width < 60 ? 20 : 32 }}>
+        <div className="text-black font-black" style={{ fontSize: width < 56 ? 18 : width < 70 ? 22 : 32 }}>
           {isZero ? '0' : value}
         </div>
         {isZero && (

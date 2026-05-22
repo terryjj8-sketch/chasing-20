@@ -94,12 +94,13 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
       </div>
 
       {/* Main table area */}
-      <div className="flex-1 flex flex-col px-3 gap-4 pb-4">
+      <div className="flex-1 flex flex-col px-2 sm:px-3 gap-3 pb-4">
 
-        {/* Top section: Deck on left, row columns on right */}
-        <div className="flex gap-4 items-start">
+        {/* MOBILE: deck on top, rows below. DESKTOP: deck left, rows right */}
+        <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-center md:items-start">
+
           {/* Deck / waste area */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 w-full md:w-auto flex justify-center">
             <SolitaireDeck
               deckCount={drawPile.length}
               flippedCard={flippedCard}
@@ -111,12 +112,13 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
             />
           </div>
 
-          {/* Divider */}
-          <div className="w-px self-stretch bg-white/10 mx-1" />
+          {/* Divider — horizontal on mobile, vertical on desktop */}
+          <div className="hidden md:block w-px self-stretch bg-white/10" />
+          <div className="block md:hidden h-px w-full bg-white/10" />
 
-          {/* Row columns — horizontal scroll on very small screens */}
-          <div className="flex-1 overflow-x-auto">
-            <div className="flex gap-3 min-w-0 justify-center">
+          {/* Row columns */}
+          <div className="flex-1 w-full overflow-x-auto">
+            <div className="flex gap-2 sm:gap-3 justify-center min-w-0">
               {rows.map((row, idx) => (
                 <SolitaireRow
                   key={idx}

@@ -4,8 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 // Stock pile (deck face-down) + Waste pile (current flipped card)
 // Classic solitaire top-left placement style
 
-const CARD_W = 68;
-const CARD_H = 96;
+// On mobile we use slightly smaller cards
+const CARD_W = 62;
+const CARD_H = 88;
 
 function CardBack({ onClick, count, disabled }) {
   return (
@@ -102,9 +103,9 @@ function CardFace({ card, onTap, isPlayable }) {
 
 export default function SolitaireDeck({ deckCount, flippedCard, onFlip, onDiscard, onCardTap, isPlayable, showDeckCount }) {
   return (
-    <div className="flex flex-col items-center gap-3">
-      {/* Stock + Waste row */}
-      <div className="flex items-end gap-4">
+    <div className="flex flex-col items-center gap-2">
+      {/* Stock + Waste row — horizontal on all sizes */}
+      <div className="flex items-end gap-3 sm:gap-4">
         {/* Stack pile */}
         <div className="flex flex-col items-center gap-1.5">
           <span className="text-[10px] text-foreground/40 uppercase tracking-widest">Stack</span>

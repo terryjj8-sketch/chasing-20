@@ -53,9 +53,9 @@ export default function SetupPhase({ drawPile, onComplete }) {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-12"
+        className="text-center mb-6 sm:mb-10"
       >
-        <h1 className="text-5xl font-bold text-primary mb-3">Chasing 20</h1>
+        <h1 className="text-4xl sm:text-5xl font-bold text-primary mb-3">Chasing 20</h1>
         <p className="text-sm text-foreground/60 mb-4">Finally, a better solitaire game.</p>
         <p className="text-lg text-foreground/70">Choose four cards, build your rows, beat the deck.</p>
         <button
@@ -71,13 +71,13 @@ export default function SetupPhase({ drawPile, onComplete }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.15 }}
-        className="flex gap-3 mb-10"
+        className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-8 w-full max-w-sm sm:max-w-none px-2 sm:px-0"
       >
         {DIFFICULTIES.map(d => (
           <button
             key={d.id}
             onClick={() => setDifficulty(d.id)}
-            className="flex flex-col items-center px-5 py-3 rounded-xl border-2 transition-all duration-150"
+            className="flex flex-col items-center px-4 py-3 rounded-xl border-2 transition-all duration-150 flex-1 sm:flex-none"
             style={{
               borderColor: difficulty === d.id ? 'hsl(var(--primary))' : 'rgba(255,255,255,0.15)',
               background: difficulty === d.id ? 'hsl(var(--primary) / 0.2)' : 'rgba(255,255,255,0.05)',
@@ -95,7 +95,7 @@ export default function SetupPhase({ drawPile, onComplete }) {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.2 }}
-        className="flex gap-4 flex-wrap justify-center max-w-2xl mb-12"
+        className="flex gap-3 sm:gap-4 flex-wrap justify-center max-w-2xl mb-8 sm:mb-12 px-2"
       >
         {displayCards.map((card, idx) => (
           <motion.button

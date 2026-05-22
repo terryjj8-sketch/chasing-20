@@ -9,9 +9,11 @@ const accentMap = {
   'row-4': '#00D4FF',
 };
 
-const CARD_W = 68;
-const CARD_H = 96;
-const FAN_OFFSET = 22; // vertical offset per fanned card
+// Responsive card sizing: smaller on mobile, full size on larger screens
+// We use a fixed size here; the GameplayPhase handles layout stacking
+const CARD_W = 62;
+const CARD_H = 88;
+const FAN_OFFSET = 20; // vertical offset per fanned card
 
 export default function SolitaireRow({ rowIndex, row, accentColor, isValid, isSelected, onTap, showHints }) {
   const hex = accentMap[accentColor] || '#8B5CF6';
