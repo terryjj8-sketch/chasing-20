@@ -18,39 +18,42 @@ function CardBack({ onClick, count, disabled }) {
       {count > 2 && (
         <div className="absolute rounded-lg" style={{
           width: CARD_W, height: CARD_H,
-          top: -4, left: 4,
-          background: '#1a5f7a',
-          border: '2px solid rgba(255,255,255,0.25)',
+          top: -5, left: 5,
+          background: 'linear-gradient(135deg, #2a7f9e 0%, #1a5f7a 100%)',
+          border: '2px solid rgba(255,255,255,0.4)',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
         }} />
       )}
       {count > 1 && (
         <div className="absolute rounded-lg" style={{
           width: CARD_W, height: CARD_H,
-          top: -2, left: 2,
-          background: '#1a5f7a',
-          border: '2px solid rgba(255,255,255,0.25)',
+          top: -2.5, left: 2.5,
+          background: 'linear-gradient(135deg, #2a7f9e 0%, #1a5f7a 100%)',
+          border: '2px solid rgba(255,255,255,0.4)',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
         }} />
       )}
       {count > 0 && (
         <div
-          className="absolute rounded-lg flex items-center justify-center overflow-hidden"
+          className="absolute rounded-lg flex items-center justify-center overflow-hidden shadow-lg"
           style={{
             width: CARD_W, height: CARD_H,
-            background: '#1a5f7a',
-            border: '2px solid rgba(255,255,255,0.3)',
-            boxShadow: '0 4px 16px rgba(0,0,0,0.4)',
+            background: 'linear-gradient(135deg, #2a7f9e 0%, #1a5f7a 100%)',
+            border: '2px solid rgba(255,255,255,0.5)',
+            boxShadow: '0 6px 20px rgba(0,0,0,0.5)',
           }}
         >
           <div className="text-center leading-tight pointer-events-none">
-            <div className="text-yellow-50 text-[9px] font-black tracking-wider">CHASING</div>
-            <div className="text-yellow-400 text-[20px] font-black leading-none">20</div>
+            <div className="text-yellow-100 text-[11px] font-black tracking-wider">CHASING</div>
+            <div className="text-yellow-300 text-[28px] font-black leading-none">20</div>
+            <div className="text-yellow-100 text-[7px] font-bold mt-1 tracking-widest">SOLITAIRE</div>
           </div>
         </div>
       )}
       {count === 0 && (
         <div className="rounded-lg flex items-center justify-center"
-          style={{ width: CARD_W, height: CARD_H, border: '2px dashed rgba(255,255,255,0.15)' }}>
-          <span className="text-foreground/20 text-xs">Empty</span>
+          style={{ width: CARD_W, height: CARD_H, border: '2px dashed rgba(255,255,255,0.2)' }}>
+          <span className="text-foreground/30 text-xs">Empty</span>
         </div>
       )}
     </motion.div>
@@ -102,9 +105,9 @@ export default function SolitaireDeck({ deckCount, flippedCard, onFlip, onDiscar
     <div className="flex flex-col items-center gap-3">
       {/* Stock + Waste row */}
       <div className="flex items-end gap-4">
-        {/* Stock pile */}
+        {/* Stack pile */}
         <div className="flex flex-col items-center gap-1.5">
-          <span className="text-[10px] text-foreground/40 uppercase tracking-widest">Stock</span>
+          <span className="text-[10px] text-foreground/40 uppercase tracking-widest">Stack</span>
           <CardBack
             onClick={deckCount > 0 && !flippedCard ? onFlip : undefined}
             count={deckCount}

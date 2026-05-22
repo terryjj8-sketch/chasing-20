@@ -9,9 +9,9 @@ const accentMap = {
   'row-4': '#00D4FF',
 };
 
-const CARD_W = 58;
-const CARD_H = 82;
-const FAN_OFFSET = 18; // vertical offset per fanned card
+const CARD_W = 68;
+const CARD_H = 96;
+const FAN_OFFSET = 22; // vertical offset per fanned card
 
 export default function SolitaireRow({ rowIndex, row, accentColor, isValid, isSelected, onTap, showHints }) {
   const hex = accentMap[accentColor] || '#8B5CF6';
@@ -107,6 +107,8 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isValid, isSe
                     width={CARD_W}
                     height={CARD_H}
                     isNew={isNewTop}
+                    width={CARD_W}
+                    height={CARD_H}
                     glowing={isSelected && isTopCard}
                     glowColor={hex}
                   />
