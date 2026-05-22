@@ -15,7 +15,7 @@ const CARD_W = 62;
 const CARD_H = 88;
 const FAN_OFFSET = 20; // vertical offset per fanned card
 
-export default function SolitaireRow({ rowIndex, row, accentColor, isValid, isSelected, onTap, showHints }) {
+export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, onTap }) {
   const hex = accentMap[accentColor] || '#8B5CF6';
   const cards = row.cards;
   const prevCountRef = useRef(cards.length);
@@ -30,17 +30,15 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isValid, isSe
     ? CARD_H
     : CARD_H + (cards.length - 1) * FAN_OFFSET;
 
-  const canInteract = isValid !== false;
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: rowIndex * 0.07 }}
-      onClick={isValid ? onTap : undefined}
-      whileTap={isValid ? { scale: 0.98 } : {}}
-      className="flex flex-col items-center gap-1.5 cursor-default"
-      style={{ cursor: isValid ? 'pointer' : 'default' }}
+      onClick={onTap}
+      whileTap={{ scale: 0.98 }}
+      className="flex flex-col items-center gap-1.5"
+      style={{ cursor: 'pointer' }}
     >
       {/* Column header */}
       <div className="flex items-center gap-1.5 mb-1">
@@ -66,18 +64,9 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isValid, isSe
           width: CARD_W + 12,
           height: columnHeight + 12,
           padding: 6,
-          background: isSelected
-            ? `${hex}25`
-            : isValid
-              ? `${hex}12`
-              : 'rgba(255,255,255,0.03)',
-          border: isSelected
-            ? `2px solid ${hex}`
-            : isValid && showHints
-              ? `2px dashed ${hex}80`
-              : '2px solid rgba(255,255,255,0.06)',
+          background: isSelected ? `${hex}25` : 'rgba(255,255,255,0.03)',
+          border: isSelected ? `2px solid ${hex}` : '2px solid rgba(255,255,255,0.06)',
           boxShadow: isSelected ? `0 0 18px ${hex}55` : undefined,
-          opacity: isValid === false && isValid !== undefined ? 0.45 : 1,
         }}
       >
         {cards.length === 0 ? (

@@ -11,7 +11,6 @@ const rowAccents = ['row-1', 'row-2', 'row-3', 'row-4'];
 
 export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart, difficulty, completedRowAlert, onClearRowAlert }) {
   const { drawPile, discardPile, rows, flippedCard } = gameState;
-  const showRowHints = difficulty !== 'hard';
   const showDeckCount = difficulty === 'easy';
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -127,12 +126,8 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
                   rowIndex={idx}
                   row={row}
                   accentColor={rowAccents[idx]}
-                  isValid={flippedCard
-                    ? (showRowHints ? validRows.includes(idx) : (validRows.includes(idx) ? true : undefined))
-                    : undefined}
                   isSelected={selectedRow === idx}
                   onTap={() => handleRowTap(idx)}
-                  showHints={showRowHints}
                 />
               ))}
             </div>
@@ -140,11 +135,6 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
         </div>
 
         {/* Instruction hint at bottom */}
-        {flippedCard && selectedRow === null && validRows.length > 0 && (
-          <div className="text-center text-xs text-foreground/40 mt-auto">
-            tap a highlighted column to place the card
-          </div>
-        )}
         {flippedCard && selectedRow !== null && (
           <div className="text-center text-xs text-foreground/60 mt-auto">
             tap the column again to confirm • or tap the card to play

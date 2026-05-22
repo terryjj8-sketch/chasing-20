@@ -9,9 +9,9 @@ export function formatTime(seconds) {
 
 export default function GameTimer({ isRunning, elapsedSeconds }) {
   return (
-    <div className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-lg text-sm">
-      <Timer className="w-3.5 h-3.5 text-foreground/50" />
-      <span className="text-foreground font-bold font-mono">{formatTime(elapsedSeconds)}</span>
+    <div className="flex items-center gap-2 bg-black/30 px-3 py-2 rounded-lg text-base border border-white/10">
+      <Timer className="w-4 h-4 text-foreground" />
+      <span className="text-foreground font-bold font-mono text-lg">{formatTime(elapsedSeconds)}</span>
     </div>
   );
 }
