@@ -3,6 +3,8 @@ import SetupPhase from '../components/game/SetupPhase';
 import GameplayPhase from '../components/game/GameplayPhase';
 import EndGamePhase from '../components/game/EndGamePhase';
 import { initializeDeck, shuffleDeck } from '../lib/deckUtils';
+import { useSounds } from '../lib/useSounds';
+import { Volume2, VolumeX } from 'lucide-react';
 
 export default function Game() {
   const [gameState, setGameState] = useState(null);
@@ -10,8 +12,10 @@ export default function Game() {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [difficulty, setDifficulty] = useState('easy');
+  const [soundEnabled, setSoundEnabled] = useState(false);
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
+  const sounds = useSounds(soundEnabled);
 
   useEffect(() => {
     resetGame();
@@ -50,6 +54,7 @@ export default function Game() {
 
   const handleUndo = () => {
     if (history.length === 0) return;
+    sounds.playUndo();
     const prev = history[history.length - 1];
     setHistory(h => h.slice(0, -1));
     setGameState(prev);
@@ -61,6 +66,7 @@ export default function Game() {
     setHistory([]);
     const deck = initializeDeck();
     shuffleDeck(deck);
+    sounds.playShuffle();
     setGameState({
       phase: 'setup',
       drawPile: [...deck],
@@ -108,6 +114,7 @@ export default function Game() {
 
   // Manual flip (used for undo recovery or if needed)
   const handleFlipCard = () => {
+    sounds.playCardFlip();
     setGameState(prev => {
       if (prev.drawPile.length === 0 || prev.flippedCard) return prev;
       setHistory(h => [...h, prev]);
@@ -117,6 +124,7 @@ export default function Game() {
   };
 
   const handlePlayCard = (rowIndex, card) => {
+    sounds.playCardPlay();
     setGameState(prev => {
       setHistory(h => [...h, prev]);
 
@@ -152,6 +160,7 @@ export default function Game() {
   };
 
   const handleDiscardCard = (card) => {
+    sounds.playDiscard();
     setGameState(prev => {
       setHistory(h => [...h, prev]);
 
@@ -182,10 +191,20 @@ export default function Game() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80 flex flex-col">
       {/* Scroll Banner */}
-      <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 border-b border-primary/30 px-4 py-3 text-center backdrop-blur">
-        <div className="text-sm font-semibold tracking-widest text-primary">
+      <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 border-b border-primary/30 px-4 py-3 backdrop-blur flex items-center justify-between">
+        <div className="text-sm font-semibold tracking-widest text-primary flex-1 text-center">
           chasing 20 the most addictive game you'll ever play
         </div>
+        <button
+          onClick={() => setSoundEnabled(s => !s)}
+          className="ml-3 p-1.5 rounded-lg transition-all"
+          style={{ background: soundEnabled ? 'rgba(168,85,247,0.25)' : 'rgba(255,255,255,0.08)' }}
+          title={soundEnabled ? 'Mute sounds' : 'Enable sounds'}
+        >
+          {soundEnabled
+            ? <Volume2 className="w-4 h-4 text-primary" />
+            : <VolumeX className="w-4 h-4 text-foreground/40" />}
+        </button>
       </div>
 
       {/* Game Content */}
