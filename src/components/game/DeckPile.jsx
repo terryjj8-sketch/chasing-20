@@ -41,23 +41,23 @@ export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDis
             onClick={handleTap}
             whileTap={deckCount > 0 && !flippedCard ? { scale: 0.95 } : {}}
             className="relative cursor-pointer select-none"
-            style={{ width: 80, height: 120 }}
+            style={{ width: 100, height: 148 }}
           >
             {/* Stack shadow cards */}
             {deckCount > 2 && (
               <div className="absolute rounded-lg" style={{
-                width: 80, height: 120,
-                top: -4, left: 4,
+                width: 100, height: 148,
+                top: -6, left: 6,
                 background: '#1a5f7a',
-                border: '2px solid rgba(255,255,255,0.3)',
+                border: '3px solid rgba(255,255,255,0.3)',
               }} />
             )}
             {deckCount > 1 && (
               <div className="absolute rounded-lg" style={{
-                width: 80, height: 120,
-                top: -2, left: 2,
+                width: 100, height: 148,
+                top: -3, left: 3,
                 background: '#1a5f7a',
-                border: '2px solid rgba(255,255,255,0.3)',
+                border: '3px solid rgba(255,255,255,0.3)',
               }} />
             )}
 
@@ -66,26 +66,57 @@ export default function DeckPile({ deckCount, onFlip, flippedCard, onPlay, onDis
               <div
                 className="absolute rounded-lg flex items-center justify-center overflow-hidden relative"
                 style={{
-                  width: 80, height: 120,
+                  width: 100, height: 148,
                   background: '#1a5f7a',
-                  border: '2px solid rgba(255,255,255,0.3)',
+                  border: '3px solid rgba(255,255,255,0.3)',
                   boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
                 }}
               >
-                {/* Card back branding */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-0 pointer-events-none">
-                  <div className="text-center">
-                    <div className="text-amber-50 text-[6px] font-black uppercase tracking-widest leading-tight">Chasing</div>
-                    <div className="text-yellow-400 text-[16px] font-black leading-none">20</div>
+                {/* Card back with badges and design */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-0 pointer-events-none p-2">
+                  {/* Top badges */}
+                  <div className="flex gap-1 mb-1">
+                    <div style={{ width: 16, height: 16, background: '#ff5722', borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="text-white text-[9px] font-bold">5</div>
+                    <div style={{ width: 16, height: 16, background: '#0084d1', borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="text-white text-[9px] font-bold">9</div>
+                    <div style={{ width: 16, height: 16, background: '#52b54d', borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="text-white text-[9px] font-bold">12</div>
+                    <div style={{ width: 16, height: 16, background: '#ff5722', borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="text-white text-[9px] font-bold">4</div>
                   </div>
-                  <div className="text-amber-50 text-[5px] font-bold uppercase tracking-wider mt-1 leading-tight">A New Twist</div>
+                  
+                  {/* Main title */}
+                  <div className="text-center leading-tight">
+                    <div className="text-yellow-50 text-[11px] font-black tracking-wider">CHASING</div>
+                    <div className="text-yellow-400 text-[24px] font-black leading-none">20</div>
+                  </div>
+                  
+                  {/* Middle badges */}
+                  <div className="flex gap-1 mt-1 mb-1">
+                    <div style={{ width: 16, height: 16, background: '#52b54d', borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="text-white text-[9px] font-bold">6</div>
+                    <div style={{ width: 20, height: 20, background: '#ffc107', borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="text-white text-[12px] font-black">20</div>
+                    <div style={{ width: 16, height: 16, background: '#0084d1', borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="text-white text-[9px] font-bold">8</div>
+                  </div>
+                  
+                  {/* Subtitle */}
+                  <div className="text-center text-[7px] leading-tight">
+                    <div className="text-red-400 font-bold">A NEW TWIST</div>
+                    <div className="text-red-400 font-bold">ON SOLITAIRE</div>
+                  </div>
+                  
+                  {/* Bottom text */}
+                  <div className="text-yellow-50 text-[6px] font-bold mt-1">GET A ROW TO 20 TO WIN</div>
+                  
+                  {/* Bottom badges */}
+                  <div className="flex gap-1 mt-1">
+                    <div style={{ width: 16, height: 16, background: '#ff5722', borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="text-white text-[8px] font-bold">15</div>
+                    <div style={{ width: 16, height: 16, background: '#0084d1', borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="text-white text-[9px] font-bold">1</div>
+                    <div style={{ width: 16, height: 16, background: '#52b54d', borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="text-white text-[8px] font-bold">17</div>
+                  </div>
+                  <div className="text-yellow-600 text-[5px] font-bold mt-0.5">A ZYGO GAME</div>
                 </div>
-                <div className="absolute bottom-1.5 right-1.5 text-white/20 text-[9px] font-bold">{deckCount}</div>
               </div>
             ) : (
               <div className="absolute rounded-lg flex items-center justify-center" style={{
-                width: 80, height: 120,
-                border: '2px dashed rgba(255,255,255,0.2)',
+                width: 100, height: 148,
+                border: '3px dashed rgba(255,255,255,0.2)',
               }}>
                 <span className="text-foreground/30 text-xs text-center">Empty</span>
               </div>
