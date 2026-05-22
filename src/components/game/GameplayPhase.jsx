@@ -5,7 +5,7 @@ import GameTimer from './GameTimer';
 import { canPlayCard } from '@/lib/deckUtils';
 import { Button } from '@/components/ui/button';
 import { Undo2, Pause, Play, RotateCcw } from 'lucide-react';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 
 const rowAccents = ['row-1', 'row-2', 'row-3', 'row-4'];
 
@@ -115,27 +115,16 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
 
       {/* Deck & Flip area */}
       <div className="flex-1 flex items-center justify-center relative">
-        <Draggable draggableId="flipped-card" index={0} isDragDisabled={!flippedCard || isPaused}>
-          {(provided, snapshot) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              style={{ ...provided.draggableProps.style, cursor: flippedCard ? 'grab' : 'default' }}
-            >
-              <DeckPile
-                deckCount={drawPile.length}
-                flippedCard={flippedCard}
-                onFlip={onFlipCard}
-                onPlay={handlePlay}
-                onDiscard={handleDiscard}
-                canPlay={selectedRow !== null}
-                isPaused={isPaused}
-                showDeckCount={showDeckCount}
-              />
-            </div>
-          )}
-        </Draggable>
+        <DeckPile
+          deckCount={drawPile.length}
+          flippedCard={flippedCard}
+          onFlip={onFlipCard}
+          onPlay={handlePlay}
+          onDiscard={handleDiscard}
+          canPlay={selectedRow !== null}
+          isPaused={isPaused}
+          showDeckCount={showDeckCount}
+        />
         
         {/* Pause Button - Lower Right */}
         <Button
