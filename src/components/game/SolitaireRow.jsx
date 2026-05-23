@@ -15,7 +15,7 @@ const CARD_W = 62;
 const CARD_H = 88;
 const FAN_OFFSET = 20; // vertical offset per fanned card
 
-export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, onTap }) {
+export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, isHinted, onTap }) {
   const hex = accentMap[accentColor] || '#8B5CF6';
   const cards = row.cards;
   const prevCountRef = useRef(cards.length);
@@ -64,9 +64,10 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, o
           width: CARD_W + 12,
           height: columnHeight + 12,
           padding: 6,
-          background: isSelected ? `${hex}25` : 'rgba(255,255,255,0.03)',
-          border: isSelected ? `2px solid ${hex}` : '2px solid rgba(255,255,255,0.06)',
-          boxShadow: isSelected ? `0 0 18px ${hex}55` : undefined,
+          background: isSelected ? `${hex}25` : isHinted ? `${hex}18` : 'rgba(255,255,255,0.03)',
+          border: isSelected ? `2px solid ${hex}` : isHinted ? `2px solid ${hex}99` : '2px solid rgba(255,255,255,0.06)',
+          boxShadow: isSelected ? `0 0 18px ${hex}55` : isHinted ? `0 0 22px ${hex}88, 0 0 40px ${hex}44` : undefined,
+          transition: 'box-shadow 0.15s, border-color 0.15s, background 0.15s',
         }}
       >
         {cards.length === 0 ? (

@@ -14,10 +14,23 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
   const showDeckCount = difficulty === 'easy';
   const [selectedRow, setSelectedRow] = useState(null);
 
+  const [hintPulse, setHintPulse] = useState(false);
+
   const flippedCardKey = flippedCard ? `${flippedCard.value}-${flippedCard.suit}` : null;
   useEffect(() => {
     setSelectedRow(null);
+    setHintPulse(false);
   }, [flippedCardKey]);
+
+  // In easy mode, pulse valid rows 2s after a card is flipped
+  useEffect(() => {
+    if (difficulty !== 'easy' || !flippedCard || validRows.length === 0) return;
+    const timer = setTimeout(() => {
+      setHintPulse(true);
+      setTimeout(() => setHintPulse(false), 1200);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [flippedCardKey, difficulty]);
 
   const validRows = flippedCard
     ? rows.map((row, idx) => canPlayCard(flippedCard, row) ? idx : null).filter(idx => idx !== null)
@@ -127,6 +140,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
                   row={row}
                   accentColor={rowAccents[idx]}
                   isSelected={selectedRow === idx}
+                  isHinted={hintPulse && validRows.includes(idx)}
                   onTap={() => handleRowTap(idx)}
                 />
               ))}
