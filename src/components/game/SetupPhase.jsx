@@ -49,9 +49,9 @@ export default function SetupPhase({ drawPile, onComplete }) {
   };
 
   const difficultyStyles = {
-    easy:   { bg: 'linear-gradient(135deg, #10b981, #059669)', emoji: '🌱', tagline: 'learn the ropes', textColor: '#000' },
-    medium: { bg: 'linear-gradient(135deg, #f59e0b, #d97706)', emoji: '🔥', tagline: 'rise to the challenge', textColor: '#000' },
-    hard:   { bg: 'linear-gradient(135deg, #ec4899, #be185d)', emoji: '⚡', tagline: 'master the game', textColor: '#fff' },
+    easy:   { activeBg: 'linear-gradient(135deg, #10b981, #059669)', inactiveBg: 'linear-gradient(135deg, #d1fae5, #a7f3d0)', emoji: '🌱', tagline: 'Best for learning', textColor: '#000' },
+    medium: { activeBg: 'linear-gradient(135deg, #f59e0b, #d97706)', inactiveBg: 'linear-gradient(135deg, #fef3c7, #fde68a)', emoji: '🔥', tagline: 'For a real challenge', textColor: '#000' },
+    hard:   { activeBg: 'linear-gradient(135deg, #ec4899, #be185d)', inactiveBg: 'linear-gradient(135deg, #fce7f3, #fbcfe8)', emoji: '⚡', tagline: 'Experts only', textColor: '#000' },
   };
 
   return (
@@ -133,10 +133,11 @@ export default function SetupPhase({ drawPile, onComplete }) {
               whileTap={{ scale: 0.97 }}
               className="flex flex-col items-center px-5 py-4 rounded-2xl border-2 transition-all duration-200 flex-1 sm:flex-none relative overflow-hidden"
               style={{
-                borderColor: active ? '#000' : 'rgba(0,0,0,0.15)',
-                background: active ? style.bg : 'rgba(255,255,255,0.12)',
-                boxShadow: active ? '0 6px 20px rgba(0,0,0,0.4)' : '0 2px 8px rgba(0,0,0,0.2)',
-                color: active ? style.textColor : '#000',
+                borderColor: active ? '#000' : 'rgba(0,0,0,0.3)',
+                background: active ? style.activeBg : style.inactiveBg,
+                boxShadow: active ? '0 6px 20px rgba(0,0,0,0.5)' : '0 2px 8px rgba(0,0,0,0.2)',
+                color: '#000',
+                opacity: active ? 1 : 0.75,
               }}
             >
               <span className="text-2xl mb-1">{style.emoji}</span>
