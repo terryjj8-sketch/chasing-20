@@ -218,25 +218,20 @@ export default function Game() {
     <ThemeProvider>
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80 flex flex-col">
       {/* Scroll Banner */}
-      <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 border-b border-primary/30 px-4 py-3 backdrop-blur flex flex-col items-center gap-2">
-        <div className="text-sm font-semibold tracking-widest text-primary text-center">
-          chasing 20 the most addictive game you'll ever play
-        </div>
-        <div className="flex items-center gap-4">
-          <ThemeGuideArrow />
-          <div className="flex items-center gap-2">
-            <ThemeSelector />
-            <button
-              onClick={() => setSoundEnabled(s => !s)}
-              className="p-1.5 rounded-lg transition-all"
-              style={{ background: soundEnabled ? 'rgba(168,85,247,0.25)' : 'rgba(255,255,255,0.08)' }}
-              title={soundEnabled ? 'Mute sounds' : 'Enable sounds'}
-            >
-              {soundEnabled
-                ? <Volume2 className="w-4 h-4 text-primary" />
-                : <VolumeX className="w-4 h-4 text-foreground/40" />}
-            </button>
-          </div>
+      <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 border-b border-primary/30 px-4 py-3 backdrop-blur flex items-center justify-center gap-6">
+        <ThemeGuideArrow />
+        <div className="flex items-center gap-2">
+          <ThemeSelector />
+          <button
+            onClick={() => setSoundEnabled(s => !s)}
+            className="p-1.5 rounded-lg transition-all"
+            style={{ background: soundEnabled ? 'rgba(168,85,247,0.25)' : 'rgba(255,255,255,0.08)' }}
+            title={soundEnabled ? 'Mute sounds' : 'Enable sounds'}
+          >
+            {soundEnabled
+              ? <Volume2 className="w-4 h-4 text-primary" />
+              : <VolumeX className="w-4 h-4 text-foreground/40" />}
+          </button>
         </div>
       </div>
 
