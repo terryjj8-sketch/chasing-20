@@ -174,10 +174,6 @@ export default function SetupPhase({ drawPile, onComplete }) {
             whileHover={{ scale: 1.08, y: -4 }}
             whileTap={{ scale: 0.95 }}
             className="transition-all duration-200"
-            style={{
-              filter: selectedIndices.has(idx) ? 'drop-shadow(0 0 12px #facc15)' : undefined,
-              transform: selectedIndices.has(idx) ? 'translateY(-6px)' : undefined,
-            }}
           >
             <Card value={card.value} isSelected={selectedIndices.has(idx)} />
           </motion.button>

@@ -36,9 +36,15 @@ export default function Card({ value, rowIndex = 0, isSelected = false, size = '
   return (
     <motion.div
       whileHover={{ y: -8 }}
+      animate={isSelected ? { y: -8 } : { y: 0 }}
       className={`${sizeClasses[size]} rounded-lg shadow-lg cursor-pointer flex items-center justify-center relative overflow-hidden`}
+      style={{
+        outline: isSelected ? '3px solid #facc15' : undefined,
+        outlineOffset: isSelected ? '2px' : undefined,
+        boxShadow: isSelected ? '0 0 20px rgba(250,204,21,0.7), 0 8px 24px rgba(0,0,0,0.4)' : undefined,
+      }}
     >
-      <div className="absolute inset-0 bg-white" />
+      <div className={`absolute inset-0 ${isSelected ? 'bg-yellow-50' : 'bg-white'}`} />
       
       {isZero && (
         <motion.div
