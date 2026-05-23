@@ -1,9 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
+const SUIT_SYMBOLS = {
+  diamonds: { symbol: '♦', color: '#e11d48' },
+  hearts:   { symbol: '♥', color: '#e11d48' },
+  clubs:    { symbol: '♣', color: '#1e293b' },
+  spades:   { symbol: '♠', color: '#1e293b' },
+};
+
 // A small playing card face used in the solitaire layout
-export default function SolitaireCard({ value, width = 52, height = 72, animate = false, isNew = false, dimmed = false, glowing = false, glowColor = '#10B981' }) {
+export default function SolitaireCard({ value, suit, width = 52, height = 72, animate = false, isNew = false, dimmed = false, glowing = false, glowColor = '#10B981' }) {
   const isZero = value === 0;
+  const suitInfo = suit ? SUIT_SYMBOLS[suit] : null;
+  const textColor = suitInfo ? suitInfo.color : '#000000';
 
   const inner = (
     <div
@@ -22,22 +31,39 @@ export default function SolitaireCard({ value, width = 52, height = 72, animate 
       <div className="absolute rounded-sm pointer-events-none"
         style={{ inset: 3, border: '1px solid #e2e8f0' }} />
 
-      {/* Corner value - top left */}
-      <div className="absolute top-1.5 left-2 text-black font-black leading-none"
-        style={{ fontSize: width < 60 ? 10 : 13 }}>
-        {isZero ? '0' : value}
-      </div>
-      {/* Corner value - bottom right (rotated) */}
-      <div className="absolute bottom-1.5 right-2 text-black font-black leading-none rotate-180"
-        style={{ fontSize: width < 60 ? 10 : 13 }}>
-        {isZero ? '0' : value}
-      </div>
+      {/* Corner pips */}
+      {!isZero && suitInfo ? (
+        <>
+          <div className="absolute top-1 left-1.5 flex flex-col items-center leading-none">
+            <span className="font-black leading-none" style={{ fontSize: width < 60 ? 10 : 12, color: textColor }}>{value}</span>
+            <span className="leading-none" style={{ fontSize: width < 60 ? 9 : 11, color: textColor }}>{suitInfo.symbol}</span>
+          </div>
+          <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
+            <span className="font-black leading-none" style={{ fontSize: width < 60 ? 10 : 12, color: textColor }}>{value}</span>
+            <span className="leading-none" style={{ fontSize: width < 60 ? 9 : 11, color: textColor }}>{suitInfo.symbol}</span>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="absolute top-1.5 left-2 text-black font-black leading-none"
+            style={{ fontSize: width < 60 ? 10 : 13 }}>
+            {isZero ? '0' : value}
+          </div>
+          <div className="absolute bottom-1.5 right-2 text-black font-black leading-none rotate-180"
+            style={{ fontSize: width < 60 ? 10 : 13 }}>
+            {isZero ? '0' : value}
+          </div>
+        </>
+      )}
 
       {/* Center */}
       <div className="text-center z-10">
-        <div className="text-black font-black" style={{ fontSize: width < 56 ? 18 : width < 70 ? 22 : 32 }}>
+        <div className="font-black" style={{ fontSize: width < 56 ? 18 : width < 70 ? 22 : 32, color: isZero ? '#000' : textColor }}>
           {isZero ? '0' : value}
         </div>
+        {!isZero && suitInfo && (
+          <div style={{ fontSize: width < 60 ? 12 : 16, color: textColor, lineHeight: 1 }}>{suitInfo.symbol}</div>
+        )}
         {isZero && (
           <div className="text-black/50 font-bold" style={{ fontSize: width < 60 ? 7 : 9, marginTop: -2 }}>RESET</div>
         )}
