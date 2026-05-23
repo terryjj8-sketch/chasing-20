@@ -2,12 +2,13 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useCardTheme } from '@/lib/ThemeContext';
 
-const SUIT_SYMBOLS = {
-  diamonds: { symbol: '♦', color: '#e11d48' },
-  hearts:   { symbol: '♥', color: '#e11d48' },
-  clubs:    { symbol: '♣', color: '#1e293b' },
-  spades:   { symbol: '♠', color: '#1e293b' },
-};
+// suits are stored as numbers 0-3 in deckUtils
+const SUIT_SYMBOLS = [
+  { symbol: '♠', color: '#1e293b' }, // 0 spades
+  { symbol: '♥', color: '#e11d48' }, // 1 hearts
+  { symbol: '♦', color: '#e11d48' }, // 2 diamonds
+  { symbol: '♣', color: '#1e293b' }, // 3 clubs
+];
 
 function TickRing({ cx = 10, cy = 10, r = 7, ticks = 20, color = '#94a3b8' }) {
   return (
@@ -37,7 +38,7 @@ export default function Card({ value, suit, rowIndex = 0, isSelected = false, si
   const { theme } = useCardTheme();
   const isZero = value === 0;
   const isOldSchool = theme.id === 'old-school';
-  const suitInfo = suit && SUIT_SYMBOLS[suit] ? SUIT_SYMBOLS[suit] : null;
+  const suitInfo = (suit !== undefined && suit !== null) ? SUIT_SYMBOLS[suit] : null;
   const resolvedTextColor = isOldSchool && !isZero && suitInfo ? suitInfo.color : theme.textColor;
 
   const sizeClasses = {

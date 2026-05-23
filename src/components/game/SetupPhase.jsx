@@ -176,7 +176,7 @@ export default function SetupPhase({ drawPile, onComplete }) {
             whileTap={{ scale: 0.95 }}
             className="transition-all duration-200"
           >
-            <Card value={card.value} isSelected={selectedIndices.has(idx)} />
+            <Card value={card.value} suit={card.suit} isSelected={selectedIndices.has(idx)} />
           </motion.button>
         ))}
       </motion.div>
