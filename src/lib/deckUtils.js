@@ -1,4 +1,4 @@
-export function initializeDeck() {
+export function initializeDeck(zeroCount = 10) {
   const deck = [];
   
   // Four sets of 1-20
@@ -8,8 +8,8 @@ export function initializeDeck() {
     }
   }
   
-  // 10 zeros
-  for (let i = 0; i < 10; i++) {
+  // Configurable number of zeros
+  for (let i = 0; i < zeroCount; i++) {
     deck.push({ value: 0, suit: i % 2 });
   }
   

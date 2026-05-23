@@ -86,13 +86,26 @@ export default function Game() {
   const handleSetupComplete = (selectedIndices, chosenDifficulty) => {
     setDifficulty(chosenDifficulty);
     setGameState(prev => {
-      const setupCards = prev.drawPile.slice(0, 6);
-      const startingCards = selectedIndices.map(i => setupCards[i]);
-      const remainingSetupCards = setupCards.filter((_, i) => !selectedIndices.includes(i));
+      const nonZeroSetupCards = prev.drawPile.filter(c => c.value !== 0).slice(0, 6);
+      const startingCards = selectedIndices.map(i => nonZeroSetupCards[i]);
 
-      // Put the 2 unchosen cards back and shuffle
-      const newDrawPile = [...remainingSetupCards, ...prev.drawPile.slice(6)];
-      shuffleDeck(newDrawPile);
+      // Rebuild deck fresh with difficulty-based zero count, excluding the 4 chosen cards
+      const zeroCount = chosenDifficulty === 'hard' ? 4 : 10;
+      const freshDeck = initializeDeck(zeroCount);
+      shuffleDeck(freshDeck);
+
+      // Remove the 4 chosen starting cards from the fresh deck
+      const chosenKeys = new Set(startingCards.map(c => `${c.value}-${c.suit}`));
+      const newDrawPile = [];
+      const removed = new Set();
+      for (const card of freshDeck) {
+        const key = `${card.value}-${card.suit}`;
+        if (chosenKeys.has(key) && !removed.has(key)) {
+          removed.add(key);
+        } else {
+          newDrawPile.push(card);
+        }
+      }
 
       const newRows = prev.rows.map((row, idx) => ({
         ...row,
