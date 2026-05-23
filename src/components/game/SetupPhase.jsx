@@ -57,22 +57,22 @@ export default function SetupPhase({ drawPile, onComplete }) {
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center p-6 overflow-hidden relative"
-      style={{ background: 'linear-gradient(135deg, #ff006e 0%, #fb5607 15%, #ffbe0b 30%, #8338ec 45%, #3a86ff 60%, #06ffa5 85%, #ff006e 100%)' }}
+      style={{ background: 'linear-gradient(160deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)' }}
     >
-      {/* Floating colorful blobs */}
+      {/* Subtle colorful accent blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div animate={{ y: [0, -20, 0], x: [0, 10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-10 left-10 w-40 h-40 rounded-full opacity-30"
-          style={{ background: 'radial-gradient(circle, #f43f5e, transparent)' }} />
+          className="absolute top-10 left-10 w-48 h-48 rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(251,113,133,0.25), transparent)' }} />
         <motion.div animate={{ y: [0, 15, 0], x: [0, -12, 0] }} transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-          className="absolute top-20 right-8 w-32 h-32 rounded-full opacity-30"
-          style={{ background: 'radial-gradient(circle, #f59e0b, transparent)' }} />
+          className="absolute top-20 right-8 w-40 h-40 rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(251,191,36,0.2), transparent)' }} />
         <motion.div animate={{ y: [0, -12, 0], x: [0, 8, 0] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-          className="absolute bottom-32 left-16 w-36 h-36 rounded-full opacity-25"
-          style={{ background: 'radial-gradient(circle, #22d3ee, transparent)' }} />
+          className="absolute bottom-32 left-16 w-36 h-36 rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(56,189,248,0.2), transparent)' }} />
         <motion.div animate={{ y: [0, 18, 0], x: [0, -8, 0] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-          className="absolute bottom-20 right-12 w-44 h-44 rounded-full opacity-25"
-          style={{ background: 'radial-gradient(circle, #4ade80, transparent)' }} />
+          className="absolute bottom-20 right-12 w-44 h-44 rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(74,222,128,0.18), transparent)' }} />
       </div>
 
       {/* Title */}
@@ -83,24 +83,36 @@ export default function SetupPhase({ drawPile, onComplete }) {
         className="text-center mb-6 sm:mb-8 relative z-10"
       >
         <motion.h1
-          className="text-5xl sm:text-7xl font-black mb-2 leading-none"
+          className="text-6xl sm:text-8xl font-black mb-2 leading-none tracking-tight"
           style={{
-            background: 'linear-gradient(135deg, #facc15, #fb923c, #f472b6, #a78bfa)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            filter: 'drop-shadow(0 2px 12px rgba(251,146,60,0.5))',
+            color: '#ffffff',
+            textShadow: '0 0 40px rgba(251,191,36,0.6), 0 4px 0 #000, 2px 2px 0 #000, -2px -2px 0 #000, 4px 8px 20px rgba(0,0,0,0.9)',
+            letterSpacing: '-0.02em',
           }}
         >
           Chasing 20
         </motion.h1>
-        <p className="text-base sm:text-lg font-semibold text-white/80 mt-2">Finally, a better solitaire game. 🃏</p>
-        <p className="text-sm text-white/60 mt-1">Pick 4 cards · Build your rows · Beat the deck</p>
-        <button
+        <p className="text-base sm:text-lg font-bold text-white mt-3" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
+          Finally, a better solitaire game. 🃏
+        </p>
+        <p className="text-sm font-semibold mt-1" style={{ color: '#94a3b8', textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
+          Pick 4 cards · Build your rows · Beat the deck
+        </p>
+
+        {/* How to Play — big and unmissable */}
+        <motion.button
           onClick={() => navigate('/how-to-play')}
-          className="mt-3 text-sm font-semibold px-4 py-1.5 rounded-full border border-white/30 text-white/70 hover:bg-white/10 hover:text-white transition-all"
+          whileHover={{ scale: 1.06 }}
+          whileTap={{ scale: 0.97 }}
+          className="mt-5 inline-flex items-center gap-2 text-base font-black px-6 py-2.5 rounded-full transition-all"
+          style={{
+            background: 'linear-gradient(135deg, #fbbf24, #f97316)',
+            color: '#000',
+            boxShadow: '0 4px 20px rgba(251,191,36,0.5), 0 2px 0 rgba(0,0,0,0.4)',
+          }}
         >
-          How to Play →
-        </button>
+          📖 How to Play
+        </motion.button>
       </motion.div>
 
       {/* Difficulty Selector */}
@@ -167,7 +179,7 @@ export default function SetupPhase({ drawPile, onComplete }) {
         transition={{ delay: 0.4 }}
         className="text-center relative z-10"
       >
-        <p className="text-white/60 mb-4 font-medium">
+        <p className="mb-4 font-bold text-base" style={{ color: selectedIndices.size === 4 ? '#4ade80' : '#94a3b8', textShadow: '0 1px 6px rgba(0,0,0,0.6)' }}>
           {selectedIndices.size === 4
             ? '✅ Ready to play!'
             : `${selectedIndices.size} / 4 cards selected`}
