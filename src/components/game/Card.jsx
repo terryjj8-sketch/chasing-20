@@ -91,7 +91,7 @@ export default function Card({ value, suit, rowIndex = 0, isSelected = false, si
             <span className="text-xs font-black" style={{ color: suitInfo.color }}>{value}</span>
             <span className="text-xs" style={{ color: suitInfo.color }}>{suitInfo.symbol}</span>
           </div>
-          <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
+          <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none">
             <span className="text-xs font-black" style={{ color: suitInfo.color }}>{value}</span>
             <span className="text-xs" style={{ color: suitInfo.color }}>{suitInfo.symbol}</span>
           </div>

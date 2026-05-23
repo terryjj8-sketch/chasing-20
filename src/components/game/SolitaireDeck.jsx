@@ -106,7 +106,7 @@ function CardFace({ card, onTap, isPlayable }) {
             <span className="font-black text-[10px]" style={{ color: textColor }}>{card.value}</span>
             <span className="text-[9px]" style={{ color: textColor }}>{suitInfo.symbol}</span>
           </div>
-          <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
+          <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none">
             <span className="font-black text-[10px]" style={{ color: textColor }}>{card.value}</span>
             <span className="text-[9px]" style={{ color: textColor }}>{suitInfo.symbol}</span>
           </div>
@@ -116,7 +116,7 @@ function CardFace({ card, onTap, isPlayable }) {
           <div className="absolute top-1.5 left-2 text-black font-black leading-none text-[11px]">
             {isZero ? '0' : card.value}
           </div>
-          <div className="absolute bottom-1.5 right-2 text-black font-black leading-none text-[11px] rotate-180">
+          <div className="absolute bottom-1.5 right-2 text-black font-black leading-none text-[11px]">
             {isZero ? '0' : card.value}
           </div>
         </>

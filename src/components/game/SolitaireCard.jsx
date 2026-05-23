@@ -39,7 +39,7 @@ export default function SolitaireCard({ value, suit, width = 52, height = 72, an
             <span className="font-black leading-none" style={{ fontSize: width < 60 ? 10 : 12, color: textColor }}>{value}</span>
             <span className="leading-none" style={{ fontSize: width < 60 ? 9 : 11, color: textColor }}>{suitInfo.symbol}</span>
           </div>
-          <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
+          <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none">
             <span className="font-black leading-none" style={{ fontSize: width < 60 ? 10 : 12, color: textColor }}>{value}</span>
             <span className="leading-none" style={{ fontSize: width < 60 ? 9 : 11, color: textColor }}>{suitInfo.symbol}</span>
           </div>
