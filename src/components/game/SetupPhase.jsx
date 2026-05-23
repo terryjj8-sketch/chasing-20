@@ -120,7 +120,7 @@ export default function SetupPhase({ drawPile, onComplete }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-6 w-full max-w-sm sm:max-w-none px-2 sm:px-0 relative z-10"
+        className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-10 justify-center w-full px-2 sm:px-0 relative z-10"
       >
         {DIFFICULTIES.map(d => {
           const style = difficultyStyles[d.id];
@@ -131,7 +131,7 @@ export default function SetupPhase({ drawPile, onComplete }) {
               onClick={() => setDifficulty(d.id)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              className="flex flex-col items-center px-5 py-4 rounded-2xl border-2 transition-all duration-200 flex-1 sm:flex-none relative overflow-hidden"
+              className="flex flex-col items-center px-6 py-4 rounded-2xl border-2 transition-all duration-200 w-full sm:w-auto relative overflow-hidden"
               style={{
                 borderColor: active ? '#000' : 'rgba(0,0,0,0.3)',
                 background: active ? style.activeBg : style.inactiveBg,
@@ -154,7 +154,7 @@ export default function SetupPhase({ drawPile, onComplete }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.25 }}
-        className="text-center font-bold text-lg mb-4 relative z-10"
+        className="text-center font-bold text-lg mb-6 relative z-10"
         style={{ color: '#fbbf24', textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}
       >
         Choose four cards to begin
