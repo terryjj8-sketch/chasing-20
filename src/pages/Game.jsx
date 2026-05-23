@@ -90,7 +90,7 @@ export default function Game() {
       const startingCards = selectedIndices.map(i => nonZeroSetupCards[i]);
 
       // Rebuild deck fresh with difficulty-based zero count, excluding the 4 chosen cards
-      const zeroCount = chosenDifficulty === 'hard' ? 4 : 10;
+      const zeroCount = chosenDifficulty === 'hard' ? 6 : chosenDifficulty === 'medium' ? 8 : 10;
       const freshDeck = initializeDeck(zeroCount);
       shuffleDeck(freshDeck);
 
