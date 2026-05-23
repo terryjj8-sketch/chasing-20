@@ -8,17 +8,17 @@ const DIFFICULTIES = [
   {
     id: 'easy',
     label: 'Beginner',
-    description: 'Valid rows highlighted · Deck count shown',
+    description: 'See valid rows + deck count',
   },
   {
     id: 'medium',
     label: 'Novice',
-    description: 'Valid rows highlighted · Deck count hidden',
+    description: 'See valid rows only',
   },
   {
     id: 'hard',
     label: 'Pro',
-    description: 'No hints · Deck count hidden',
+    description: 'No help, no hints',
   },
 ];
 
@@ -49,9 +49,9 @@ export default function SetupPhase({ drawPile, onComplete }) {
   };
 
   const difficultyStyles = {
-    easy:   { bg: 'linear-gradient(135deg, #22c55e, #16a34a)', emoji: '🌱', tagline: 'learn the ropes' },
-    medium: { bg: 'linear-gradient(135deg, #f59e0b, #d97706)', emoji: '🔥', tagline: 'rise to the challenge' },
-    hard:   { bg: 'linear-gradient(135deg, #ef4444, #b91c1c)', emoji: '⚡', tagline: 'master the game' },
+    easy:   { bg: 'linear-gradient(135deg, #10b981, #059669)', emoji: '🌱', tagline: 'learn the ropes', textColor: '#000' },
+    medium: { bg: 'linear-gradient(135deg, #f59e0b, #d97706)', emoji: '🔥', tagline: 'rise to the challenge', textColor: '#000' },
+    hard:   { bg: 'linear-gradient(135deg, #ec4899, #be185d)', emoji: '⚡', tagline: 'master the game', textColor: '#fff' },
   };
 
   return (
@@ -131,18 +131,18 @@ export default function SetupPhase({ drawPile, onComplete }) {
               onClick={() => setDifficulty(d.id)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              className="flex flex-col items-center px-5 py-3 rounded-2xl border-2 transition-all duration-200 flex-1 sm:flex-none relative overflow-hidden"
+              className="flex flex-col items-center px-5 py-4 rounded-2xl border-2 transition-all duration-200 flex-1 sm:flex-none relative overflow-hidden"
               style={{
-                borderColor: active ? 'white' : 'rgba(255,255,255,0.2)',
-                background: active ? style.bg : 'rgba(255,255,255,0.08)',
-                boxShadow: active ? '0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3)' : undefined,
-                color: 'white',
+                borderColor: active ? '#000' : 'rgba(0,0,0,0.15)',
+                background: active ? style.bg : 'rgba(255,255,255,0.12)',
+                boxShadow: active ? '0 6px 20px rgba(0,0,0,0.4)' : '0 2px 8px rgba(0,0,0,0.2)',
+                color: active ? style.textColor : '#000',
               }}
             >
-              <span className="text-xl mb-0.5">{style.emoji}</span>
-              <span className="font-black text-sm tracking-wide">{d.label}</span>
-              <span className="text-[10px] mt-1 text-center leading-tight opacity-80">{d.description}</span>
-              <span className="text-[8px] mt-1.5 text-center leading-tight opacity-50 italic">{style.tagline}</span>
+              <span className="text-2xl mb-1">{style.emoji}</span>
+              <span className="font-black text-base tracking-wide">{d.label}</span>
+              <span className="text-xs mt-2 text-center leading-snug font-semibold">{d.description}</span>
+              <span className="text-[11px] mt-2 text-center leading-tight opacity-70 italic">{style.tagline}</span>
             </motion.button>
           );
         })}
