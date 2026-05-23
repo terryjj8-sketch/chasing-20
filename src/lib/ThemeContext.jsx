@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState } from 'react';
 
 export const CARD_THEMES = {
-  classic: {
-    id: 'classic',
-    label: 'Classic',
+  original: {
+    id: 'original',
+    label: 'Original',
     emoji: '🃏',
     cardBg: '#ffffff',
     cardBgSelected: '#fefce8',
@@ -33,10 +33,10 @@ export const CARD_THEMES = {
     innerBorderColor: '#4c1d95',
     tickColor: '#7c3aed',
   },
-  minimalist: {
-    id: 'minimalist',
-    label: 'Minimal',
-    emoji: '◻️',
+  'old-school': {
+    id: 'old-school',
+    label: 'Old-School',
+    emoji: '♠️',
     cardBg: '#f8fafc',
     cardBgSelected: '#f1f5f9',
     cardBorder: '#e2e8f0',
@@ -51,10 +51,10 @@ export const CARD_THEMES = {
   },
 };
 
-const ThemeContext = createContext({ theme: CARD_THEMES.classic, setThemeId: () => {} });
+const ThemeContext = createContext({ theme: CARD_THEMES.original, setThemeId: () => {} });
 
 export function ThemeProvider({ children }) {
-  const [themeId, setThemeId] = useState(() => localStorage.getItem('cardTheme') || 'classic');
+  const [themeId, setThemeId] = useState(() => localStorage.getItem('cardTheme') || 'original');
 
   const setTheme = (id) => {
     setThemeId(id);
@@ -62,7 +62,7 @@ export function ThemeProvider({ children }) {
   };
 
   return (
-    <ThemeContext.Provider value={{ theme: CARD_THEMES[themeId] || CARD_THEMES.classic, setThemeId: setTheme, themeId }}>
+    <ThemeContext.Provider value={{ theme: CARD_THEMES[themeId] || CARD_THEMES.original, setThemeId: setTheme, themeId }}>
       {children}
     </ThemeContext.Provider>
   );

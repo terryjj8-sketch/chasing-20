@@ -2,6 +2,13 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useCardTheme } from '@/lib/ThemeContext';
 
+const SUIT_SYMBOLS = {
+  diamonds: { symbol: '♦', color: '#e11d48' },
+  hearts:   { symbol: '♥', color: '#e11d48' },
+  clubs:    { symbol: '♣', color: '#1e293b' },
+  spades:   { symbol: '♠', color: '#1e293b' },
+};
+
 function TickRing({ cx = 10, cy = 10, r = 7, ticks = 20, color = '#94a3b8' }) {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20">
@@ -26,9 +33,13 @@ function TickRing({ cx = 10, cy = 10, r = 7, ticks = 20, color = '#94a3b8' }) {
   );
 }
 
-export default function Card({ value, rowIndex = 0, isSelected = false, size = 'normal' }) {
+export default function Card({ value, suit, rowIndex = 0, isSelected = false, size = 'normal' }) {
   const { theme } = useCardTheme();
   const isZero = value === 0;
+  const isOldSchool = theme.id === 'old-school';
+  const suitInfo = suit && SUIT_SYMBOLS[suit] ? SUIT_SYMBOLS[suit] : null;
+  const resolvedTextColor = isOldSchool && !isZero && suitInfo ? suitInfo.color : theme.textColor;
+
   const sizeClasses = {
     small: 'w-16 h-24',
     normal: 'w-20 h-32',
@@ -62,7 +73,7 @@ export default function Card({ value, rowIndex = 0, isSelected = false, size = '
         style={{ borderColor: isSelected ? theme.cardBorderSelected : theme.innerBorderColor }}
       />
 
-      {/* Corner tick rings */}
+      {/* Corner tick rings (non-old-school themes) */}
       {theme.tickColor !== 'transparent' && (
         <>
           <div className="absolute top-1 left-1"><TickRing color={theme.tickColor} /></div>
@@ -72,10 +83,27 @@ export default function Card({ value, rowIndex = 0, isSelected = false, size = '
         </>
       )}
 
+      {/* Old-School: corner suit + number pips */}
+      {isOldSchool && !isZero && suitInfo && (
+        <>
+          <div className="absolute top-1 left-1.5 flex flex-col items-center leading-none">
+            <span className="text-xs font-black" style={{ color: suitInfo.color }}>{value}</span>
+            <span className="text-xs" style={{ color: suitInfo.color }}>{suitInfo.symbol}</span>
+          </div>
+          <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
+            <span className="text-xs font-black" style={{ color: suitInfo.color }}>{value}</span>
+            <span className="text-xs" style={{ color: suitInfo.color }}>{suitInfo.symbol}</span>
+          </div>
+        </>
+      )}
+
       <div className="relative z-10 text-center">
-        <div className="text-4xl font-black" style={{ color: theme.textColor }}>
+        <div className="text-4xl font-black" style={{ color: resolvedTextColor }}>
           {isZero ? '0' : value}
         </div>
+        {isOldSchool && !isZero && suitInfo && (
+          <div className="text-lg mt-0.5" style={{ color: suitInfo.color }}>{suitInfo.symbol}</div>
+        )}
         {isZero && (
           <div className="text-sm font-semibold mt-2" style={{ color: theme.subTextColor }}>RESET</div>
         )}
