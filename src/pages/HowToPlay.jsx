@@ -130,7 +130,7 @@ export default function HowToPlay() {
               <ul className="text-foreground/80 text-sm space-y-1 leading-relaxed list-disc list-inside">
                 <li><strong>No deck count</strong> shown — you won't know how many cards remain</li>
                 <li>Each row shows how many <strong>zeros remain</strong> (x/3)</li>
-                <li><strong>10 zeros</strong> in the deck</li>
+                <li><strong>8 zeros</strong> in the deck</li>
               </ul>
             </div>
             {/* Pro */}
@@ -143,7 +143,7 @@ export default function HowToPlay() {
                 <li><strong>No hints</strong> — you must figure out valid rows yourself</li>
                 <li><strong>No deck count</strong> shown</li>
                 <li>Each row still shows how many <strong>zeros remain</strong> (x/3)</li>
-                <li><strong>10 zeros</strong> in the deck</li>
+                <li><strong>6 zeros</strong> in the deck</li>
               </ul>
             </div>
           </div>
