@@ -105,15 +105,57 @@ export default function HowToPlay() {
           </p>
         </Section>
 
+        {/* Difficulty Modes */}
+        <Section title="🎮 Difficulty Modes" delay={0.6}>
+          <div className="grid grid-cols-1 gap-3">
+            {/* Beginner */}
+            <div className="rounded-xl p-4 border" style={{ background: 'rgba(16,185,129,0.12)', borderColor: 'rgba(16,185,129,0.4)' }}>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xl">🌱</span>
+                <span className="font-black text-base" style={{ color: '#10b981' }}>Beginner</span>
+              </div>
+              <ul className="text-foreground/80 text-sm space-y-1 leading-relaxed list-disc list-inside">
+                <li>Valid rows <strong>glow and pulse</strong> ~2 seconds after you flip a card</li>
+                <li>The <strong>remaining deck count</strong> is shown on the deck</li>
+                <li>Each row shows how many <strong>zeros remain</strong> (x/3)</li>
+              </ul>
+            </div>
+            {/* Novice */}
+            <div className="rounded-xl p-4 border" style={{ background: 'rgba(245,158,11,0.12)', borderColor: 'rgba(245,158,11,0.4)' }}>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xl">🔥</span>
+                <span className="font-black text-base" style={{ color: '#f59e0b' }}>Novice</span>
+              </div>
+              <ul className="text-foreground/80 text-sm space-y-1 leading-relaxed list-disc list-inside">
+                <li>Valid rows are <strong>highlighted</strong> so you know where you can play</li>
+                <li><strong>No deck count</strong> shown — you won't know how many cards remain</li>
+                <li>Each row still shows how many <strong>zeros remain</strong> (x/3)</li>
+              </ul>
+            </div>
+            {/* Pro */}
+            <div className="rounded-xl p-4 border" style={{ background: 'rgba(236,72,153,0.12)', borderColor: 'rgba(236,72,153,0.4)' }}>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xl">⚡</span>
+                <span className="font-black text-base" style={{ color: '#ec4899' }}>Pro</span>
+              </div>
+              <ul className="text-foreground/80 text-sm space-y-1 leading-relaxed list-disc list-inside">
+                <li><strong>No hints</strong> — you must figure out valid rows yourself</li>
+                <li><strong>No deck count</strong> shown</li>
+                <li>Each row still shows how many <strong>zeros remain</strong> (x/3)</li>
+              </ul>
+            </div>
+          </div>
+        </Section>
+
         {/* Undo */}
-        <Section title="↩️ Undo" delay={0.6}>
+        <Section title="↩️ Undo" delay={0.7}>
           <p className="text-foreground/80 leading-relaxed">
             Made a mistake? Tap the <strong>undo button</strong> (↩) to take back your last move. You can only undo one step at a time.
           </p>
         </Section>
 
         {/* Tips */}
-        <Section title="💡 Tips" delay={0.7}>
+        <Section title="💡 Tips" delay={0.8}>
           <ul className="text-foreground/80 space-y-2 leading-relaxed list-disc list-inside">
             <li>Focus your effort on <strong>one or two rows</strong> — spreading evenly rarely wins.</li>
             <li>Save zeros for when you're stuck, not just for convenience.</li>
@@ -126,7 +168,7 @@ export default function HowToPlay() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
+          transition={{ delay: 0.9 }}
           className="text-center mt-6 mb-8"
         >
           <Button
