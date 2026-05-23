@@ -118,6 +118,7 @@ export default function HowToPlay() {
                 <li>Valid rows <strong>glow and pulse</strong> ~2 seconds after you flip a card</li>
                 <li>The <strong>remaining deck count</strong> is shown on the deck</li>
                 <li>Each row shows how many <strong>zeros remain</strong> (x/3)</li>
+                <li><strong>10 zeros</strong> in the deck</li>
               </ul>
             </div>
             {/* Novice */}
@@ -127,9 +128,9 @@ export default function HowToPlay() {
                 <span className="font-black text-base" style={{ color: '#f59e0b' }}>Novice</span>
               </div>
               <ul className="text-foreground/80 text-sm space-y-1 leading-relaxed list-disc list-inside">
-                <li>Valid rows are <strong>highlighted</strong> so you know where you can play</li>
                 <li><strong>No deck count</strong> shown — you won't know how many cards remain</li>
-                <li>Each row still shows how many <strong>zeros remain</strong> (x/3)</li>
+                <li>Each row shows how many <strong>zeros remain</strong> (x/3)</li>
+                <li><strong>10 zeros</strong> in the deck</li>
               </ul>
             </div>
             {/* Pro */}
@@ -142,6 +143,7 @@ export default function HowToPlay() {
                 <li><strong>No hints</strong> — you must figure out valid rows yourself</li>
                 <li><strong>No deck count</strong> shown</li>
                 <li>Each row still shows how many <strong>zeros remain</strong> (x/3)</li>
+                <li><strong>10 zeros</strong> in the deck</li>
               </ul>
             </div>
           </div>
