@@ -4,6 +4,8 @@ import GameplayPhase from '../components/game/GameplayPhase';
 import EndGamePhase from '../components/game/EndGamePhase';
 import { initializeDeck, shuffleDeck } from '../lib/deckUtils';
 import { useSounds } from '../lib/useSounds';
+import { ThemeProvider } from '../lib/ThemeContext';
+import ThemeSelector from '../components/game/ThemeSelector';
 import { Volume2, VolumeX } from 'lucide-react';
 
 export default function Game() {
@@ -212,22 +214,26 @@ export default function Game() {
   if (!gameState) return null;
 
   return (
+    <ThemeProvider>
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80 flex flex-col">
       {/* Scroll Banner */}
       <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 border-b border-primary/30 px-4 py-3 backdrop-blur flex items-center justify-between">
         <div className="text-sm font-semibold tracking-widest text-primary flex-1 text-center">
           chasing 20 the most addictive game you'll ever play
         </div>
-        <button
-          onClick={() => setSoundEnabled(s => !s)}
-          className="ml-3 p-1.5 rounded-lg transition-all"
-          style={{ background: soundEnabled ? 'rgba(168,85,247,0.25)' : 'rgba(255,255,255,0.08)' }}
-          title={soundEnabled ? 'Mute sounds' : 'Enable sounds'}
-        >
-          {soundEnabled
-            ? <Volume2 className="w-4 h-4 text-primary" />
-            : <VolumeX className="w-4 h-4 text-foreground/40" />}
-        </button>
+        <div className="flex items-center gap-2 ml-3">
+          <ThemeSelector />
+          <button
+            onClick={() => setSoundEnabled(s => !s)}
+            className="p-1.5 rounded-lg transition-all"
+            style={{ background: soundEnabled ? 'rgba(168,85,247,0.25)' : 'rgba(255,255,255,0.08)' }}
+            title={soundEnabled ? 'Mute sounds' : 'Enable sounds'}
+          >
+            {soundEnabled
+              ? <Volume2 className="w-4 h-4 text-primary" />
+              : <VolumeX className="w-4 h-4 text-foreground/40" />}
+          </button>
+        </div>
       </div>
 
       {/* Game Content */}
@@ -262,6 +268,7 @@ export default function Game() {
         </div>
       </div>
     </div>
+    </ThemeProvider>
   );
 };
 
