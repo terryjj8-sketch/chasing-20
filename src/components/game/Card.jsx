@@ -102,9 +102,6 @@ export default function Card({ value, suit, rowIndex = 0, isSelected = false, si
         <div className="text-4xl font-black" style={{ color: resolvedTextColor }}>
           {isZero ? '0' : value}
         </div>
-        {isOldSchool && !isZero && suitInfo && (
-          <div className="text-lg mt-0.5" style={{ color: suitInfo.color }}>{suitInfo.symbol}</div>
-        )}
         {isZero && (
           <div className="text-sm font-semibold mt-2" style={{ color: theme.subTextColor }}>RESET</div>
         )}

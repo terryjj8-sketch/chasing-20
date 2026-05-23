@@ -62,9 +62,6 @@ export default function SolitaireCard({ value, suit, width = 52, height = 72, an
         <div className="font-black" style={{ fontSize: width < 56 ? 18 : width < 70 ? 22 : 32, color: isZero ? '#000' : textColor }}>
           {isZero ? '0' : value}
         </div>
-        {!isZero && suitInfo && (
-          <div style={{ fontSize: width < 60 ? 12 : 16, color: textColor, lineHeight: 1 }}>{suitInfo.symbol}</div>
-        )}
         {isZero && (
           <div className="text-black/50 font-bold" style={{ fontSize: width < 60 ? 7 : 9, marginTop: -2 }}>RESET</div>
         )}
