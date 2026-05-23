@@ -57,7 +57,7 @@ export default function SetupPhase({ drawPile, onComplete }) {
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center p-6 overflow-hidden relative"
-      style={{ background: 'linear-gradient(160deg, #1e1b4b 0%, #312e81 30%, #4c1d95 60%, #7e22ce 100%)' }}
+      style={{ background: 'linear-gradient(135deg, #ff006e 0%, #fb5607 15%, #ffbe0b 30%, #8338ec 45%, #3a86ff 60%, #06ffa5 85%, #ff006e 100%)' }}
     >
       {/* Floating colorful blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
