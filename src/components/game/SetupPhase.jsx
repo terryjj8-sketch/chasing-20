@@ -7,17 +7,17 @@ import { useNavigate } from 'react-router-dom';
 const DIFFICULTIES = [
   {
     id: 'easy',
-    label: 'Water',
+    label: 'Beginner',
     description: 'Valid rows highlighted · Deck count shown',
   },
   {
     id: 'medium',
-    label: 'Coffee',
+    label: 'Novice',
     description: 'Valid rows highlighted · Deck count hidden',
   },
   {
     id: 'hard',
-    label: 'Espresso',
+    label: 'Pro',
     description: 'No hints · Deck count hidden',
   },
 ];
@@ -49,9 +49,9 @@ export default function SetupPhase({ drawPile, onComplete }) {
   };
 
   const difficultyStyles = {
-    easy:   { bg: 'linear-gradient(135deg, #22c55e, #16a34a)', emoji: '💧', tagline: 'think before you drink' },
-    medium: { bg: 'linear-gradient(135deg, #f59e0b, #d97706)', emoji: '☕', tagline: 'think before you drink' },
-    hard:   { bg: 'linear-gradient(135deg, #ef4444, #b91c1c)', emoji: '☕☕', tagline: 'think before you drink' },
+    easy:   { bg: 'linear-gradient(135deg, #22c55e, #16a34a)', emoji: '🌱', tagline: 'learn the ropes' },
+    medium: { bg: 'linear-gradient(135deg, #f59e0b, #d97706)', emoji: '🔥', tagline: 'rise to the challenge' },
+    hard:   { bg: 'linear-gradient(135deg, #ef4444, #b91c1c)', emoji: '⚡', tagline: 'master the game' },
   };
 
   return (
@@ -147,6 +147,17 @@ export default function SetupPhase({ drawPile, onComplete }) {
           );
         })}
       </motion.div>
+
+      {/* Card picker instructions */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.25 }}
+        className="text-center font-bold text-lg mb-4 relative z-10"
+        style={{ color: '#fbbf24', textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}
+      >
+        Choose four cards to begin
+      </motion.p>
 
       {/* Card picker */}
       <motion.div
