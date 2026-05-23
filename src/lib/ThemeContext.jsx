@@ -54,7 +54,10 @@ export const CARD_THEMES = {
 const ThemeContext = createContext({ theme: CARD_THEMES.original, setThemeId: () => {} });
 
 export function ThemeProvider({ children }) {
-  const [themeId, setThemeId] = useState(() => localStorage.getItem('cardTheme') || 'original');
+  const [themeId, setThemeId] = useState(() => {
+    const saved = localStorage.getItem('cardTheme');
+    return (saved && CARD_THEMES[saved]) ? saved : 'original';
+  });
 
   const setTheme = (id) => {
     setThemeId(id);

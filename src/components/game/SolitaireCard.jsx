@@ -1,17 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const SUIT_SYMBOLS = {
-  diamonds: { symbol: '♦', color: '#e11d48' },
-  hearts:   { symbol: '♥', color: '#e11d48' },
-  clubs:    { symbol: '♣', color: '#1e293b' },
-  spades:   { symbol: '♠', color: '#1e293b' },
-};
+// suits are numbers 0-3 matching deckUtils
+const SUIT_SYMBOLS = [
+  { symbol: '♠', color: '#1e293b' }, // 0
+  { symbol: '♥', color: '#e11d48' }, // 1
+  { symbol: '♦', color: '#e11d48' }, // 2
+  { symbol: '♣', color: '#1e293b' }, // 3
+];
 
 // A small playing card face used in the solitaire layout
 export default function SolitaireCard({ value, suit, width = 52, height = 72, animate = false, isNew = false, dimmed = false, glowing = false, glowColor = '#10B981' }) {
   const isZero = value === 0;
-  const suitInfo = suit ? SUIT_SYMBOLS[suit] : null;
+  const suitInfo = (suit !== undefined && suit !== null) ? SUIT_SYMBOLS[suit] : null;
   const textColor = suitInfo ? suitInfo.color : '#000000';
 
   const inner = (

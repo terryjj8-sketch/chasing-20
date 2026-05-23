@@ -1,5 +1,13 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useCardTheme } from '@/lib/ThemeContext';
+
+const SUIT_SYMBOLS = [
+  { symbol: '♠', color: '#1e293b' },
+  { symbol: '♥', color: '#e11d48' },
+  { symbol: '♦', color: '#e11d48' },
+  { symbol: '♣', color: '#1e293b' },
+];
 
 // Stock pile (deck face-down) + Waste pile (current flipped card)
 // Classic solitaire top-left placement style
@@ -62,6 +70,12 @@ function CardBack({ onClick, count, disabled }) {
 }
 
 function CardFace({ card, onTap, isPlayable }) {
+  const { theme } = useCardTheme();
+  const isOldSchool = theme.id === 'old-school';
+  const isZero = card.value === 0;
+  const suitInfo = (card.suit !== undefined && card.suit !== null) ? SUIT_SYMBOLS[card.suit] : null;
+  const textColor = (isOldSchool && suitInfo && !isZero) ? suitInfo.color : '#000000';
+
   return (
     <motion.div
       key={`${card.value}-${card.suit}`}
@@ -86,16 +100,34 @@ function CardFace({ card, onTap, isPlayable }) {
     >
       <div className="absolute rounded-sm pointer-events-none" style={{ inset: 3, border: '1px solid #e2e8f0' }} />
       {/* Corner labels */}
-      <div className="absolute top-1.5 left-2 text-black font-black leading-none text-[11px]">
-        {card.value === 0 ? '0' : card.value}
-      </div>
-      <div className="absolute bottom-1.5 right-2 text-black font-black leading-none text-[11px] rotate-180">
-        {card.value === 0 ? '0' : card.value}
-      </div>
+      {isOldSchool && suitInfo && !isZero ? (
+        <>
+          <div className="absolute top-1 left-1.5 flex flex-col items-center leading-none">
+            <span className="font-black text-[10px]" style={{ color: textColor }}>{card.value}</span>
+            <span className="text-[9px]" style={{ color: textColor }}>{suitInfo.symbol}</span>
+          </div>
+          <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
+            <span className="font-black text-[10px]" style={{ color: textColor }}>{card.value}</span>
+            <span className="text-[9px]" style={{ color: textColor }}>{suitInfo.symbol}</span>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="absolute top-1.5 left-2 text-black font-black leading-none text-[11px]">
+            {isZero ? '0' : card.value}
+          </div>
+          <div className="absolute bottom-1.5 right-2 text-black font-black leading-none text-[11px] rotate-180">
+            {isZero ? '0' : card.value}
+          </div>
+        </>
+      )}
       {/* Center value */}
       <div className="text-center z-10">
-        <div className="text-black text-3xl font-black">{card.value === 0 ? '0' : card.value}</div>
-        {card.value === 0 && <div className="text-black/50 text-[8px] font-bold -mt-1">RESET</div>}
+        <div className="text-3xl font-black" style={{ color: textColor }}>{isZero ? '0' : card.value}</div>
+        {isOldSchool && suitInfo && !isZero && (
+          <div className="text-base leading-none" style={{ color: textColor }}>{suitInfo.symbol}</div>
+        )}
+        {isZero && <div className="text-black/50 text-[8px] font-bold -mt-1">RESET</div>}
       </div>
     </motion.div>
   );
