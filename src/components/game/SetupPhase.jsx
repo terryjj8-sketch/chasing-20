@@ -29,7 +29,8 @@ export default function SetupPhase({ drawPile, onComplete }) {
   const [difficulty, setDifficulty] = useState('easy');
 
   useEffect(() => {
-    setDisplayCards(drawPile.slice(0, 6));
+    const nonZero = drawPile.filter(c => c.value !== 0);
+    setDisplayCards(nonZero.slice(0, 6));
   }, [drawPile]);
 
   const toggleSelect = (index) => {
