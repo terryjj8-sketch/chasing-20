@@ -95,9 +95,7 @@ export default function SetupPhase({ drawPile, onComplete }) {
         <p className="text-base sm:text-lg font-bold text-white mt-3" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
           Quite. Possibly. The most addictive game you'll ever play...
         </p>
-        <p className="text-sm font-semibold mt-1" style={{ color: '#94a3b8', textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
-          Pick 4 cards · Build your rows · Beat the deck
-        </p>
+
 
         {/* How to Play — big and unmissable */}
         <motion.button
