@@ -162,7 +162,7 @@ export default function HowToPlay() {
             <li>Focus your effort on <strong>one or two rows</strong> — spreading evenly rarely wins.</li>
             <li>Save zeros for when you're stuck, not just for convenience.</li>
             <li>Discarding is sometimes the right move — don't force bad plays.</li>
-            <li>The deck has <strong>90 cards</strong>. Getting to 20 in one row means using roughly 1 in 4.5 cards wisely.</li>
+            <li>The deck size varies by difficulty: <strong>90 cards (Beginner)</strong>, <strong>88 cards (Novice)</strong>, <strong>86 cards (Pro)</strong>. Getting to 20 in one row means using roughly 1 in 4-4.5 cards wisely.</li>
           </ul>
         </Section>
 
