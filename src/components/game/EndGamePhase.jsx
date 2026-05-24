@@ -72,15 +72,18 @@ export default function EndGamePhase({ rows, onPlayAgain, finalTime }) {
             >
               🎉 YOU WIN! 🎉
             </motion.h1>
-            <p className="text-xl text-foreground/70">
+            <p className="text-xl text-foreground/70 mb-3">
               Row {result.winningRows[0] + 1} reached 20 cards!
+            </p>
+            <p className="text-lg font-bold text-foreground">
+              That was great. See if you can do it again.
             </p>
           </>
         ) : (
           <>
             <h1 className="text-6xl font-bold text-destructive mb-2">Game Over</h1>
-            <p className="text-xl text-foreground/70">
-              No row reached 20 cards. Better luck next time!
+            <p className="text-lg font-bold text-foreground">
+              You were so close. Let's go again.
             </p>
           </>
         )}
