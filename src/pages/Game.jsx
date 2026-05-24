@@ -213,7 +213,17 @@ export default function Game() {
     });
   };
 
-  if (!gameState) return null;
+  if (!gameState) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-b from-background to-background/80">
+        <img 
+          src="https://base44.com/logo_v2.svg" 
+          alt="Loading..." 
+          className="w-32 h-32 animate-pulse"
+        />
+      </div>
+    );
+  }
 
   return (
     <ThemeProvider>
