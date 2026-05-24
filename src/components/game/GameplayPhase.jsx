@@ -60,14 +60,16 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
 
   return (
     <div
-      className="min-h-screen flex flex-col"
+      className="flex flex-col"
       style={{
         background: 'radial-gradient(ellipse at 50% 30%, #1a4a2e 0%, #0f2d1a 60%, #081a0e 100%)',
+        height: '100dvh',
+        overflow: 'hidden',
       }}
     >
       <RowCompleteToast completedRow={completedRowAlert} onDone={onClearRowAlert} />
       {/* Top bar */}
-      <div className="flex items-center justify-between px-4 pt-3 pb-2">
+      <div className="flex items-center justify-between px-4 pt-3 pb-2 flex-shrink-0">
         <div className="flex items-center gap-2">
           <GameTimer elapsedSeconds={elapsedSeconds} />
           <div className="bg-black/30 px-2.5 py-1 rounded-lg text-xs border border-white/10">
@@ -107,54 +109,51 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
         </div>
       </div>
 
-      {/* Main table area */}
-      <div className="flex-1 flex flex-col px-2 sm:px-3 gap-3 pb-4">
+      {/* Main table area — fills remaining height */}
+      <div className="flex-1 flex flex-col md:flex-row px-2 sm:px-3 gap-2 md:gap-4 pb-2 md:pb-4 min-h-0 items-stretch md:items-start">
 
-        {/* MOBILE: deck on top, rows below. DESKTOP: deck left, rows right */}
-        <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-center md:items-start">
+        {/* Deck / waste area */}
+        <div className="flex-shrink-0 flex justify-center items-center md:items-start">
+          <SolitaireDeck
+            deckCount={drawPile.length}
+            flippedCard={flippedCard}
+            onFlip={onFlipCard}
+            onDiscard={handleDiscard}
+            onCardTap={selectedRow !== null ? handlePlay : undefined}
+            isPlayable={selectedRow !== null}
+            showDeckCount={showDeckCount}
+          />
+        </div>
 
-          {/* Deck / waste area */}
-          <div className="flex-shrink-0 w-full md:w-auto flex justify-center">
-            <SolitaireDeck
-              deckCount={drawPile.length}
-              flippedCard={flippedCard}
-              onFlip={onFlipCard}
-              onDiscard={handleDiscard}
-              onCardTap={selectedRow !== null ? handlePlay : undefined}
-              isPlayable={selectedRow !== null}
-              showDeckCount={showDeckCount}
-            />
-          </div>
+        {/* Divider */}
+        <div className="hidden md:block w-px self-stretch bg-white/10" />
+        <div className="block md:hidden h-px w-full bg-white/10 flex-shrink-0" />
 
-          {/* Divider — horizontal on mobile, vertical on desktop */}
-          <div className="hidden md:block w-px self-stretch bg-white/10" />
-          <div className="block md:hidden h-px w-full bg-white/10" />
-
-          {/* Row columns */}
-          <div className="flex-1 w-full overflow-x-auto">
-            <div className="flex gap-2 sm:gap-3 justify-center min-w-0">
-              {rows.map((row, idx) => (
-                <SolitaireRow
-                  key={idx}
-                  rowIndex={idx}
-                  row={row}
-                  accentColor={rowAccents[idx]}
-                  isSelected={selectedRow === idx}
-                  isHinted={hintPulse && validRows.includes(idx)}
-                  onTap={() => handleRowTap(idx)}
-                />
-              ))}
-            </div>
+        {/* Row columns — scrollable vertically on mobile so stats are reachable */}
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          <div className="flex gap-2 sm:gap-3 justify-center min-w-0 pb-2">
+            {rows.map((row, idx) => (
+              <SolitaireRow
+                key={idx}
+                rowIndex={idx}
+                row={row}
+                accentColor={rowAccents[idx]}
+                isSelected={selectedRow === idx}
+                isHinted={hintPulse && validRows.includes(idx)}
+                onTap={() => handleRowTap(idx)}
+              />
+            ))}
           </div>
         </div>
 
-        {/* Instruction hint at bottom */}
-        {flippedCard && selectedRow !== null && (
-          <div className="text-center text-xs text-foreground/60 mt-auto">
-            tap the column again to confirm • or tap the card to play
-          </div>
-        )}
       </div>
+
+      {/* Instruction hint at bottom */}
+      {flippedCard && selectedRow !== null && (
+        <div className="text-center text-xs text-foreground/60 pb-2 flex-shrink-0">
+          tap the column again to confirm • or tap the card to play
+        </div>
+      )}
     </div>
   );
 }
