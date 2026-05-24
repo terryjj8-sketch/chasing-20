@@ -64,7 +64,13 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
       style={{
         background: 'radial-gradient(ellipse at 50% 30%, #1a4a2e 0%, #0f2d1a 60%, #081a0e 100%)',
         height: '100dvh',
+        maxHeight: '100dvh',
         overflow: 'hidden',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
       }}
     >
       <RowCompleteToast completedRow={completedRowAlert} onDone={onClearRowAlert} />
