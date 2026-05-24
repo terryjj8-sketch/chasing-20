@@ -103,12 +103,13 @@ export default function SessionDashboard({ rows, finalTime, difficulty, totalCar
               YOU WIN!
             </h1>
             <p className="text-white/60 mt-1 text-sm">Row {rows.findIndex(r => r.cards.length >= 20) + 1} reached 20 cards</p>
+            <p className="text-base font-bold text-white mt-3">That was great. See if you can do it again.</p>
           </>
         ) : (
           <>
             <div className="text-5xl mb-2">💀</div>
             <h1 className="text-4xl sm:text-5xl font-black text-red-400">Game Over</h1>
-            <p className="text-white/60 mt-1 text-sm">No row reached 20. Better luck next time!</p>
+            <p className="text-base font-bold text-white mt-3">You were so close. Let's go again.</p>
           </>
         )}
         <div className="mt-2 text-xs font-bold px-3 py-1 rounded-full inline-block" style={{ background: 'rgba(255,255,255,0.1)', color: '#94a3b8' }}>
