@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import SetupPhase from '../components/game/SetupPhase';
 import GameplayPhase from '../components/game/GameplayPhase';
 import EndGamePhase from '../components/game/EndGamePhase';
+import SessionDashboard from '../components/game/SessionDashboard';
 import { initializeDeck, shuffleDeck } from '../lib/deckUtils';
 import { useSounds } from '../lib/useSounds';
 import { ThemeProvider } from '../lib/ThemeContext';
@@ -256,7 +257,13 @@ export default function Game() {
             onClearRowAlert={() => setCompletedRowAlert(null)}
           />
         ) : (
-          <GameEndContent rows={gameState.rows} onPlayAgain={resetGame} finalTime={elapsedSeconds} />
+          <GameEndContent
+            rows={gameState.rows}
+            onPlayAgain={resetGame}
+            finalTime={elapsedSeconds}
+            difficulty={difficulty}
+            totalCards={(gameState.drawPile?.length || 0) + (gameState.discardPile?.length || 0) + gameState.rows.reduce((s, r) => s + r.cards.length, 0)}
+          />
         )}
       </div>
 
@@ -297,8 +304,14 @@ function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onU
   );
 }
 
-function GameEndContent({ rows, onPlayAgain, finalTime }) {
+function GameEndContent({ rows, onPlayAgain, finalTime, difficulty, totalCards }) {
   return (
-    <EndGamePhase rows={rows} onPlayAgain={onPlayAgain} finalTime={finalTime} />
+    <SessionDashboard
+      rows={rows}
+      onPlayAgain={onPlayAgain}
+      finalTime={finalTime}
+      difficulty={difficulty}
+      totalCards={totalCards}
+    />
   );
 }
