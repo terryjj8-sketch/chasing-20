@@ -57,7 +57,7 @@ export default function SetupPhase({ drawPile, onComplete }) {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center p-6 overflow-hidden relative"
+      className="min-h-screen flex flex-col items-center justify-start py-6 px-6 overflow-y-auto relative"
       style={{ background: 'linear-gradient(160deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)' }}
     >
       {/* Subtle colorful accent blobs */}
