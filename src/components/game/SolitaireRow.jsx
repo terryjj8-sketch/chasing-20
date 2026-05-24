@@ -9,13 +9,14 @@ const accentMap = {
   'row-4': '#00D4FF',
 };
 
-// Responsive card sizing: smaller on mobile, full size on larger screens
-// We use a fixed size here; the GameplayPhase handles layout stacking
 const CARD_W = 62;
 const CARD_H = 88;
-const FAN_OFFSET = 20; // vertical offset per fanned card
+const FAN_OFFSET_DESKTOP = 20;
+// On mobile, cap the total column height so it always fits on screen.
+// Max available height for cards ~= 100dvh - top bar (~56px) - header (~28px) - stats (~28px) - padding (~24px)
+const MOBILE_MAX_COL_H = 260;
 
-export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, isHinted, onTap }) {
+export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, isHinted, onTap, isMobile }) {
   const hex = accentMap[accentColor] || '#8B5CF6';
   const cards = row.cards;
   const prevCountRef = useRef(cards.length);
@@ -25,10 +26,15 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, i
     prevCountRef.current = cards.length;
   });
 
-  // Column height: empty slot or fanned cards
+  // On mobile: compress the fan so all cards fit within MOBILE_MAX_COL_H
+  // Always show at least the top card fully; older cards peek above it
+  const fanOffset = isMobile && cards.length > 1
+    ? Math.min(FAN_OFFSET_DESKTOP, (MOBILE_MAX_COL_H - CARD_H) / (cards.length - 1))
+    : FAN_OFFSET_DESKTOP;
+
   const columnHeight = cards.length === 0
     ? CARD_H
-    : CARD_H + (cards.length - 1) * FAN_OFFSET;
+    : Math.min(CARD_H + (cards.length - 1) * fanOffset, isMobile ? MOBILE_MAX_COL_H : Infinity);
 
   return (
     <motion.div
@@ -59,7 +65,7 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, i
 
       {/* Card column container */}
       <div
-        className="relative rounded-lg transition-all duration-150"
+        className="relative rounded-lg transition-all duration-150 overflow-hidden"
         style={{
           width: CARD_W + 12,
           height: columnHeight + 12,
@@ -67,23 +73,17 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, i
           background: isSelected ? `${hex}25` : isHinted ? `${hex}18` : 'rgba(255,255,255,0.03)',
           border: isSelected ? `2px solid ${hex}` : isHinted ? `2px solid ${hex}99` : '2px solid rgba(255,255,255,0.06)',
           boxShadow: isSelected ? `0 0 18px ${hex}55` : isHinted ? `0 0 22px ${hex}88, 0 0 40px ${hex}44` : undefined,
-          transition: 'box-shadow 0.15s, border-color 0.15s, background 0.15s',
+          transition: 'box-shadow 0.15s, border-color 0.15s, background 0.15s, height 0.2s',
         }}
       >
         {cards.length === 0 ? (
-          // Empty slot placeholder
           <div
             className="rounded flex items-center justify-center"
-            style={{
-              width: CARD_W,
-              height: CARD_H,
-              border: `2px dashed ${hex}30`,
-            }}
+            style={{ width: CARD_W, height: CARD_H, border: `2px dashed ${hex}30` }}
           >
             <span style={{ color: `${hex}40`, fontSize: 18 }}>+</span>
           </div>
         ) : (
-          // Fanned card stack
           <div className="relative" style={{ width: CARD_W, height: columnHeight }}>
             {cards.map((card, i) => {
               const isTopCard = i === cards.length - 1;
@@ -92,7 +92,7 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, i
                 <div
                   key={i}
                   className="absolute"
-                  style={{ top: i * FAN_OFFSET, left: 0, zIndex: i + 1 }}
+                  style={{ top: i * fanOffset, left: 0, zIndex: i + 1 }}
                 >
                   <SolitaireCard
                     value={card.value}

@@ -13,6 +13,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
   const { drawPile, discardPile, rows, flippedCard } = gameState;
   const showDeckCount = difficulty === 'easy';
   const [selectedRow, setSelectedRow] = useState(null);
+  const isMobile = window.innerWidth < 768;
 
   const [hintPulse, setHintPulse] = useState(false);
 
@@ -83,7 +84,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
             <span className="text-foreground font-bold ml-1">{discardPile.length}</span>
           </div>
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="sm"
@@ -97,20 +98,22 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
           <Button
             variant="ghost"
             size="sm"
-            onClick={onRestart}
-            className="bg-black/30 hover:bg-black/50 text-foreground px-2 border border-white/10 h-7"
-            title="Restart"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
             onClick={onTogglePause}
             className="bg-black/30 hover:bg-black/50 text-foreground px-2 border border-white/10 h-7"
             title={isPaused ? 'Resume' : 'Pause'}
           >
             {isPaused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
+          </Button>
+          {/* Restart separated with a gap and red tint to avoid accidental taps */}
+          <div className="w-px h-5 bg-white/10 mx-1" />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onRestart}
+            className="bg-red-900/30 hover:bg-red-800/50 text-red-300 px-2 border border-red-500/20 h-7"
+            title="Restart game"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
           </Button>
         </div>
       </div>
@@ -147,6 +150,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
                 isSelected={selectedRow === idx}
                 isHinted={hintPulse && validRows.includes(idx)}
                 onTap={() => handleRowTap(idx)}
+                isMobile={isMobile}
               />
             ))}
           </div>
