@@ -16,6 +16,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
   const isMobile = window.innerWidth < 768;
 
   const [hintPulse, setHintPulse] = useState(false);
+  const [showHint, setShowHint] = useState(false);
 
   const flippedCardKey = flippedCard ? `${flippedCard.value}-${flippedCard.suit}` : null;
   useEffect(() => {
@@ -132,14 +133,24 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
             isPlayable={selectedRow !== null}
             showDeckCount={showDeckCount}
           />
-          <Button
-            variant="ghost"
-            size="icon"
-            className="bg-black/30 hover:bg-black/50 text-foreground border border-white/10 h-7 w-7"
-            title="Double tap a destination or the discard pile for a hint"
-          >
-            <HelpCircle className="w-3.5 h-3.5" />
-          </Button>
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="bg-black/30 hover:bg-black/50 text-foreground border border-white/10 h-7 w-7"
+              onClick={() => setShowHint(prev => !prev)}
+            >
+              <HelpCircle className="w-3.5 h-3.5" />
+            </Button>
+            {showHint && (
+              <div
+                className="absolute left-10 top-0 z-50 bg-black/90 border border-white/20 rounded-lg px-3 py-2 text-xs text-white/90 whitespace-nowrap"
+                onClick={() => setShowHint(false)}
+              >
+                Double-tap a row or the discard pile for a hint
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Divider */}
