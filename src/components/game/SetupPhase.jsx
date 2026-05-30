@@ -150,6 +150,23 @@ export default function SetupPhase({ drawPile, onComplete }) {
         })}
       </motion.div>
 
+      {/* Win Condition Statement */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="mb-8 px-6 py-4 rounded-2xl relative z-10 border-2"
+        style={{
+          background: 'linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,146,60,0.15))',
+          borderColor: '#fb923c',
+          boxShadow: '0 0 20px rgba(251,146,60,0.3)'
+        }}
+      >
+        <p className="text-center font-black text-base tracking-wide" style={{ color: '#fbbf24' }}>
+          ⭐ Get one row to 20 cards to win ⭐
+        </p>
+      </motion.div>
+
       {/* Card picker instructions */}
       <motion.p
         initial={{ opacity: 0 }}
