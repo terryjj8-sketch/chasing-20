@@ -5,7 +5,7 @@ import GameTimer from './GameTimer';
 import RowCompleteToast from './RowCompleteToast';
 import { canPlayCard } from '@/lib/deckUtils';
 import { Button } from '@/components/ui/button';
-import { Undo2, Pause, Play, RotateCcw } from 'lucide-react';
+import { Undo2, Pause, Play, RotateCcw, HelpCircle } from 'lucide-react';
 
 const rowAccents = ['row-1', 'row-2', 'row-3', 'row-4'];
 
@@ -122,7 +122,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
       <div className="flex-1 flex flex-col md:flex-row px-2 sm:px-3 gap-2 md:gap-4 pb-2 md:pb-4 min-h-0 items-stretch md:items-start">
 
         {/* Deck / waste area */}
-        <div className="flex-shrink-0 flex justify-center items-center md:items-start">
+        <div className="flex-shrink-0 flex flex-col justify-center items-center md:items-start gap-2">
           <SolitaireDeck
             deckCount={drawPile.length}
             flippedCard={flippedCard}
@@ -132,6 +132,14 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
             isPlayable={selectedRow !== null}
             showDeckCount={showDeckCount}
           />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="bg-black/30 hover:bg-black/50 text-foreground border border-white/10 h-7 w-7"
+            title="Double tap a destination or the discard pile for a hint"
+          >
+            <HelpCircle className="w-3.5 h-3.5" />
+          </Button>
         </div>
 
         {/* Divider */}
