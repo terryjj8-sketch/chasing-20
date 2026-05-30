@@ -5,7 +5,7 @@ import GameTimer from './GameTimer';
 import RowCompleteToast from './RowCompleteToast';
 import { canPlayCard } from '@/lib/deckUtils';
 import { Button } from '@/components/ui/button';
-import { Undo2, Pause, Play, RotateCcw } from 'lucide-react';
+import { Undo2, Pause, Play, RotateCcw, HelpCircle, X } from 'lucide-react';
 
 const rowAccents = ['row-1', 'row-2', 'row-3', 'row-4'];
 
@@ -16,6 +16,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
   const isMobile = window.innerWidth < 768;
 
   const [hintPulse, setHintPulse] = useState(false);
+  const [showHint, setShowHint] = useState(false);
 
   const flippedCardKey = flippedCard ? `${flippedCard.value}-${flippedCard.suit}` : null;
   useEffect(() => {
@@ -88,6 +89,15 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
           <Button
             variant="ghost"
             size="sm"
+            onClick={() => setShowHint(true)}
+            className="bg-black/30 hover:bg-black/50 text-foreground px-2 border border-white/10 h-7"
+            title="How to play"
+          >
+            <HelpCircle className="w-3.5 h-3.5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={onUndo}
             disabled={!canUndo}
             className="bg-black/30 hover:bg-black/50 text-foreground disabled:opacity-30 px-2 border border-white/10 h-7"
@@ -157,6 +167,23 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
         </div>
 
       </div>
+
+      {/* Hint overlay */}
+      {showHint && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setShowHint(false)}>
+          <div className="bg-gray-900 border border-white/20 rounded-2xl p-6 mx-6 max-w-sm text-white" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-black text-lg">How to play a card</h3>
+              <button onClick={() => setShowHint(false)} className="text-white/50 hover:text-white"><X className="w-4 h-4" /></button>
+            </div>
+            <ol className="space-y-3 text-sm text-white/80">
+              <li className="flex gap-2"><span className="font-black text-yellow-400">1.</span> Flip a card from the deck by tapping the face-down pile.</li>
+              <li className="flex gap-2"><span className="font-black text-yellow-400">2.</span> Tap a row to select it. Tap it again to play the card there.</li>
+              <li className="flex gap-2"><span className="font-black text-yellow-400">3.</span> If you don't want the card, tap <span className="font-bold text-red-400 ml-1">Discard</span> to skip it.</li>
+            </ol>
+          </div>
+        </div>
+      )}
 
       {/* Instruction hint at bottom */}
       {flippedCard && selectedRow !== null && (
