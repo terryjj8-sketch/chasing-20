@@ -177,9 +177,9 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
               <button onClick={() => setShowHint(false)} className="text-white/50 hover:text-white"><X className="w-4 h-4" /></button>
             </div>
             <ol className="space-y-3 text-sm text-white/80">
-              <li className="flex gap-2"><span className="font-black text-yellow-400">1.</span> Flip a card from the deck by tapping the face-down pile.</li>
-              <li className="flex gap-2"><span className="font-black text-yellow-400">2.</span> Tap a row to select it. Tap it again to play the card there.</li>
-              <li className="flex gap-2"><span className="font-black text-yellow-400">3.</span> If you don't want the card, tap <span className="font-bold text-red-400 ml-1">Discard</span> to skip it.</li>
+              <li className="flex gap-2"><span className="font-black text-yellow-400">1.</span> A card from the deck automatically flips face-up for you.</li>
+              <li className="flex gap-2"><span className="font-black text-yellow-400">2.</span> <span className="font-bold text-white">Double-tap any card in a row</span> to move the face-up card there.</li>
+              <li className="flex gap-2"><span className="font-black text-yellow-400">3.</span> Don't want the card? Tap <span className="font-bold text-red-400 ml-1">Discard</span> to skip it and move on.</li>
             </ol>
           </div>
         </div>
