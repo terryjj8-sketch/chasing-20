@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { formatTime } from './GameTimer';
 import confetti from 'canvas-confetti';
-import { Trophy, Timer, Target, TrendingUp, BarChart2, Star } from 'lucide-react';
+import { Trophy, Timer, Target, TrendingUp, BarChart2, Star, Globe } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import Leaderboard from './Leaderboard';
 
 const HISTORY_KEY = 'chasing20_session_history';
 const MAX_HISTORY = 20;
@@ -48,9 +50,16 @@ function StatCard({ icon: Icon, label, value, sub, accent, highlight }) {
   );
 }
 
+const PLAYER_NAME_KEY = 'chasing20_player_name';
+
 export default function SessionDashboard({ rows, finalTime, difficulty, totalCards, onPlayAgain }) {
   const [history, setHistory] = useState([]);
   const [thisGame, setThisGame] = useState(null);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [playerName, setPlayerName] = useState(() => localStorage.getItem(PLAYER_NAME_KEY) || '');
+  const [nameInput, setNameInput] = useState('');
+  const [showNamePrompt, setShowNamePrompt] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const isWin = rows.some(r => r.cards.length >= 20);
   const efficiency = calcEfficiency(rows, totalCards);
@@ -73,7 +82,70 @@ export default function SessionDashboard({ rows, finalTime, difficulty, totalCar
     }
   }, []);
 
+  const submitScore = async (name) => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    localStorage.setItem(PLAYER_NAME_KEY, trimmed);
+    setPlayerName(trimmed);
+    setShowNamePrompt(false);
+    setSubmitted(true);
+
+    // Find or create leaderboard entry for this player + difficulty
+    const existing = await base44.entities.LeaderboardEntry.filter({ player_name: trimmed, difficulty });
+    if (existing.length > 0) {
+      const entry = existing[0];
+      const newWins = (entry.wins || 0) + (isWin ? 1 : 0);
+      const newTotal = (entry.total_games || 0) + 1;
+      const newBest = isWin
+        ? (entry.best_time ? Math.min(entry.best_time, finalTime) : finalTime)
+        : entry.best_time;
+      await base44.entities.LeaderboardEntry.update(entry.id, {
+        wins: newWins,
+        total_games: newTotal,
+        best_time: newBest,
+      });
+    } else {
+      await base44.entities.LeaderboardEntry.create({
+        player_name: trimmed,
+        difficulty,
+        wins: isWin ? 1 : 0,
+        total_games: 1,
+        best_time: isWin ? finalTime : null,
+      });
+    }
+  };
+
+  const handleSubmitClick = () => {
+    if (playerName) {
+      submitScore(playerName);
+    } else {
+      setNameInput('');
+      setShowNamePrompt(true);
+    }
+  };
+
   if (!thisGame) return null;
+
+  // Name prompt modal
+  const NamePromptModal = showNamePrompt && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+      <div className="bg-gray-900 border border-white/20 rounded-2xl p-6 w-full max-w-xs text-white">
+        <h3 className="font-black text-lg mb-3">Enter your name</h3>
+        <input
+          autoFocus
+          value={nameInput}
+          onChange={e => setNameInput(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && submitScore(nameInput)}
+          placeholder="Your name..."
+          className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/30 outline-none focus:border-yellow-400 mb-4"
+        />
+        <div className="flex gap-2">
+          <button onClick={() => setShowNamePrompt(false)} className="flex-1 py-2 rounded-lg text-sm text-white/50 border border-white/10">Cancel</button>
+          <button onClick={() => submitScore(nameInput)} className="flex-1 py-2 rounded-lg text-sm font-black" style={{ background: 'linear-gradient(135deg,#facc15,#fb923c)', color: '#1e1b4b' }}>Submit</button>
+        </div>
+      </div>
+    </div>
+  );
 
   const previousGames = history.slice(1); // exclude current
   const wins = history.filter(g => g.isWin);
@@ -85,6 +157,9 @@ export default function SessionDashboard({ rows, finalTime, difficulty, totalCar
   const efficiencyDiff = avgEfficiency !== null ? efficiency - avgEfficiency : null;
 
   return (
+    <>
+      {NamePromptModal}
+      {showLeaderboard && <Leaderboard onClose={() => setShowLeaderboard(false)} />}
     <div
       className="min-h-screen flex flex-col items-center justify-start p-4 sm:p-6 overflow-y-auto"
       style={{ background: 'linear-gradient(160deg, #0f172a 0%, #1a1a3e 50%, #0f172a 100%)' }}
@@ -221,6 +296,35 @@ export default function SessionDashboard({ rows, finalTime, difficulty, totalCar
         </motion.div>
       )}
 
+      {/* Submit + Leaderboard */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.45 }}
+        className="flex flex-col items-center gap-3 mb-4 w-full max-w-md"
+      >
+        <div className="flex gap-3 w-full">
+          {!submitted ? (
+            <button
+              onClick={handleSubmitClick}
+              className="flex-1 py-2.5 rounded-xl text-sm font-black border border-yellow-400/40 text-yellow-400 hover:bg-yellow-400/10 transition-all"
+            >
+              {playerName ? `Submit as "${playerName}"` : '📋 Submit Score'}
+            </button>
+          ) : (
+            <div className="flex-1 py-2.5 rounded-xl text-sm font-bold text-center text-green-400 border border-green-400/30">
+              ✅ Score submitted!
+            </div>
+          )}
+          <button
+            onClick={() => setShowLeaderboard(true)}
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-black border border-white/20 text-white/70 hover:bg-white/10 transition-all"
+          >
+            <Globe className="w-4 h-4" /> Leaderboard
+          </button>
+        </div>
+      </motion.div>
+
       {/* Play Again */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -241,5 +345,6 @@ export default function SessionDashboard({ rows, finalTime, difficulty, totalCar
         </Button>
       </motion.div>
     </div>
+    </>
   );
 }

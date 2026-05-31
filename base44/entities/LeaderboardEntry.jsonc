@@ -1,0 +1,36 @@
+{
+  "name": "LeaderboardEntry",
+  "type": "object",
+  "properties": {
+    "player_name": {
+      "type": "string",
+      "description": "Player's display name"
+    },
+    "best_time": {
+      "type": "number",
+      "description": "Best winning time in seconds"
+    },
+    "wins": {
+      "type": "number",
+      "description": "Total number of wins",
+      "default": 0
+    },
+    "total_games": {
+      "type": "number",
+      "description": "Total games played",
+      "default": 0
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "easy",
+        "medium",
+        "hard"
+      ],
+      "description": "Difficulty level for this entry"
+    }
+  },
+  "required": [
+    "player_name"
+  ]
+}
