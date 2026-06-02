@@ -34,44 +34,47 @@ export default function SolitaireCard({ value, suit, width = 52, height = 72, an
 
       {/* Corner pips */}
       <div className="absolute top-1 left-1.5 flex flex-col items-center leading-none">
-        <span className="font-black leading-none" style={{ fontSize: width < 60 ? 10 : 12, color: faction.fg }}>
-          {isZero ? '0' : value}
+        <span className="font-black leading-none" style={{ fontSize: width < 60 ? 8 : 9, color: faction.accent }}>
+          {isZero ? '★' : value}
         </span>
-        <span className="leading-none" style={{ fontSize: width < 60 ? 8 : 10 }}>
-          {faction.symbol}
-        </span>
+        {!isZero && <span className="leading-none" style={{ fontSize: width < 60 ? 8 : 10 }}>{faction.symbol}</span>}
       </div>
       <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
-        <span className="font-black leading-none" style={{ fontSize: width < 60 ? 10 : 12, color: faction.fg }}>
-          {isZero ? '0' : value}
+        <span className="font-black leading-none" style={{ fontSize: width < 60 ? 8 : 9, color: faction.accent }}>
+          {isZero ? '★' : value}
         </span>
-        <span className="leading-none" style={{ fontSize: width < 60 ? 8 : 10 }}>
-          {faction.symbol}
-        </span>
+        {!isZero && <span className="leading-none" style={{ fontSize: width < 60 ? 8 : 10 }}>{faction.symbol}</span>}
       </div>
 
       {/* Center */}
-      <div className="text-center z-10 flex flex-col items-center">
-        <div
-          className="font-black"
-          style={{ fontSize: width < 56 ? 18 : width < 70 ? 22 : 32, color: faction.fg }}
-        >
-          {isZero ? '0' : value}
-        </div>
-        {isZero && (
-          <div style={{ fontSize: width < 60 ? 7 : 9, color: faction.accent, fontWeight: 700, marginTop: -2 }}>
-            RESET
+      {isZero ? (
+        <div className="text-center z-10 flex flex-col items-center gap-0.5">
+          <div style={{ fontSize: width < 60 ? 14 : 18 }}>★</div>
+          <div className="font-black tracking-widest" style={{ fontSize: width < 60 ? 10 : 13, color: faction.accent, letterSpacing: '0.15em' }}>
+            WILD
           </div>
-        )}
-      </div>
+          <div style={{ fontSize: width < 60 ? 14 : 18 }}>★</div>
+        </div>
+      ) : (
+        <div className="text-center z-10 flex flex-col items-center">
+          <div
+            className="font-black"
+            style={{ fontSize: width < 56 ? 18 : width < 70 ? 22 : 32, color: faction.fg }}
+          >
+            {value}
+          </div>
+        </div>
+      )}
 
       {/* Faction watermark in center-bottom */}
-      <div
-        className="absolute bottom-5 left-0 right-0 text-center pointer-events-none"
-        style={{ fontSize: width < 60 ? 10 : 13, opacity: 0.18 }}
-      >
-        {faction.symbol}
-      </div>
+      {!isZero && (
+        <div
+          className="absolute bottom-5 left-0 right-0 text-center pointer-events-none"
+          style={{ fontSize: width < 60 ? 10 : 13, opacity: 0.18 }}
+        >
+          {faction.symbol}
+        </div>
+      )}
     </div>
   );
 

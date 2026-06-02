@@ -127,7 +127,7 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, i
       {/* Stats below column */}
       <div className="flex flex-col items-center gap-0.5 mt-1">
         <div className="text-[10px] text-foreground/40">
-          zeros <span className="font-bold text-purple-300">{row.zeroCount}/3</span>
+          wilds <span className="font-bold text-purple-300">{row.zeroCount}/4</span>
         </div>
         {row.resetPending && (
           <motion.div

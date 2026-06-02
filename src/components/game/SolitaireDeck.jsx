@@ -92,24 +92,33 @@ function CardFace({ card, onTap, isPlayable }) {
 
       {/* Corner pips */}
       <div className="absolute top-1 left-1.5 flex flex-col items-center leading-none">
-        <span className="font-black leading-none text-[10px]" style={{ color: faction.fg }}>{isZero ? '0' : card.value}</span>
-        <span className="leading-none text-[9px]">{faction.symbol}</span>
+        <span className="font-black leading-none text-[9px]" style={{ color: faction.accent }}>{isZero ? '★' : card.value}</span>
+        {!isZero && <span className="leading-none text-[9px]">{faction.symbol}</span>}
       </div>
       <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
-        <span className="font-black leading-none text-[10px]" style={{ color: faction.fg }}>{isZero ? '0' : card.value}</span>
-        <span className="leading-none text-[9px]">{faction.symbol}</span>
+        <span className="font-black leading-none text-[9px]" style={{ color: faction.accent }}>{isZero ? '★' : card.value}</span>
+        {!isZero && <span className="leading-none text-[9px]">{faction.symbol}</span>}
       </div>
 
       {/* Center value */}
-      <div className="text-center z-10 flex flex-col items-center">
-        <div className="text-3xl font-black" style={{ color: faction.fg }}>{isZero ? '0' : card.value}</div>
-        {isZero && <div className="font-bold -mt-1" style={{ fontSize: 8, color: faction.accent }}>RESET</div>}
-      </div>
+      {isZero ? (
+        <div className="text-center z-10 flex flex-col items-center gap-0.5">
+          <div className="text-lg">★</div>
+          <div className="font-black tracking-widest text-sm" style={{ color: faction.accent, letterSpacing: '0.15em' }}>WILD</div>
+          <div className="text-lg">★</div>
+        </div>
+      ) : (
+        <div className="text-center z-10 flex flex-col items-center">
+          <div className="text-3xl font-black" style={{ color: faction.fg }}>{card.value}</div>
+        </div>
+      )}
 
       {/* Faction watermark */}
-      <div className="absolute bottom-5 left-0 right-0 text-center pointer-events-none text-[13px]" style={{ opacity: 0.18 }}>
-        {faction.symbol}
-      </div>
+      {!isZero && (
+        <div className="absolute bottom-5 left-0 right-0 text-center pointer-events-none text-[13px]" style={{ opacity: 0.18 }}>
+          {faction.symbol}
+        </div>
+      )}
     </motion.div>
   );
 }

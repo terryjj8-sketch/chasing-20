@@ -166,7 +166,7 @@ export default function SetupPhase({ drawPile, onComplete }) {
           ⭐ Get one row to 20 cards to win ⭐
         </p>
         <p className="text-center text-sm text-white/80 mt-2 font-semibold">
-          Build your rows: match the top card, go one higher, or go one lower · Zero cards are wild
+          Build your rows: match the top card, go one higher, or go one lower · ★ Wild cards reset any row
         </p>
       </motion.div>
 

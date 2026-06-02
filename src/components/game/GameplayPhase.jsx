@@ -179,7 +179,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
             <ol className="space-y-3 text-sm text-white/80">
               <li className="flex gap-2"><span className="font-black text-yellow-400">1.</span> A card from the deck automatically flips face-up for you.</li>
               <li className="flex gap-2"><span className="font-black text-yellow-400">2.</span> <span className="font-bold text-white">Double-tap any card in a row</span> to move the face-up card there.</li>
-              <li className="flex gap-2"><span className="font-black text-yellow-400">3.</span> Don't want the card? Tap <span className="font-bold text-red-400 ml-1">Discard</span> to skip it and move on.</li>
+              <li className="flex gap-2"><span className="font-black text-yellow-400">3.</span> Got a <span className="font-bold text-yellow-300 mx-1">★ WILD</span>? Play it on any row to reset the counter. Don't want the card? Tap <span className="font-bold text-red-400 ml-1">Discard</span>.</li>
             </ol>
           </div>
         </div>

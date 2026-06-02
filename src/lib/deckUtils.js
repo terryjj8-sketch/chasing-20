@@ -1,4 +1,4 @@
-export function initializeDeck(zeroCount = 10) {
+export function initializeDeck(zeroCount = 12) {
   const deck = [];
   
   // Four sets of 1-20
@@ -28,9 +28,9 @@ export function shuffleDeck(deck) {
 
 export function canPlayCard(card, row) {
   if (card.value === 0) {
-    // Zeros can't start an empty row, but otherwise reset any row (max 3 per row)
+    // Wilds can't start an empty row, but otherwise reset any row (max 4 per row)
     if (row.cards.length === 0) return false;
-    return row.zeroCount < 3;
+    return row.zeroCount < 4;
   }
 
   if (row.resetPending) {
