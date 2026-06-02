@@ -16,7 +16,7 @@ export default function Game() {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [difficulty, setDifficulty] = useState('easy');
-  const [soundEnabled, setSoundEnabled] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
   const [completedRowAlert, setCompletedRowAlert] = useState(null);
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
@@ -143,7 +143,8 @@ export default function Game() {
   };
 
   const handlePlayCard = (rowIndex, card) => {
-    sounds.playCardPlay();
+    if (card.value === 0) sounds.playWild();
+    else sounds.playCardPlay();
     setGameState(prev => {
       setHistory(h => [...h, prev]);
 
