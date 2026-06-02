@@ -161,6 +161,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
                 isHinted={hintPulse && validRows.includes(idx)}
                 onTap={() => handleRowTap(idx)}
                 isMobile={isMobile}
+                showCardCount={difficulty === 'easy'}
               />
             ))}
           </div>

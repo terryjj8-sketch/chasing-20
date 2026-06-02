@@ -17,7 +17,7 @@ const FAN_OFFSET_DESKTOP = 20;
 // Max available height for cards ~= 100dvh - top bar (~56px) - header (~28px) - stats (~28px) - padding (~24px)
 const MOBILE_MAX_COL_H = 260;
 
-export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, isHinted, onTap, isMobile }) {
+export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, isHinted, onTap, isMobile, showCardCount = true }) {
   const hex = accentMap[accentColor] || '#8B5CF6';
   const cards = row.cards;
   const prevCountRef = useRef(cards.length);
@@ -56,12 +56,14 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, i
         <span className="text-xs font-bold uppercase tracking-widest" style={{ color: hex }}>
           Row {rowIndex + 1}
         </span>
-        <span
-          className="text-[10px] font-black px-1.5 py-0.5 rounded-full"
-          style={{ background: `${hex}22`, color: hex }}
-        >
-          {cards.length}
-        </span>
+        {showCardCount && (
+          <span
+            className="text-[10px] font-black px-1.5 py-0.5 rounded-full"
+            style={{ background: `${hex}22`, color: hex }}
+          >
+            {cards.length}
+          </span>
+        )}
       </div>
 
       {/* Card column container */}
