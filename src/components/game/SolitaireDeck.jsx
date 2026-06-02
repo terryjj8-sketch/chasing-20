@@ -77,8 +77,8 @@ function CardFace({ card, onTap, isPlayable }) {
       whileTap={onTap ? { scale: 0.95 } : {}}
       className="rounded-lg flex items-center justify-center relative overflow-hidden select-none"
       style={{
-        width: CARD_W,
-        height: CARD_H,
+        width: isZero ? CARD_H : CARD_W,
+        height: isZero ? CARD_W : CARD_H,
         background: faction.bg,
         border: isPlayable ? '2px solid #10B981' : `2px solid ${faction.accent}55`,
         boxShadow: isPlayable
@@ -91,14 +91,28 @@ function CardFace({ card, onTap, isPlayable }) {
       <div className="absolute rounded-sm pointer-events-none" style={{ inset: 3, border: `1px solid ${faction.accent}33` }} />
 
       {/* Corner pips */}
-      <div className="absolute top-1 left-1.5 flex flex-col items-center leading-none">
-        <span className="font-black leading-none text-[9px]" style={{ color: faction.accent }}>{isZero ? '★' : card.value}</span>
-        {!isZero && <span className="leading-none text-[9px]">{faction.symbol}</span>}
-      </div>
-      <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
-        <span className="font-black leading-none text-[9px]" style={{ color: faction.accent }}>{isZero ? '★' : card.value}</span>
-        {!isZero && <span className="leading-none text-[9px]">{faction.symbol}</span>}
-      </div>
+      {!isZero && (
+        <>
+          <div className="absolute top-1 left-1.5 flex flex-col items-center leading-none">
+            <span className="font-black leading-none text-[9px]" style={{ color: faction.fg }}>{card.value}</span>
+            <span className="leading-none text-[9px]">{faction.symbol}</span>
+          </div>
+          <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
+            <span className="font-black leading-none text-[9px]" style={{ color: faction.fg }}>{card.value}</span>
+            <span className="leading-none text-[9px]">{faction.symbol}</span>
+          </div>
+        </>
+      )}
+      {isZero && (
+        <>
+          <div className="absolute top-1 left-1.5">
+            <span className="font-black text-[8px]" style={{ color: faction.accent }}>★</span>
+          </div>
+          <div className="absolute top-1 right-1.5">
+            <span className="font-black text-[8px]" style={{ color: faction.accent }}>★</span>
+          </div>
+        </>
+      )}
 
       {/* Center value */}
       {isZero ? (

@@ -18,8 +18,8 @@ export default function SolitaireCard({ value, suit, width = 52, height = 72, an
     <div
       className="rounded-lg flex items-center justify-center relative overflow-hidden select-none"
       style={{
-        width,
-        height,
+        width: isZero ? height : width,
+        height: isZero ? width : height,
         background: faction.bg,
         border: `2px solid ${faction.accent}55`,
         boxShadow: '0 4px 12px rgba(0,0,0,0.35)',
@@ -33,18 +33,28 @@ export default function SolitaireCard({ value, suit, width = 52, height = 72, an
       />
 
       {/* Corner pips */}
-      <div className="absolute top-1 left-1.5 flex flex-col items-center leading-none">
-        <span className="font-black leading-none" style={{ fontSize: width < 60 ? 8 : 9, color: faction.accent }}>
-          {isZero ? '★' : value}
-        </span>
-        {!isZero && <span className="leading-none" style={{ fontSize: width < 60 ? 8 : 10 }}>{faction.symbol}</span>}
-      </div>
-      <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
-        <span className="font-black leading-none" style={{ fontSize: width < 60 ? 8 : 9, color: faction.accent }}>
-          {isZero ? '★' : value}
-        </span>
-        {!isZero && <span className="leading-none" style={{ fontSize: width < 60 ? 8 : 10 }}>{faction.symbol}</span>}
-      </div>
+      {!isZero && (
+        <>
+          <div className="absolute top-1 left-1.5 flex flex-col items-center leading-none">
+            <span className="font-black leading-none" style={{ fontSize: width < 60 ? 8 : 9, color: faction.fg }}>{value}</span>
+            <span className="leading-none" style={{ fontSize: width < 60 ? 8 : 10 }}>{faction.symbol}</span>
+          </div>
+          <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
+            <span className="font-black leading-none" style={{ fontSize: width < 60 ? 8 : 9, color: faction.fg }}>{value}</span>
+            <span className="leading-none" style={{ fontSize: width < 60 ? 8 : 10 }}>{faction.symbol}</span>
+          </div>
+        </>
+      )}
+      {isZero && (
+        <>
+          <div className="absolute top-1 left-1.5 leading-none">
+            <span className="font-black" style={{ fontSize: 8, color: faction.accent }}>★</span>
+          </div>
+          <div className="absolute top-1 right-1.5 leading-none">
+            <span className="font-black" style={{ fontSize: 8, color: faction.accent }}>★</span>
+          </div>
+        </>
+      )}
 
       {/* Center */}
       {isZero ? (
