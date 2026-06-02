@@ -63,17 +63,17 @@ export function useSounds(enabled) {
     playTone(ctx, { frequency: 1200, type: 'triangle', duration: 0.05, gain: 0.1, rampTo: 900 });
   }, [enabled, getCtx]);
 
-  // Card play: satisfying swoosh + zing
+  // Card play: uploaded MP3 swoosh
+  const cardPlayAudioRef = useRef(null);
   const playCardPlay = useCallback(() => {
     if (!enabled) return;
-    const ctx = getCtx();
-    // Swoosh
-    playNoise(ctx, { duration: 0.12, gain: 0.2, filterFreq: 1500 });
-    // Rising zing
-    playTone(ctx, { frequency: 400, type: 'sine', duration: 0.18, gain: 0.3, rampTo: 900 });
-    // Bright click at end
-    setTimeout(() => playTone(ctx, { frequency: 1400, type: 'triangle', duration: 0.07, gain: 0.15 }), 120);
-  }, [enabled, getCtx]);
+    if (!cardPlayAudioRef.current) {
+      cardPlayAudioRef.current = new Audio('https://media.base44.com/files/public/6a0eea050d49dffb4802ed44/caa83319d_May31at7-55PM.mp3');
+    }
+    const audio = cardPlayAudioRef.current;
+    audio.currentTime = 0;
+    audio.play();
+  }, [enabled]);
 
   // Discard: short downward whoosh
   const playDiscard = useCallback(() => {
