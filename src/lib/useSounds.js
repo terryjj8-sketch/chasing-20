@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect } from 'react';
+import { useRef, useCallback } from 'react';
 
 function createAudioCtx() {
   return new (window.AudioContext || window.webkitAudioContext)();
@@ -63,43 +63,18 @@ export function useSounds(enabled) {
     playTone(ctx, { frequency: 1200, type: 'triangle', duration: 0.05, gain: 0.1, rampTo: 900 });
   }, [enabled, getCtx]);
 
-  // Card play: fetch MP3 once, decode into AudioBuffer, play a fresh source each time
-  const cardPlayBufferRef = useRef(null);
-  const cardPlayLoadingRef = useRef(false);
-
-  const loadCardPlayBuffer = useCallback(async () => {
-    if (cardPlayBufferRef.current || cardPlayLoadingRef.current) return;
-    cardPlayLoadingRef.current = true;
-    const ctx = getCtx();
-    const response = await fetch('https://media.base44.com/files/public/6a0eea050d49dffb4802ed44/caa83319d_May31at7-55PM.mp3');
-    const arrayBuffer = await response.arrayBuffer();
-    cardPlayBufferRef.current = await ctx.decodeAudioData(arrayBuffer);
-    cardPlayLoadingRef.current = false;
-  }, [getCtx]);
-
+  // Card play: same sparkle trill as wild
   const playCardPlay = useCallback(() => {
     if (!enabled) return;
     const ctx = getCtx();
-    if (!cardPlayBufferRef.current) {
-      loadCardPlayBuffer();
-      return;
-    }
-    const source = ctx.createBufferSource();
-    source.buffer = cardPlayBufferRef.current;
-    const gainNode = ctx.createGain();
-    gainNode.gain.setValueAtTime(1.0, ctx.currentTime);
-    source.connect(gainNode);
-    gainNode.connect(ctx.destination);
-    source.start(ctx.currentTime);
-  }, [enabled, getCtx, loadCardPlayBuffer]);
-
-  // Discard: short downward whoosh
-  const playDiscard = useCallback(() => {
-    if (!enabled) return;
-    const ctx = getCtx();
-    playNoise(ctx, { duration: 0.1, gain: 0.18, filterFreq: 800 });
-    playTone(ctx, { frequency: 500, type: 'sawtooth', duration: 0.14, gain: 0.15, rampTo: 200 });
+    [800, 1000, 1200, 1500, 1800].forEach((freq, i) => {
+      setTimeout(() => playTone(ctx, { frequency: freq, type: 'sine', duration: 0.15, gain: 0.18 }), i * 45);
+    });
+    playNoise(ctx, { duration: 0.25, gain: 0.1, filterFreq: 4000 });
   }, [enabled, getCtx]);
+
+  // Discard: silent
+  const playDiscard = useCallback(() => {}, []);
 
   // Shuffle: rapid card flutter
   const playShuffle = useCallback(() => {
@@ -154,10 +129,7 @@ export function useSounds(enabled) {
     playNoise(ctx, { duration: 0.25, gain: 0.1, filterFreq: 4000 });
   }, [enabled, getCtx]);
 
-  // Pre-load the card play buffer as soon as sounds are enabled
-  useEffect(() => {
-    if (enabled) loadCardPlayBuffer();
-  }, [enabled, loadCardPlayBuffer]);
+
 
   return { playCardFlip, playCardPlay, playDiscard, playShuffle, playWin, playUndo, playRowComplete, playWild };
 }
