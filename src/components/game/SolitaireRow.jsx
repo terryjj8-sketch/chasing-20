@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SolitaireCard from './SolitaireCard';
+import WildToken from './WildToken';
 
 const accentMap = {
   'row-1': '#B833FF',
@@ -94,14 +95,18 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, i
                   className="absolute"
                   style={{ top: i * fanOffset, left: 0, zIndex: i + 1 }}
                 >
-                  <SolitaireCard
-                    value={card.value}
-                    suit={card.suit}
-                    width={CARD_W}
-                    height={CARD_H}
-                    isNew={isNewTop}
-                    cardIndex={i}
-                  />
+                  {card.value === 0 ? (
+                    <WildToken size={CARD_W} isNew={isNewTop} />
+                  ) : (
+                    <SolitaireCard
+                      value={card.value}
+                      suit={card.suit}
+                      width={CARD_W}
+                      height={CARD_H}
+                      isNew={isNewTop}
+                      cardIndex={i}
+                    />
+                  )}
                 </div>
               );
             })}
@@ -127,7 +132,7 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, i
       {/* Stats below column */}
       <div className="flex flex-col items-center gap-0.5 mt-1">
         <div className="text-[10px] text-foreground/40">
-          wilds <span className="font-bold text-purple-300">{row.zeroCount}/4</span>
+          wilds <span className="font-bold text-purple-300">{row.zeroCount}/3</span>
         </div>
         {row.resetPending && (
           <motion.div

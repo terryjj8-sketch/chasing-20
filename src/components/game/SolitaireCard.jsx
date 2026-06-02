@@ -18,8 +18,8 @@ export default function SolitaireCard({ value, suit, width = 52, height = 72, an
     <div
       className="rounded-lg flex items-center justify-center relative overflow-hidden select-none"
       style={{
-        width: isZero ? height : width,
-        height: isZero ? width : height,
+        width,
+        height,
         background: faction.bg,
         border: `2px solid ${faction.accent}55`,
         boxShadow: '0 4px 12px rgba(0,0,0,0.35)',

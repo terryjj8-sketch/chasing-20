@@ -28,9 +28,9 @@ export function shuffleDeck(deck) {
 
 export function canPlayCard(card, row) {
   if (card.value === 0) {
-    // Wilds can't start an empty row, but otherwise reset any row (max 4 per row)
+    // Wilds can't start an empty row, but otherwise reset any row (max 3 per row)
     if (row.cards.length === 0) return false;
-    return row.zeroCount < 4;
+    return row.zeroCount < 3;
   }
 
   if (row.resetPending) {

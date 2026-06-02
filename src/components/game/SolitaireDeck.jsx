@@ -77,8 +77,8 @@ function CardFace({ card, onTap, isPlayable }) {
       whileTap={onTap ? { scale: 0.95 } : {}}
       className="rounded-lg flex items-center justify-center relative overflow-hidden select-none"
       style={{
-        width: isZero ? CARD_H : CARD_W,
-        height: isZero ? CARD_W : CARD_H,
+        width: CARD_W,
+        height: CARD_H,
         background: faction.bg,
         border: isPlayable ? '2px solid #10B981' : `2px solid ${faction.accent}55`,
         boxShadow: isPlayable
