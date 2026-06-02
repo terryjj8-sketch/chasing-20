@@ -1,13 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useCardTheme } from '@/lib/ThemeContext';
-
-const SUIT_SYMBOLS = [
-  { symbol: '♠', color: '#1e293b' },
-  { symbol: '♥', color: '#e11d48' },
-  { symbol: '♦', color: '#e11d48' },
-  { symbol: '♣', color: '#1e293b' },
-];
+import { FACTIONS } from './SolitaireCard';
 
 // Stock pile (deck face-down) + Waste pile (current flipped card)
 // Classic solitaire top-left placement style
@@ -70,11 +63,8 @@ function CardBack({ onClick, count, disabled }) {
 }
 
 function CardFace({ card, onTap, isPlayable }) {
-  const { theme } = useCardTheme();
-  const isOldSchool = theme.id === 'old-school';
   const isZero = card.value === 0;
-  const suitInfo = (card.suit !== undefined && card.suit !== null) ? SUIT_SYMBOLS[card.suit] : null;
-  const textColor = (isOldSchool && suitInfo && !isZero) ? suitInfo.color : '#000000';
+  const faction = FACTIONS[card.suit ?? 0];
 
   return (
     <motion.div
@@ -89,8 +79,8 @@ function CardFace({ card, onTap, isPlayable }) {
       style={{
         width: CARD_W,
         height: CARD_H,
-        background: '#fff',
-        border: isPlayable ? '2px solid #10B981' : '2px solid #e2e8f0',
+        background: faction.bg,
+        border: isPlayable ? '2px solid #10B981' : `2px solid ${faction.accent}55`,
         boxShadow: isPlayable
           ? '0 0 14px rgba(16,185,129,0.55), 0 4px 12px rgba(0,0,0,0.3)'
           : '0 4px 12px rgba(0,0,0,0.25)',
@@ -98,36 +88,27 @@ function CardFace({ card, onTap, isPlayable }) {
         flexShrink: 0,
       }}
     >
-      <div className="absolute rounded-sm pointer-events-none" style={{ inset: 3, border: '1px solid #e2e8f0' }} />
-      {/* Corner labels */}
-      {isOldSchool && suitInfo && !isZero ? (
-        <>
-          <div className="absolute top-1 left-1.5 flex flex-col items-center leading-none">
-            <span className="font-black text-[10px]" style={{ color: textColor }}>{card.value}</span>
-            <span className="text-[9px]" style={{ color: textColor }}>{suitInfo.symbol}</span>
-          </div>
-          <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none">
-            <span className="font-black text-[10px]" style={{ color: textColor }}>{card.value}</span>
-            <span className="text-[9px]" style={{ color: textColor }}>{suitInfo.symbol}</span>
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="absolute top-1.5 left-2 text-black font-black leading-none text-[11px]">
-            {isZero ? '0' : card.value}
-          </div>
-          <div className="absolute bottom-1.5 right-2 text-black font-black leading-none text-[11px]">
-            {isZero ? '0' : card.value}
-          </div>
-        </>
-      )}
+      <div className="absolute rounded-sm pointer-events-none" style={{ inset: 3, border: `1px solid ${faction.accent}33` }} />
+
+      {/* Corner pips */}
+      <div className="absolute top-1 left-1.5 flex flex-col items-center leading-none">
+        <span className="font-black leading-none text-[10px]" style={{ color: faction.fg }}>{isZero ? '0' : card.value}</span>
+        <span className="leading-none text-[9px]">{faction.symbol}</span>
+      </div>
+      <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
+        <span className="font-black leading-none text-[10px]" style={{ color: faction.fg }}>{isZero ? '0' : card.value}</span>
+        <span className="leading-none text-[9px]">{faction.symbol}</span>
+      </div>
+
       {/* Center value */}
-      <div className="text-center z-10">
-        <div className="text-3xl font-black" style={{ color: textColor }}>{isZero ? '0' : card.value}</div>
-        {isOldSchool && suitInfo && !isZero && (
-          <div className="text-base leading-none" style={{ color: textColor }}>{suitInfo.symbol}</div>
-        )}
-        {isZero && <div className="text-black/50 text-[8px] font-bold -mt-1">RESET</div>}
+      <div className="text-center z-10 flex flex-col items-center">
+        <div className="text-3xl font-black" style={{ color: faction.fg }}>{isZero ? '0' : card.value}</div>
+        {isZero && <div className="font-bold -mt-1" style={{ fontSize: 8, color: faction.accent }}>RESET</div>}
+      </div>
+
+      {/* Faction watermark */}
+      <div className="absolute bottom-5 left-0 right-0 text-center pointer-events-none text-[13px]" style={{ opacity: 0.18 }}>
+        {faction.symbol}
       </div>
     </motion.div>
   );

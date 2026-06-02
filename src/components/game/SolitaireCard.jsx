@@ -1,25 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-// suits are numbers 0-3 matching deckUtils
-const SUIT_SYMBOLS = [
-  { symbol: '♠', color: '#1e293b' }, // 0
-  { symbol: '♥', color: '#e11d48' }, // 1
-  { symbol: '♦', color: '#e11d48' }, // 2
-  { symbol: '♣', color: '#1e293b' }, // 3
+// Custom factions — 0 & 1 are dark, 2 & 3 are red
+// Each has a unique symbol instead of traditional suits
+export const FACTIONS = [
+  { symbol: '⚡', label: 'Storm',  isDark: true,  bg: '#1a1a2e', fg: '#e2e8f0', accent: '#60a5fa' }, // dark blue
+  { symbol: '🌑', label: 'Void',   isDark: true,  bg: '#0f1a0f', fg: '#d1fae5', accent: '#4ade80' }, // dark green
+  { symbol: '🔥', label: 'Blaze',  isDark: false, bg: '#fff0f0', fg: '#991b1b', accent: '#ef4444' }, // light red
+  { symbol: '🌸', label: 'Dawn',   isDark: false, bg: '#fff5f8', fg: '#9d174d', accent: '#f472b6' }, // light pink
 ];
 
-// A small playing card face used in the solitaire layout
-export default function SolitaireCard({ value, suit, width = 52, height = 72, animate = false, isNew = false, dimmed = false, glowing = false, glowColor = '#10B981', cardIndex }) {
+export default function SolitaireCard({ value, suit, width = 52, height = 72, animate = false, isNew = false, cardIndex }) {
   const isZero = value === 0;
-  const suitInfo = (suit !== undefined && suit !== null) ? SUIT_SYMBOLS[suit] : null;
-  const textColor = suitInfo ? suitInfo.color : '#000000';
-
-  // Alternating card backgrounds: even = white, odd = warm cream/blush
-  const isRed = suitInfo && (suitInfo.color === '#e11d48');
-  const altBg = (cardIndex !== undefined && cardIndex % 2 === 1)
-    ? (isRed ? '#fff0f3' : '#f0f4ff')
-    : '#fff';
+  const faction = FACTIONS[suit ?? 0];
 
   const inner = (
     <div
@@ -27,50 +20,57 @@ export default function SolitaireCard({ value, suit, width = 52, height = 72, an
       style={{
         width,
         height,
-        background: altBg,
-        border: '2px solid #e2e8f0',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
-        opacity: 1,
+        background: faction.bg,
+        border: `2px solid ${faction.accent}55`,
+        boxShadow: '0 4px 12px rgba(0,0,0,0.35)',
         flexShrink: 0,
       }}
     >
       {/* Inner border */}
-      <div className="absolute rounded-sm pointer-events-none"
-        style={{ inset: 3, border: '1px solid #e2e8f0' }} />
+      <div
+        className="absolute rounded-sm pointer-events-none"
+        style={{ inset: 3, border: `1px solid ${faction.accent}33` }}
+      />
 
       {/* Corner pips */}
-      {!isZero && suitInfo ? (
-        <>
-          <div className="absolute top-1 left-1.5 flex flex-col items-center leading-none">
-            <span className="font-black leading-none" style={{ fontSize: width < 60 ? 10 : 12, color: textColor }}>{value}</span>
-            <span className="leading-none" style={{ fontSize: width < 60 ? 9 : 11, color: textColor }}>{suitInfo.symbol}</span>
-          </div>
-          <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none">
-            <span className="font-black leading-none" style={{ fontSize: width < 60 ? 10 : 12, color: textColor }}>{value}</span>
-            <span className="leading-none" style={{ fontSize: width < 60 ? 9 : 11, color: textColor }}>{suitInfo.symbol}</span>
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="absolute top-1.5 left-2 text-black font-black leading-none"
-            style={{ fontSize: width < 60 ? 10 : 13 }}>
-            {isZero ? '0' : value}
-          </div>
-          <div className="absolute bottom-1.5 right-2 text-black font-black leading-none rotate-180"
-            style={{ fontSize: width < 60 ? 10 : 13 }}>
-            {isZero ? '0' : value}
-          </div>
-        </>
-      )}
+      <div className="absolute top-1 left-1.5 flex flex-col items-center leading-none">
+        <span className="font-black leading-none" style={{ fontSize: width < 60 ? 10 : 12, color: faction.fg }}>
+          {isZero ? '0' : value}
+        </span>
+        <span className="leading-none" style={{ fontSize: width < 60 ? 8 : 10 }}>
+          {faction.symbol}
+        </span>
+      </div>
+      <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
+        <span className="font-black leading-none" style={{ fontSize: width < 60 ? 10 : 12, color: faction.fg }}>
+          {isZero ? '0' : value}
+        </span>
+        <span className="leading-none" style={{ fontSize: width < 60 ? 8 : 10 }}>
+          {faction.symbol}
+        </span>
+      </div>
 
       {/* Center */}
-      <div className="text-center z-10">
-        <div className="font-black" style={{ fontSize: width < 56 ? 18 : width < 70 ? 22 : 32, color: isZero ? '#000' : textColor }}>
+      <div className="text-center z-10 flex flex-col items-center">
+        <div
+          className="font-black"
+          style={{ fontSize: width < 56 ? 18 : width < 70 ? 22 : 32, color: faction.fg }}
+        >
           {isZero ? '0' : value}
         </div>
         {isZero && (
-          <div className="text-black/50 font-bold" style={{ fontSize: width < 60 ? 7 : 9, marginTop: -2 }}>RESET</div>
+          <div style={{ fontSize: width < 60 ? 7 : 9, color: faction.accent, fontWeight: 700, marginTop: -2 }}>
+            RESET
+          </div>
         )}
+      </div>
+
+      {/* Faction watermark in center-bottom */}
+      <div
+        className="absolute bottom-5 left-0 right-0 text-center pointer-events-none"
+        style={{ fontSize: width < 60 ? 10 : 13, opacity: 0.18 }}
+      >
+        {faction.symbol}
       </div>
     </div>
   );
