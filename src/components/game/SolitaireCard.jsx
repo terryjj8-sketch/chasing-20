@@ -10,10 +10,16 @@ const SUIT_SYMBOLS = [
 ];
 
 // A small playing card face used in the solitaire layout
-export default function SolitaireCard({ value, suit, width = 52, height = 72, animate = false, isNew = false, dimmed = false, glowing = false, glowColor = '#10B981' }) {
+export default function SolitaireCard({ value, suit, width = 52, height = 72, animate = false, isNew = false, dimmed = false, glowing = false, glowColor = '#10B981', cardIndex }) {
   const isZero = value === 0;
   const suitInfo = (suit !== undefined && suit !== null) ? SUIT_SYMBOLS[suit] : null;
   const textColor = suitInfo ? suitInfo.color : '#000000';
+
+  // Alternating card backgrounds: even = white, odd = warm cream/blush
+  const isRed = suitInfo && (suitInfo.color === '#e11d48');
+  const altBg = (cardIndex !== undefined && cardIndex % 2 === 1)
+    ? (isRed ? '#fff0f3' : '#f0f4ff')
+    : '#fff';
 
   const inner = (
     <div
@@ -21,7 +27,7 @@ export default function SolitaireCard({ value, suit, width = 52, height = 72, an
       style={{
         width,
         height,
-        background: '#fff',
+        background: altBg,
         border: '2px solid #e2e8f0',
         boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
         opacity: 1,

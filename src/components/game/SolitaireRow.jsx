@@ -100,6 +100,7 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, i
                     width={CARD_W}
                     height={CARD_H}
                     isNew={isNewTop}
+                    cardIndex={i}
                   />
                 </div>
               );
