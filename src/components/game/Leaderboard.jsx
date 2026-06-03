@@ -1,3 +1,19 @@
+import React, { useEffect, useState } from 'react'; import { motion } from 'framer-motion'; import { Trophy, X, Clock } from 'lucide-react'; import { formatTime } from './GameTimer'; const LEADERBOARD_KEY = 'chasing20_leaderboard'; const DIFFICULTIES = ['easy', 'medium', 'hard']; const DIFF_LABELS = { easy: 'Beginner', medium: 'Novice', hard: 'Pro' }; const DIFF_COLORS = { easy: '#10b981', medium: '#f59e0b', hard: '#ec4899' }; // Read all leaderboard entries from localStorage function getLeaderboard() { try { return JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]'); } catch { return []; } } export default function Leaderboard({ onClose }) { const [tab, setTab] = useState('easy'); const [entries, setEntries] = useState([]); useEffect(() => { const all = getLeaderboard(); const filtered = all .filter(e => e.difficulty === tab && e.wins > 0) .sort((a, b) => { if (b.wins !== a.wins) return b.wins - a.wins; return (a.best_time || Infinity) - (b.best_time || Infinity); }); setEntries(filtered); }, [tab]); const winPct = (e) => e.total_games > 0 ? Math.round((e.wins / e.total_games) * 100) : 0; return ( 
+e.stopPropagation()} > {/* Header */} 
+Leaderboard
+(this device) 
+{/* Tabs */} 
+{DIFFICULTIES.map(d => ( setTab(d)} className="flex-1 py-2.5 text-sm font-bold transition-all" style={{ color: tab === d ? DIFF_COLORS[d] : 'rgba(255,255,255,0.4)', borderBottom: tab === d ? `2px solid ${DIFF_COLORS[d]}` : '2px solid transparent', background: 'transparent', }} > {DIFF_LABELS[d]} ))} 
+{/* Table */} 
+{entries.length === 0 ? ( 
+No wins recorded yet. Be the first! 
+) : ( 
+#	Player	Best 	Win %
+{entries.map((e, i) => ( 
+{i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1} 	{e.player_name} 	{e.best_time ? formatTime(e.best_time) : '—'} 	= 50 ? '#4ade80' : '#f87171', }} > {winPct(e)}% ({e.wins}/{e.total_games}) 
+))} 
+)} 
+); } 
 import React, { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
