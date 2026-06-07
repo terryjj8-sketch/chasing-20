@@ -7,6 +7,7 @@ export default function WildToken({ size = 52, isNew = false }) {
   const points = 8;
   const outerR = r - 2;
   const innerR = r * 0.42;
+  const fontSize = Math.max(7, size * 0.15);
 
   // Build 8-point star polygon
   const starPoints = [];
@@ -23,6 +24,9 @@ export default function WildToken({ size = 52, isNew = false }) {
   const inner = (
     <div style={{ width: size, height: size, position: 'relative', flexShrink: 0 }}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ overflow: 'visible' }}>
+        {/* Solid background so no card underneath bleeds through */}
+        <rect x={0} y={0} width={size} height={size} fill="#1a1a2e" rx={6} />
+
         {/* Outer glow */}
         <polygon
           points={polyline}
@@ -57,6 +61,32 @@ export default function WildToken({ size = 52, isNew = false }) {
           style={{ letterSpacing: '-0.5px', fontFamily: 'system-ui, sans-serif' }}
         >
           ★
+        </text>
+
+        {/* W in top-left corner */}
+        <text
+          x={4}
+          y={fontSize + 2}
+          fontSize={fontSize}
+          fontWeight="900"
+          fill="#fbbf24"
+          style={{ fontFamily: 'system-ui, sans-serif' }}
+        >
+          W
+        </text>
+
+        {/* W in bottom-right corner (rotated 180°) */}
+        <text
+          x={size - 4}
+          y={size - 4}
+          fontSize={fontSize}
+          fontWeight="900"
+          fill="#fbbf24"
+          textAnchor="end"
+          transform={`rotate(180 ${size - 4} ${size - 4})`}
+          style={{ fontFamily: 'system-ui, sans-serif' }}
+        >
+          W
         </text>
       </svg>
     </div>
