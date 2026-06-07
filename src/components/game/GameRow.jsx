@@ -113,8 +113,8 @@ export default function GameRow({ rowIndex, row, accentColor, isValid, isSelecte
                 </div>
               ))}
               <div className="relative z-10 text-center">
-                <div className="text-black text-2xl font-black">{topCard.value}</div>
-                {topCard.value === 0 && <div className="text-black/70 text-[9px] font-bold">RESET</div>}
+                <div className="text-black text-2xl font-black">{topCard.value === 0 ? "★" : topCard.value}</div>
+                {topCard.value === 0 && <div className="text-black/70 text-[9px] font-bold tracking-widest">WILD</div>}
               </div>
             </motion.div>
           </div>
