@@ -7,7 +7,7 @@ export default function WildToken({ size = 52, isNew = false }) {
   const points = 8;
   const outerR = r - 2;
   const innerR = r * 0.42;
-  const fontSize = Math.max(7, size * 0.15);
+  const fontSize = Math.max(10, size * 0.22);
 
   // Build 8-point star polygon
   const starPoints = [];
