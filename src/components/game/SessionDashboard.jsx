@@ -392,7 +392,7 @@ export default function SessionDashboard({
             </div>
             <div className="flex justify-between mt-1">
               <span className="text-[9px] text-white/30">oldest</span>
-              <span className="text-[9px] text-white/30">this game ‚òÖ</span>
+              <span className="text-[9px] text-white/30">this game →</span>
             </div>
           </motion.div>
         )}
