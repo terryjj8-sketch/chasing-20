@@ -235,7 +235,7 @@ export default function SessionDashboard({
             </>
           ) : (
             <>
-              <div className="text-5xl mb-2">üíÄ</div>
+              <div className="text-5xl mb-2">🎮</div>
               <h1 className="text-4xl sm:text-5xl font-black text-red-400">
                 Game Over
               </h1>
@@ -410,7 +410,7 @@ export default function SessionDashboard({
                 onClick={handleSubmitClick}
                 className="flex-1 py-2.5 rounded-xl text-sm font-black border border-yellow-400/40 text-yellow-400 hover:bg-yellow-400/10 transition-all"
               >
-                {playerName ? `Submit as "${playerName}"` : 'üìã Submit Score'}
+                {playerName ? `Submit as "${playerName}"` : '🎯 Submit Score'}
               </button>
             ) : (
               <div className="flex-1 py-2.5 rounded-xl text-sm font-bold text-center text-green-400 border border-green-400/30">
@@ -442,7 +442,7 @@ export default function SessionDashboard({
               boxShadow: '0 6px 30px rgba(251,146,60,0.4)',
             }}
           >
-            üé≤ Play Again
+            Play Again
           </Button>
         </motion.div>
       </div>
