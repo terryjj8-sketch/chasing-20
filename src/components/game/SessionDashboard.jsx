@@ -291,7 +291,7 @@ export default function SessionDashboard({
             value={
               history.length
                 ? `${Math.round((wins.length / history.length) * 100)}%`
-                : '‚Äî'
+                : '—'
             }
             sub={`${wins.length}/${history.length} games`}
             accent="#fbbf24"
@@ -334,7 +334,7 @@ export default function SessionDashboard({
                   {row.cards.length}
                 </div>
                 <div className="text-[9px] text-white/40 mt-0.5">cards</div>
-                {isWinRow && <div className="text-lg mt-1">‚≠ê</div>}
+                {isWinRow && <div className="text-lg mt-1">★</div>}
               </div>
             );
           })}
@@ -414,7 +414,7 @@ export default function SessionDashboard({
               </button>
             ) : (
               <div className="flex-1 py-2.5 rounded-xl text-sm font-bold text-center text-green-400 border border-green-400/30">
-                ‚úÖ Score submitted!
+                ✓ Score submitted!
               </div>
             )}
             <button
