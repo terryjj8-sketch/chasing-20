@@ -218,7 +218,7 @@ export default function SessionDashboard({
         >
           {isWin ? (
             <>
-              <div className="text-5xl mb-2">üéâ</div>
+              <div className="text-5xl mb-2">🏆</div>
               <h1
                 className="text-4xl sm:text-5xl font-black text-yellow-400"
                 style={{ textShadow: '0 0 30px rgba(251,191,36,0.6)' }}
@@ -265,7 +265,7 @@ export default function SessionDashboard({
             value={formatTime(finalTime)}
             sub={
               isNewBest
-                ? 'üèÜ New Best!'
+                ? '⭐ New Best!'
                 : bestTime && bestTime !== finalTime
                 ? `Best: ${formatTime(bestTime)}`
                 : null
