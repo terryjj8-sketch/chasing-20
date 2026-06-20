@@ -13,6 +13,8 @@ export const FACTIONS = [
 export default function SolitaireCard({ value, suit, width = 52, height = 72, animate = false, isNew = false, cardIndex }) {
   const isZero = value === 0;
   const faction = FACTIONS[suit ?? 0];
+  // Scale factor relative to the 62px mobile card width these font sizes were tuned for
+  const scale = width / 62;
 
   const inner = (
     <div
@@ -36,22 +38,22 @@ export default function SolitaireCard({ value, suit, width = 52, height = 72, an
       {!isZero && (
         <>
           <div className="absolute top-1 left-1.5 flex flex-col items-center leading-none">
-            <span className="font-black leading-none" style={{ fontSize: width < 60 ? 8 : 9, color: faction.fg }}>{value}</span>
-            <span className="leading-none" style={{ fontSize: width < 60 ? 8 : 10 }}>{faction.symbol}</span>
+            <span className="font-black leading-none" style={{ fontSize: 9 * scale, color: faction.fg }}>{value}</span>
+            <span className="leading-none" style={{ fontSize: 10 * scale }}>{faction.symbol}</span>
           </div>
           <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
-            <span className="font-black leading-none" style={{ fontSize: width < 60 ? 8 : 9, color: faction.fg }}>{value}</span>
-            <span className="leading-none" style={{ fontSize: width < 60 ? 8 : 10 }}>{faction.symbol}</span>
+            <span className="font-black leading-none" style={{ fontSize: 9 * scale, color: faction.fg }}>{value}</span>
+            <span className="leading-none" style={{ fontSize: 10 * scale }}>{faction.symbol}</span>
           </div>
         </>
       )}
       {isZero && (
         <>
           <div className="absolute top-1 left-1.5 leading-none">
-            <span className="font-black" style={{ fontSize: 8, color: faction.accent }}>★</span>
+            <span className="font-black" style={{ fontSize: 8 * scale, color: faction.accent }}>★</span>
           </div>
           <div className="absolute top-1 right-1.5 leading-none">
-            <span className="font-black" style={{ fontSize: 8, color: faction.accent }}>★</span>
+            <span className="font-black" style={{ fontSize: 8 * scale, color: faction.accent }}>★</span>
           </div>
         </>
       )}
@@ -59,17 +61,17 @@ export default function SolitaireCard({ value, suit, width = 52, height = 72, an
       {/* Center */}
       {isZero ? (
         <div className="text-center z-10 flex flex-col items-center gap-0.5">
-          <div style={{ fontSize: width < 60 ? 14 : 18 }}>★</div>
-          <div className="font-black tracking-widest" style={{ fontSize: width < 60 ? 10 : 13, color: faction.accent, letterSpacing: '0.15em' }}>
+          <div style={{ fontSize: 18 * scale }}>★</div>
+          <div className="font-black tracking-widest" style={{ fontSize: 13 * scale, color: faction.accent, letterSpacing: '0.15em' }}>
             WILD
           </div>
-          <div style={{ fontSize: width < 60 ? 14 : 18 }}>★</div>
+          <div style={{ fontSize: 18 * scale }}>★</div>
         </div>
       ) : (
         <div className="text-center z-10 flex flex-col items-center">
           <div
             className="font-black"
-            style={{ fontSize: width < 56 ? 18 : width < 70 ? 22 : 32, color: faction.fg }}
+            style={{ fontSize: 32 * scale, color: faction.fg }}
           >
             {value}
           </div>

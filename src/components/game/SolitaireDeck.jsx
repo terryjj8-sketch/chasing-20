@@ -6,7 +6,7 @@ import { FACTIONS } from './SolitaireCard';
 // Classic solitaire top-left placement style
 
 function getCardSize(isMobile) {
-  return isMobile ? { CARD_W: 62, CARD_H: 88 } : { CARD_W: 84, CARD_H: 120 };
+  return isMobile ? { CARD_W: 62, CARD_H: 88 } : { CARD_W: 108, CARD_H: 154 };
 }
 
 function CardBack({ onClick, count, disabled, isMobile }) {
@@ -67,7 +67,7 @@ function CardFace({ card, isPlayable, isDraggable, isMobile, onDrag, onDragEnd }
   const isZero = card.value === 0;
   const faction = FACTIONS[card.suit ?? 0];
   const { CARD_W, CARD_H } = getCardSize(isMobile);
-  const fontScale = isMobile ? 1 : 1.25;
+  const fontScale = isMobile ? 1 : CARD_W / 62;
 
   return (
     <motion.div
