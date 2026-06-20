@@ -17,7 +17,7 @@ const FAN_OFFSET_DESKTOP = 20;
 // Max available height for cards ~= 100dvh - top bar (~56px) - header (~28px) - stats (~28px) - padding (~24px)
 const MOBILE_MAX_COL_H = 260;
 
-export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, isHinted, onTap, isMobile, showCardCount = true }) {
+export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, isHinted, rowRef, isMobile, showCardCount = true }) {
   const hex = accentMap[accentColor] || '#8B5CF6';
   const cards = row.cards;
   const prevCountRef = useRef(cards.length);
@@ -39,13 +39,11 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, i
 
   return (
     <motion.div
+      ref={rowRef}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: rowIndex * 0.07 }}
-      onClick={onTap}
-      whileTap={{ scale: 0.98 }}
       className="flex flex-col items-center gap-1.5"
-      style={{ cursor: 'pointer' }}
     >
       {/* Column header */}
       <div className="flex items-center gap-1.5 mb-1">
@@ -73,9 +71,9 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, i
           width: CARD_W + 12,
           height: columnHeight + 12,
           padding: 6,
-          background: isSelected ? `${hex}25` : isHinted ? `${hex}18` : 'rgba(255,255,255,0.03)',
-          border: isSelected ? `2px solid ${hex}` : isHinted ? `2px solid ${hex}99` : '2px solid rgba(255,255,255,0.06)',
-          boxShadow: isSelected ? `0 0 18px ${hex}55` : isHinted ? `0 0 22px ${hex}88, 0 0 40px ${hex}44` : undefined,
+          background: isDragOver ? `${hex}25` : isHinted ? `${hex}18` : 'rgba(255,255,255,0.03)',
+          border: isDragOver ? `2px solid ${hex}` : isHinted ? `2px solid ${hex}99` : '2px solid rgba(255,255,255,0.06)',
+          boxShadow: isDragOver ? `0 0 18px ${hex}55` : isHinted ? `0 0 22px ${hex}88, 0 0 40px ${hex}44` : undefined,
           transition: 'box-shadow 0.15s, border-color 0.15s, background 0.15s, height 0.2s',
         }}
       >
@@ -115,9 +113,9 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isSelected, i
           </div>
         )}
 
-        {/* Selected checkmark overlay */}
+        {/* Drop-target indicator overlay (shown while dragging over a valid row) */}
         <AnimatePresence>
-          {isSelected && (
+          {isDragOver && (
             <motion.div
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}

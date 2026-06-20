@@ -61,7 +61,8 @@ export default function HowToPlay() {
           <ul className="text-foreground/80 space-y-2 leading-relaxed list-disc list-inside">
             <li>Tap the deck to flip the top card.</li>
             <li>You must either <strong>play it on a row</strong> or <strong>discard it</strong>.</li>
-            <li>To play it, tap a valid row to select it, then tap <strong>Play</strong>.</li>
+            <li>To play it, <strong>drag the face-up card</strong> onto a valid row and release it there.</li>
+            <li>Valid rows light up as you drag so you can see exactly where the card can land.</li>
             <li>To throw it away, tap <strong>Discard</strong>.</li>
             <li>The game ends when the deck is empty.</li>
           </ul>
@@ -115,7 +116,7 @@ export default function HowToPlay() {
                 <span className="font-black text-base" style={{ color: '#10b981' }}>Beginner</span>
               </div>
               <ul className="text-foreground/80 text-sm space-y-1 leading-relaxed list-disc list-inside">
-                <li>Valid rows <strong>glow and pulse</strong> ~2 seconds after you flip a card</li>
+                <li>Valid rows <strong>glow and pulse</strong> ~2 seconds after you flip a card, so you know where you can drag before you even start</li>
                 <li>The <strong>remaining deck count</strong> is shown on the deck</li>
                 <li>Each row shows how many <strong>zeros remain</strong> (x/3)</li>
                 <li><strong>10 zeros</strong> in the deck</li>

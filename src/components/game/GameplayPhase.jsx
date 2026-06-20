@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SolitaireRow from './SolitaireRow';
 import SolitaireDeck from './SolitaireDeck';
 import GameTimer from './GameTimer';
@@ -12,15 +12,16 @@ const rowAccents = ['row-1', 'row-2', 'row-3', 'row-4'];
 export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart, difficulty, completedRowAlert, onClearRowAlert }) {
   const { drawPile, discardPile, rows, flippedCard } = gameState;
   const showDeckCount = difficulty === 'easy';
-  const [selectedRow, setSelectedRow] = useState(null);
+  const [dragOverRow, setDragOverRow] = useState(null);
   const isMobile = window.innerWidth < 768;
+  const rowRefs = useRef([]);
 
   const [hintPulse, setHintPulse] = useState(false);
   const [showHint, setShowHint] = useState(false);
 
   const flippedCardKey = flippedCard ? `${flippedCard.value}-${flippedCard.suit}` : null;
   useEffect(() => {
-    setSelectedRow(null);
+    setDragOverRow(null);
     setHintPulse(false);
   }, [flippedCardKey]);
 
@@ -38,20 +39,30 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
     ? rows.map((row, idx) => canPlayCard(flippedCard, row) ? idx : null).filter(idx => idx !== null)
     : [];
 
-  const handleRowTap = (idx) => {
-    if (!flippedCard) return;
-    if (!validRows.includes(idx)) return;
-    if (selectedRow === idx) {
-      onPlayCard(idx, flippedCard);
-    } else {
-      setSelectedRow(idx);
+  // Find which row (if any) the pointer is currently over, restricted to valid rows
+  const findRowUnderPoint = (x, y) => {
+    for (let idx = 0; idx < rowRefs.current.length; idx++) {
+      const el = rowRefs.current[idx];
+      if (!el) continue;
+      const rect = el.getBoundingClientRect();
+      if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+        return idx;
+      }
     }
+    return null;
   };
 
-  const handlePlay = () => {
-    if (flippedCard && selectedRow !== null) {
-      onPlayCard(selectedRow, flippedCard);
+  const handleCardDrag = (event, info) => {
+    const idx = findRowUnderPoint(info.point.x, info.point.y);
+    setDragOverRow(idx !== null && validRows.includes(idx) ? idx : null);
+  };
+
+  const handleCardDragEnd = (event, info) => {
+    const idx = findRowUnderPoint(info.point.x, info.point.y);
+    if (idx !== null && validRows.includes(idx) && flippedCard) {
+      onPlayCard(idx, flippedCard);
     }
+    setDragOverRow(null);
   };
 
   const handleDiscard = () => {
@@ -138,8 +149,8 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
             flippedCard={flippedCard}
             onFlip={onFlipCard}
             onDiscard={handleDiscard}
-            onCardTap={selectedRow !== null ? handlePlay : undefined}
-            isPlayable={selectedRow !== null}
+            onCardDrag={handleCardDrag}
+            onCardDragEnd={handleCardDragEnd}
             showDeckCount={showDeckCount}
           />
         </div>
@@ -157,9 +168,9 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
                 rowIndex={idx}
                 row={row}
                 accentColor={rowAccents[idx]}
-                isSelected={selectedRow === idx}
+                isDragOver={dragOverRow === idx}
                 isHinted={hintPulse && validRows.includes(idx)}
-                onTap={() => handleRowTap(idx)}
+                rowRef={(el) => (rowRefs.current[idx] = el)}
                 isMobile={isMobile}
                 showCardCount={difficulty === 'easy'}
               />
@@ -179,17 +190,17 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
             </div>
             <ol className="space-y-3 text-sm text-white/80">
               <li className="flex gap-2"><span className="font-black text-yellow-400">1.</span> A card from the deck automatically flips face-up for you.</li>
-              <li className="flex gap-2"><span className="font-black text-yellow-400">2.</span> <span className="font-bold text-white">Double-tap any card in a row</span> to move the face-up card there.</li>
-              <li className="flex gap-2"><span className="font-black text-yellow-400">3.</span> Got a <span className="font-bold text-yellow-300 mx-1">★ WILD</span>? Play it on any row to reset the counter. Don't want the card? Tap <span className="font-bold text-red-400 ml-1">Discard</span>.</li>
+              <li className="flex gap-2"><span className="font-black text-yellow-400">2.</span> <span className="font-bold text-white">Drag the face-up card</span> onto a row to play it there. Valid rows glow as you drag.</li>
+              <li className="flex gap-2"><span className="font-black text-yellow-400">3.</span> Got a <span className="font-bold text-yellow-300 mx-1">★ WILD</span>? Drag it onto any row to reset the counter. Don't want the card? Tap <span className="font-bold text-red-400 ml-1">Discard</span>.</li>
             </ol>
           </div>
         </div>
       )}
 
       {/* Instruction hint at bottom */}
-      {flippedCard && selectedRow !== null && (
+      {flippedCard && (
         <div className="text-center text-xs text-foreground/60 pb-2 flex-shrink-0">
-          tap the column again to confirm • or tap the card to play
+          drag the card onto a glowing row to play it
         </div>
       )}
     </div>

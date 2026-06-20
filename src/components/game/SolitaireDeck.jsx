@@ -62,7 +62,7 @@ function CardBack({ onClick, count, disabled }) {
   );
 }
 
-function CardFace({ card, onTap, isPlayable }) {
+function CardFace({ card, isPlayable, isDraggable, onDrag, onDragEnd }) {
   const isZero = card.value === 0;
   const faction = FACTIONS[card.suit ?? 0];
 
@@ -73,8 +73,13 @@ function CardFace({ card, onTap, isPlayable }) {
       animate={{ rotateY: 0, opacity: 1 }}
       exit={{ scale: 0.8, opacity: 0 }}
       transition={{ duration: 0.3, type: 'spring' }}
-      onClick={onTap}
-      whileTap={onTap ? { scale: 0.95 } : {}}
+      drag={isDraggable}
+      dragSnapToOrigin
+      dragElastic={0.15}
+      dragMomentum={false}
+      onDrag={onDrag}
+      onDragEnd={onDragEnd}
+      whileDrag={{ scale: 1.08, zIndex: 50, cursor: 'grabbing' }}
       className="rounded-lg flex items-center justify-center relative overflow-hidden select-none"
       style={{
         width: CARD_W,
@@ -84,8 +89,10 @@ function CardFace({ card, onTap, isPlayable }) {
         boxShadow: isPlayable
           ? '0 0 14px rgba(16,185,129,0.55), 0 4px 12px rgba(0,0,0,0.3)'
           : '0 4px 12px rgba(0,0,0,0.25)',
-        cursor: onTap ? 'pointer' : 'default',
+        cursor: isDraggable ? 'grab' : 'default',
         flexShrink: 0,
+        touchAction: 'none',
+        zIndex: 10,
       }}
     >
       <div className="absolute rounded-sm pointer-events-none" style={{ inset: 3, border: `1px solid ${faction.accent}33` }} />
@@ -137,7 +144,7 @@ function CardFace({ card, onTap, isPlayable }) {
   );
 }
 
-export default function SolitaireDeck({ deckCount, flippedCard, onFlip, onDiscard, onCardTap, isPlayable, showDeckCount }) {
+export default function SolitaireDeck({ deckCount, flippedCard, onFlip, onDiscard, onCardDrag, onCardDragEnd, showDeckCount }) {
   return (
     <div className="flex flex-col items-center gap-2">
       {/* Stock + Waste row — horizontal on all sizes */}
@@ -163,8 +170,9 @@ export default function SolitaireDeck({ deckCount, flippedCard, onFlip, onDiscar
               <CardFace
                 key={`${flippedCard.value}-${flippedCard.suit}`}
                 card={flippedCard}
-                onTap={onCardTap}
-                isPlayable={isPlayable}
+                isDraggable
+                onDrag={onCardDrag}
+                onDragEnd={onCardDragEnd}
               />
             ) : (
               <motion.div
