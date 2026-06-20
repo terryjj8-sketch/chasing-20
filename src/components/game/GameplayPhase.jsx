@@ -140,7 +140,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
       </div>
 
       {/* Main table area — fills remaining height */}
-      <div className="flex-1 flex flex-col md:flex-row px-2 sm:px-3 gap-2 md:gap-8 pt-2 md:pt-6 pb-2 md:pb-4 min-h-0 items-stretch md:items-start md:justify-center">
+      <div className="flex-1 flex flex-col md:flex-row px-2 sm:px-3 gap-2 md:gap-8 pt-2 md:pt-6 pb-2 md:pb-4 min-h-0 items-stretch md:items-center md:justify-center">
 
         {/* Deck / waste area */}
         <div className="flex-shrink-0 flex justify-center items-center md:items-start">
