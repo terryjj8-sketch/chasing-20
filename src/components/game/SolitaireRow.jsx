@@ -11,9 +11,11 @@ const accentMap = {
 };
 
 const FAN_OFFSET_DESKTOP = 34;
-// On mobile, cap the total column height so it always fits on screen.
-// Max available height for cards ~= 100dvh - top bar (~56px) - header (~28px) - stats (~28px) - padding (~24px)
+// Cap how tall a row column can grow so headers/labels never get pushed
+// off-screen by a long cascade. Cards compress their fan spacing once a
+// column would exceed this height, rather than growing without limit.
 const MOBILE_MAX_COL_H = 260;
+const DESKTOP_MAX_COL_H = 520;
 
 export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, isHinted, rowRef, isMobile, showCardCount = true }) {
   const hex = accentMap[accentColor] || '#8B5CF6';
@@ -23,20 +25,21 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, i
 
   const CARD_W = isMobile ? 62 : 108;
   const CARD_H = isMobile ? 88 : 154;
+  const MAX_COL_H = isMobile ? MOBILE_MAX_COL_H : DESKTOP_MAX_COL_H;
 
   useEffect(() => {
     prevCountRef.current = cards.length;
   });
 
-  // On mobile: compress the fan so all cards fit within MOBILE_MAX_COL_H
-  // Always show at least the top card fully; older cards peek above it
-  const fanOffset = isMobile && cards.length > 1
-    ? Math.min(FAN_OFFSET_DESKTOP, (MOBILE_MAX_COL_H - CARD_H) / (cards.length - 1))
+  // Compress the fan so all cards fit within MAX_COL_H, on both mobile and desktop.
+  // Always show at least the top card fully; older cards peek above it.
+  const fanOffset = cards.length > 1
+    ? Math.min(FAN_OFFSET_DESKTOP, (MAX_COL_H - CARD_H) / (cards.length - 1))
     : FAN_OFFSET_DESKTOP;
 
   const columnHeight = cards.length === 0
     ? CARD_H
-    : Math.min(CARD_H + (cards.length - 1) * fanOffset, isMobile ? MOBILE_MAX_COL_H : Infinity);
+    : Math.min(CARD_H + (cards.length - 1) * fanOffset, MAX_COL_H);
 
   return (
     <motion.div
