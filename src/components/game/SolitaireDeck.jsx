@@ -5,11 +5,12 @@ import { FACTIONS } from './SolitaireCard';
 // Stock pile (deck face-down) + Waste pile (current flipped card)
 // Classic solitaire top-left placement style
 
-// On mobile we use slightly smaller cards
-const CARD_W = 62;
-const CARD_H = 88;
+function getCardSize(isMobile) {
+  return isMobile ? { CARD_W: 62, CARD_H: 88 } : { CARD_W: 84, CARD_H: 120 };
+}
 
-function CardBack({ onClick, count, disabled }) {
+function CardBack({ onClick, count, disabled, isMobile }) {
+  const { CARD_W, CARD_H } = getCardSize(isMobile);
   return (
     <motion.div
       onClick={disabled ? undefined : onClick}
@@ -62,9 +63,11 @@ function CardBack({ onClick, count, disabled }) {
   );
 }
 
-function CardFace({ card, isPlayable, isDraggable, onDrag, onDragEnd }) {
+function CardFace({ card, isPlayable, isDraggable, isMobile, onDrag, onDragEnd }) {
   const isZero = card.value === 0;
   const faction = FACTIONS[card.suit ?? 0];
+  const { CARD_W, CARD_H } = getCardSize(isMobile);
+  const fontScale = isMobile ? 1 : 1.25;
 
   return (
     <motion.div
@@ -101,22 +104,22 @@ function CardFace({ card, isPlayable, isDraggable, onDrag, onDragEnd }) {
       {!isZero && (
         <>
           <div className="absolute top-1 left-1.5 flex flex-col items-center leading-none">
-            <span className="font-black leading-none text-[9px]" style={{ color: faction.fg }}>{card.value}</span>
-            <span className="leading-none text-[9px]">{faction.symbol}</span>
+            <span className="font-black leading-none" style={{ color: faction.fg, fontSize: 9 * fontScale }}>{card.value}</span>
+            <span className="leading-none" style={{ fontSize: 9 * fontScale }}>{faction.symbol}</span>
           </div>
           <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
-            <span className="font-black leading-none text-[9px]" style={{ color: faction.fg }}>{card.value}</span>
-            <span className="leading-none text-[9px]">{faction.symbol}</span>
+            <span className="font-black leading-none" style={{ color: faction.fg, fontSize: 9 * fontScale }}>{card.value}</span>
+            <span className="leading-none" style={{ fontSize: 9 * fontScale }}>{faction.symbol}</span>
           </div>
         </>
       )}
       {isZero && (
         <>
           <div className="absolute top-1 left-1.5">
-            <span className="font-black text-[8px]" style={{ color: faction.accent }}>★</span>
+            <span className="font-black" style={{ color: faction.accent, fontSize: 8 * fontScale }}>★</span>
           </div>
           <div className="absolute top-1 right-1.5">
-            <span className="font-black text-[8px]" style={{ color: faction.accent }}>★</span>
+            <span className="font-black" style={{ color: faction.accent, fontSize: 8 * fontScale }}>★</span>
           </div>
         </>
       )}
@@ -124,19 +127,19 @@ function CardFace({ card, isPlayable, isDraggable, onDrag, onDragEnd }) {
       {/* Center value */}
       {isZero ? (
         <div className="text-center z-10 flex flex-col items-center gap-0.5">
-          <div className="text-lg">★</div>
-          <div className="font-black tracking-widest text-sm" style={{ color: faction.accent, letterSpacing: '0.15em' }}>WILD</div>
-          <div className="text-lg">★</div>
+          <div style={{ fontSize: 18 * fontScale }}>★</div>
+          <div className="font-black tracking-widest" style={{ color: faction.accent, letterSpacing: '0.15em', fontSize: 13 * fontScale }}>WILD</div>
+          <div style={{ fontSize: 18 * fontScale }}>★</div>
         </div>
       ) : (
         <div className="text-center z-10 flex flex-col items-center">
-          <div className="text-3xl font-black" style={{ color: faction.fg }}>{card.value}</div>
+          <div className="font-black" style={{ color: faction.fg, fontSize: 30 * fontScale }}>{card.value}</div>
         </div>
       )}
 
       {/* Faction watermark */}
       {!isZero && (
-        <div className="absolute bottom-5 left-0 right-0 text-center pointer-events-none text-[13px]" style={{ opacity: 0.18 }}>
+        <div className="absolute bottom-5 left-0 right-0 text-center pointer-events-none" style={{ opacity: 0.18, fontSize: 13 * fontScale }}>
           {faction.symbol}
         </div>
       )}
@@ -144,7 +147,8 @@ function CardFace({ card, isPlayable, isDraggable, onDrag, onDragEnd }) {
   );
 }
 
-export default function SolitaireDeck({ deckCount, flippedCard, onFlip, onDiscard, onCardDrag, onCardDragEnd, showDeckCount }) {
+export default function SolitaireDeck({ deckCount, flippedCard, onFlip, onDiscard, onCardDrag, onCardDragEnd, showDeckCount, isMobile }) {
+  const { CARD_W, CARD_H } = getCardSize(isMobile);
   return (
     <div className="flex flex-col items-center gap-2">
       {/* Stock + Waste row — horizontal on all sizes */}
@@ -156,6 +160,7 @@ export default function SolitaireDeck({ deckCount, flippedCard, onFlip, onDiscar
             onClick={deckCount > 0 && !flippedCard ? onFlip : undefined}
             count={deckCount}
             disabled={deckCount === 0 || !!flippedCard}
+            isMobile={isMobile}
           />
           {showDeckCount && (
             <span className="text-[10px] text-foreground/30">{deckCount} left</span>
@@ -171,6 +176,7 @@ export default function SolitaireDeck({ deckCount, flippedCard, onFlip, onDiscar
                 key={`${flippedCard.value}-${flippedCard.suit}`}
                 card={flippedCard}
                 isDraggable
+                isMobile={isMobile}
                 onDrag={onCardDrag}
                 onDragEnd={onCardDragEnd}
               />

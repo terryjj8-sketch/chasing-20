@@ -140,7 +140,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
       </div>
 
       {/* Main table area — fills remaining height */}
-      <div className="flex-1 flex flex-col md:flex-row px-2 sm:px-3 gap-2 md:gap-4 pb-2 md:pb-4 min-h-0 items-stretch md:items-start">
+      <div className="flex-1 flex flex-col md:flex-row px-2 sm:px-3 gap-2 md:gap-8 pb-2 md:pb-4 min-h-0 items-stretch md:items-center md:justify-center">
 
         {/* Deck / waste area */}
         <div className="flex-shrink-0 flex justify-center items-center md:items-start">
@@ -152,6 +152,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
             onCardDrag={handleCardDrag}
             onCardDragEnd={handleCardDragEnd}
             showDeckCount={showDeckCount}
+            isMobile={isMobile}
           />
         </div>
 
@@ -160,8 +161,8 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
         <div className="block md:hidden h-px w-full bg-white/10 flex-shrink-0" />
 
         {/* Row columns — scrollable vertically on mobile so stats are reachable */}
-        <div className="flex-1 min-h-0 overflow-y-auto">
-          <div className="flex gap-2 sm:gap-3 justify-center min-w-0 pb-2">
+        <div className="flex-shrink-0 min-h-0 overflow-y-auto">
+          <div className="flex gap-3 sm:gap-4 md:gap-6 justify-center min-w-0 pb-2">
             {rows.map((row, idx) => (
               <SolitaireRow
                 key={idx}

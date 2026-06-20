@@ -10,9 +10,7 @@ const accentMap = {
   'row-4': '#00D4FF',
 };
 
-const CARD_W = 62;
-const CARD_H = 88;
-const FAN_OFFSET_DESKTOP = 20;
+const FAN_OFFSET_DESKTOP = 26;
 // On mobile, cap the total column height so it always fits on screen.
 // Max available height for cards ~= 100dvh - top bar (~56px) - header (~28px) - stats (~28px) - padding (~24px)
 const MOBILE_MAX_COL_H = 260;
@@ -22,6 +20,9 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, i
   const cards = row.cards;
   const prevCountRef = useRef(cards.length);
   const isNewCard = cards.length > prevCountRef.current;
+
+  const CARD_W = isMobile ? 62 : 84;
+  const CARD_H = isMobile ? 88 : 120;
 
   useEffect(() => {
     prevCountRef.current = cards.length;
