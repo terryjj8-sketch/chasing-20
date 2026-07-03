@@ -351,6 +351,35 @@ export default function Game() {
     });
   };
 
+  const handleMergeRows = (sourceIdx, targetIdx) => {
+    if (sourceIdx === targetIdx) return;
+    setGameState(prev => {
+      if (!prev || (prev.gameMode || 'numbers') !== 'numbers') return prev;
+      const source = prev.rows[sourceIdx];
+      const target = prev.rows[targetIdx];
+      if (!source || !target || source.cards.length === 0 || target.cards.length === 0) return prev;
+      const chain = (a, b) => Math.abs(a.value - b.value) <= 1;
+      const tEnd = target.cards[target.cards.length - 1];
+      let merged = null;
+      if (chain(tEnd, source.cards[0])) {
+        merged = [...target.cards, ...source.cards];
+      } else if (chain(tEnd, source.cards[source.cards.length - 1])) {
+        merged = [...target.cards, ...[...source.cards].reverse()];
+      }
+      if (!merged) return prev;
+      setHistory(h => [...h, prev]);
+      sounds.playCardPlay();
+      const newRows = prev.rows.map((r, i) =>
+        i === targetIdx ? { ...r, cards: merged, currentNumber: merged[merged.length - 1].value, resetPending: false }
+        : i === sourceIdx ? { ...r, cards: [], currentNumber: null, zeroCount: 0, resetPending: false }
+        : r
+      );
+      const goalReached = newRows.filter(r => r.cards.length >= 20).length >= 2;
+      if (goalReached) stopTimer();
+      return { ...prev, rows: newRows, phase: goalReached ? 'ended' : 'playing' };
+    });
+  };
+
   const handleDiscardCard = (card) => {
     sounds.playDiscard();
     setGameState(prev => {
@@ -446,9 +475,11 @@ export default function Game() {
             difficulty={difficulty}
             completedRowAlert={completedRowAlert}
             onClearRowAlert={() => setCompletedRowAlert(null)}
+            onMergeRows={handleMergeRows}
           />
         ) : (
           <GameEndContent
+            gameMode={gameState.gameMode || 'numbers'}
             rows={gameState.rows}
             onPlayAgain={resetGame}
             finalTime={elapsedSeconds}
@@ -476,13 +507,14 @@ function GameSetupContent({ gameState, onSetupComplete }) {
   );
 }
 
-function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart, difficulty, completedRowAlert, onClearRowAlert }) {
+function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onMergeRows, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart, difficulty, completedRowAlert, onClearRowAlert }) {
   return (
     <GameplayPhase
       gameState={gameState}
       onFlipCard={onFlipCard}
       onPlayCard={onPlayCard}
       onDiscardCard={onDiscardCard}
+      onMergeRows={onMergeRows}
       onUndo={onUndo}
       canUndo={canUndo}
       elapsedSeconds={elapsedSeconds}
@@ -496,9 +528,10 @@ function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onU
   );
 }
 
-function GameEndContent({ rows, onPlayAgain, finalTime, difficulty, totalCards, clearedRows }) {
+function GameEndContent({ gameMode, rows, onPlayAgain, finalTime, difficulty, totalCards, clearedRows }) {
   return (
     <SessionDashboard
+      gameMode={gameMode}
       rows={rows}
       onPlayAgain={onPlayAgain}
       finalTime={finalTime}

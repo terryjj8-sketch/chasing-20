@@ -26,7 +26,7 @@ const DESKTOP_MAX_COL_H = 520;
 // row's card array directly — no new prop needed here).
 const CLEAR_DROP_THRESHOLD = 10;
 
-export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, isHinted, rowRef, isMobile, showCardCount = true, gameMode = 'numbers' }) {
+export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, isHinted, rowRef, isMobile, showCardCount = true, gameMode = 'numbers', rowDraggable = false, onRowDrag, onRowDragEnd }) {
   const hex = accentMap[accentColor] || '#8B5CF6';
   const cards = row.cards;
   const prevCountRef = useRef(cards.length);
@@ -69,7 +69,17 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, i
       className="flex flex-col items-center gap-1.5"
     >
       {/* Column header */}
-      <div className="flex items-center gap-1.5 mb-1">
+      <motion.div
+        className="flex items-center gap-1.5 mb-1"
+        drag={rowDraggable}
+        dragSnapToOrigin
+        dragMomentum={false}
+        dragElastic={0.2}
+        onDrag={rowDraggable ? onRowDrag : undefined}
+        onDragEnd={rowDraggable ? onRowDragEnd : undefined}
+        whileDrag={{ scale: 1.2, zIndex: 50 }}
+        style={{ cursor: rowDraggable ? 'grab' : 'default', touchAction: 'none' }}
+      >
         <div
           className="w-2 h-2 rounded-full"
           style={{ background: hex, boxShadow: `0 0 6px ${hex}` }}
@@ -94,7 +104,7 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, i
             {row.wildCount || 0}/4 wild
           </span>
         )}
-      </div>
+      </motion.div>
 
       {/* Card column container */}
       <div
@@ -191,7 +201,7 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, i
       {/* Stats below column */}
       <div className="flex flex-col items-center gap-0.5 mt-1">
         <div className="text-[10px] text-foreground/40">
-          wilds <span className="font-bold text-purple-300">{row.zeroCount}/3</span>
+          
         </div>
         {row.resetPending && (
           <motion.div

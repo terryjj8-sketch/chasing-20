@@ -84,6 +84,7 @@ function StatCard({ icon: Icon, label, value, sub, accent, highlight }) {
 }
 
 export default function SessionDashboard({
+  gameMode,
   rows,
   finalTime,
   difficulty,
@@ -100,7 +101,8 @@ export default function SessionDashboard({
   const [showNamePrompt, setShowNamePrompt] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const isWin = rows.some(r => r.cards.length >= 20);
+  const rows20 = rows.filter(r => r.cards.length >= 20).length;
+  const isWin = (gameMode || 'numbers') === 'numbers' ? rows20 >= 2 : rows.some(r => r.cards.length >= 20);
   const efficiency = calcEfficiency(rows, totalCards);
 
   useEffect(() => {

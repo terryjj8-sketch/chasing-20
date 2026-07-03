@@ -12,7 +12,7 @@ import { Undo2, Pause, Play, RotateCcw, HelpCircle, X } from 'lucide-react';
 
 const rowAccents = ['row-1', 'row-2', 'row-3', 'row-4'];
 
-export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart, difficulty, completedRowAlert, onClearRowAlert }) {
+export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, onFlipCard, onMergeRows, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart, difficulty, completedRowAlert, onClearRowAlert }) {
   const { drawPile, discardPile, rows, flippedCard } = gameState;
   const showDeckCount = difficulty === 'easy';
   const [dragOverRow, setDragOverRow] = useState(null);
@@ -60,6 +60,27 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
       }
     }
     return null;
+  };
+
+  const canMergeInto = (srcIdx, tgtIdx) => {
+    if (gameMode !== 'numbers' || srcIdx === tgtIdx) return false;
+    const sRow = rows[srcIdx], tRow = rows[tgtIdx];
+    if (!sRow || !tRow || sRow.cards.length === 0 || tRow.cards.length === 0) return false;
+    const tEnd = tRow.cards[tRow.cards.length - 1].value;
+    const first = sRow.cards[0].value;
+    const last = sRow.cards[sRow.cards.length - 1].value;
+    return Math.abs(tEnd - first) <= 1 || Math.abs(tEnd - last) <= 1;
+  };
+
+  const handleRowDrag = (srcIdx) => (event, info) => {
+    const idx = findRowUnderPoint(info.point.x, info.point.y);
+    setDragOverRow(idx !== null && canMergeInto(srcIdx, idx) ? idx : null);
+  };
+
+  const handleRowDragEnd = (srcIdx) => (event, info) => {
+    const idx = findRowUnderPoint(info.point.x, info.point.y);
+    if (idx !== null && canMergeInto(srcIdx, idx) && onMergeRows) onMergeRows(srcIdx, idx);
+    setDragOverRow(null);
   };
 
   const handleCardDrag = (event, info) => {
@@ -181,6 +202,9 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
                 row={row}
                 accentColor={rowAccents[idx]}
                 isDragOver={dragOverRow === idx}
+                rowDraggable={gameMode === 'numbers' && row.cards.length > 0}
+                onRowDrag={handleRowDrag(idx)}
+                onRowDragEnd={handleRowDragEnd(idx)}
                 isHinted={hintPulse && validRows.includes(idx)}
                 rowRef={(el) => (rowRefs.current[idx] = el)}
                 isMobile={isMobile}
