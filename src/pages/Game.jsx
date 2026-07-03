@@ -178,8 +178,9 @@ export default function Game() {
       const nonZeroSetupCards = prev.drawPile.filter(c => c.value !== 0).slice(0, 6);
       const startingCards = selectedIndices.map(i => nonZeroSetupCards[i]);
 
-      const zeroCount = chosenDifficulty === 'hard' ? 8 : chosenDifficulty === 'medium' ? 10 : 12;
-      const freshDeck = initializeDeck(zeroCount);
+      // Classic redesign: no zeros/wildcards - pure 80-card number deck.
+      // (Difficulty no longer maps to zero count; future idea: reshuffle limits.)
+      const freshDeck = initializeDeck(0);
       shuffleDeck(freshDeck);
 
       const chosenKeys = new Set(startingCards.map(c => `${c.value}-${c.suit}`));
@@ -289,7 +290,7 @@ export default function Game() {
       let workingDrawPile = prev.drawPile;
       let clearedRows = prev.clearedRows || 0;
 
-      if (newRowCount === 20 && prevRowCount === 19 && !deckEmpty) {
+      if (mode !== 'numbers' && newRowCount === 20 && prevRowCount === 19 && !deckEmpty) {
         sounds.playRowComplete();
         setCompletedRowAlert(rowIndex);
         clearedRows += 1;
@@ -316,8 +317,18 @@ export default function Game() {
       }
       // --- END ROW CLEAR LOGIC ---
 
+      // CLASSIC: reshuffle discards into the deck when the draw pile empties
+      let workingDiscardPile = prev.discardPile;
+      if (mode === 'numbers' && workingDrawPile.length === 0 && workingDiscardPile.length > 0) {
+        workingDrawPile = [...workingDiscardPile];
+        shuffleDeck(workingDrawPile);
+        workingDiscardPile = [];
+        sounds.playShuffle();
+      }
       const stillDeckEmpty = workingDrawPile.length === 0;
-      const goalReached = clearedRows >= CLEAR_GOAL;
+      const goalReached = mode === 'numbers'
+        ? finalRows.filter(r => r.cards.length >= 20).length >= 2
+        : clearedRows >= CLEAR_GOAL;
       if (stillDeckEmpty || goalReached) stopTimer();
 
       // Auto-flip next card (drawn from whatever's left after any reseed pull)
@@ -331,6 +342,8 @@ export default function Game() {
         rows: finalRows,
         flippedCard: nextFlipped,
         drawPile: finalDrawPile,
+        discardPile: workingDiscardPile,
+        consecutiveDiscards: 0,
         clearedRows,
         timerStarted: true,
         phase: (stillDeckEmpty || goalReached) ? 'ended' : 'playing',
@@ -346,19 +359,35 @@ export default function Game() {
       // Start timer on first play/discard
       if (!prev.timerStarted) startTimer();
 
-      const newDiscard = [...prev.discardPile, card];
-      const deckEmpty = prev.drawPile.length === 0;
+      const mode = prev.gameMode || 'numbers';
+      let workingDiscard = [...prev.discardPile, card];
+      let workingDraw = [...prev.drawPile];
+      const consecutive = (prev.consecutiveDiscards || 0) + 1;
+
+      // CLASSIC: when the draw pile empties, shuffle the discards into a new deck
+      if (mode === 'numbers' && workingDraw.length === 0 && workingDiscard.length > 0) {
+        workingDraw = [...workingDiscard];
+        shuffleDeck(workingDraw);
+        workingDiscard = [];
+        sounds.playShuffle();
+      }
+
+      // If the player has cycled every remaining card without playing one,
+      // nothing is playable - the game ends. A real solitaire loss.
+      const poolSize = workingDraw.length + workingDiscard.length;
+      const stuck = mode === 'numbers' && consecutive >= poolSize && poolSize > 0;
+      const deckEmpty = workingDraw.length === 0 || stuck;
       if (deckEmpty) stopTimer();
 
-      // Auto-flip next card
-      const nextFlipped = (!deckEmpty && prev.drawPile.length > 0) ? prev.drawPile[0] : null;
-      const newDrawPile = nextFlipped ? prev.drawPile.slice(1) : prev.drawPile;
+      const nextFlipped = !deckEmpty ? workingDraw[0] : null;
+      const newDrawPile = nextFlipped ? workingDraw.slice(1) : workingDraw;
 
       return {
         ...prev,
-        discardPile: newDiscard,
+        discardPile: workingDiscard,
         flippedCard: nextFlipped,
         drawPile: newDrawPile,
+        consecutiveDiscards: consecutive,
         timerStarted: true,
         phase: deckEmpty ? 'ended' : 'playing',
       };

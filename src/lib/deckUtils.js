@@ -1,4 +1,4 @@
-export function initializeDeck(zeroCount = 12) {
+export function initializeDeck(zeroCount = 0) {
   const deck = [];
   
   // Four sets of 1-20
