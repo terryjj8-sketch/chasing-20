@@ -1,8 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import Card from './Card';
+import StatesCard from './StatesCard';
+import GamesCard from './GamesCard';
+import CalendarCard from './CalendarCard';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { getStateStarterCards } from '@/lib/statesData';
+import { getGameStarterCards } from '@/lib/gamesData';
+import { getCalendarStarterCards } from '@/lib/calendarData';
+
+const MODES = [
+  { id: 'numbers', label: 'Classic', emoji: '🔢', description: 'Build number sequences 1-20' },
+  { id: 'states', label: 'States', emoji: '🗺️', description: 'Build city sequences by state' },
+  { id: 'games', label: 'Games', emoji: '🎮', description: 'Match games by shared tags' },
+  { id: 'calendar', label: 'Calendar', emoji: '📅', description: 'Build days by month' },
+];
 
 const DIFFICULTIES = [
   {
@@ -24,14 +37,24 @@ const DIFFICULTIES = [
 
 export default function SetupPhase({ drawPile, onComplete }) {
   const navigate = useNavigate();
+  const [gameMode, setGameMode] = useState('numbers');
   const [displayCards, setDisplayCards] = useState([]);
   const [selectedIndices, setSelectedIndices] = useState(new Set());
   const [difficulty, setDifficulty] = useState('easy');
 
   useEffect(() => {
-    const nonZero = drawPile.filter(c => c.value !== 0);
-    setDisplayCards(nonZero.slice(0, 6));
-  }, [drawPile]);
+    setSelectedIndices(new Set());
+    if (gameMode === 'states') {
+      setDisplayCards(getStateStarterCards());
+    } else if (gameMode === 'games') {
+      setDisplayCards(getGameStarterCards());
+    } else if (gameMode === 'calendar') {
+      setDisplayCards(getCalendarStarterCards());
+    } else {
+      const nonZero = drawPile.filter(c => c.value !== 0);
+      setDisplayCards(nonZero.slice(0, 6));
+    }
+  }, [drawPile, gameMode]);
 
   const toggleSelect = (index) => {
     const newSelected = new Set(selectedIndices);
@@ -45,7 +68,7 @@ export default function SetupPhase({ drawPile, onComplete }) {
 
   const handleStart = () => {
     if (selectedIndices.size === 4) {
-      onComplete(Array.from(selectedIndices), difficulty);
+      onComplete(Array.from(selectedIndices), difficulty, gameMode, displayCards);
     }
   };
 
@@ -114,6 +137,38 @@ export default function SetupPhase({ drawPile, onComplete }) {
         >
           📖 How to Play
         </motion.button>
+      </motion.div>
+
+      {/* Mode Selector */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 justify-center w-full px-2 sm:px-0 relative z-10"
+      >
+        {MODES.map(m => {
+          const active = gameMode === m.id;
+          return (
+            <motion.button
+              key={m.id}
+              onClick={() => setGameMode(m.id)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              className="flex flex-col items-center px-6 py-3 rounded-2xl border-2 transition-all duration-200 w-full sm:w-auto"
+              style={{
+                borderColor: active ? '#fff' : 'rgba(255,255,255,0.2)',
+                background: active ? 'linear-gradient(135deg, #7c3aed, #ec4899)' : 'rgba(255,255,255,0.06)',
+                boxShadow: active ? '0 6px 20px rgba(124,58,237,0.5)' : 'none',
+                color: '#fff',
+                opacity: active ? 1 : 0.7,
+              }}
+            >
+              <span className="text-2xl mb-1">{m.emoji}</span>
+              <span className="font-black text-sm tracking-wide">{m.label}</span>
+              <span className="text-[10px] mt-1 text-center leading-snug font-semibold opacity-80">{m.description}</span>
+            </motion.button>
+          );
+        })}
       </motion.div>
 
       {/* Difficulty Selector */}
@@ -196,7 +251,45 @@ export default function SetupPhase({ drawPile, onComplete }) {
             whileTap={{ scale: 0.95 }}
             className="transition-all duration-200"
           >
-            <Card value={card.value} suit={card.suit} isSelected={selectedIndices.has(idx)} />
+            {gameMode === 'states' ? (
+              <motion.div
+                animate={selectedIndices.has(idx) ? { y: -8 } : { y: 0 }}
+                style={{
+                  outline: selectedIndices.has(idx) ? '3px solid #fbbf24' : undefined,
+                  outlineOffset: selectedIndices.has(idx) ? '2px' : undefined,
+                  borderRadius: 12,
+                  boxShadow: selectedIndices.has(idx) ? '0 8px 24px rgba(251,191,36,0.5)' : '0 4px 12px rgba(0,0,0,0.3)',
+                }}
+              >
+                <StatesCard card={card} />
+              </motion.div>
+            ) : gameMode === 'games' ? (
+              <motion.div
+                animate={selectedIndices.has(idx) ? { y: -8 } : { y: 0 }}
+                style={{
+                  outline: selectedIndices.has(idx) ? '3px solid #fbbf24' : undefined,
+                  outlineOffset: selectedIndices.has(idx) ? '2px' : undefined,
+                  borderRadius: 12,
+                  boxShadow: selectedIndices.has(idx) ? '0 8px 24px rgba(251,191,36,0.5)' : '0 4px 12px rgba(0,0,0,0.3)',
+                }}
+              >
+                <GamesCard card={card} />
+              </motion.div>
+            ) : gameMode === 'calendar' ? (
+              <motion.div
+                animate={selectedIndices.has(idx) ? { y: -8 } : { y: 0 }}
+                style={{
+                  outline: selectedIndices.has(idx) ? '3px solid #fbbf24' : undefined,
+                  outlineOffset: selectedIndices.has(idx) ? '2px' : undefined,
+                  borderRadius: 12,
+                  boxShadow: selectedIndices.has(idx) ? '0 8px 24px rgba(251,191,36,0.5)' : '0 4px 12px rgba(0,0,0,0.3)',
+                }}
+              >
+                <CalendarCard card={card} />
+              </motion.div>
+            ) : (
+              <Card value={card.value} suit={card.suit} isSelected={selectedIndices.has(idx)} />
+            )}
           </motion.button>
         ))}
       </motion.div>

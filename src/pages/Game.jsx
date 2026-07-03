@@ -3,12 +3,19 @@ import SetupPhase from '../components/game/SetupPhase';
 import GameplayPhase from '../components/game/GameplayPhase';
 import EndGamePhase from '../components/game/EndGamePhase';
 import SessionDashboard from '../components/game/SessionDashboard';
-import { initializeDeck, shuffleDeck } from '../lib/deckUtils';
+import { initializeDeck, shuffleDeck, canPlayCard } from '../lib/deckUtils';
+import { initializeStatesDeck, shuffleDeckStates, canPlayStatesCard } from '../lib/statesData';
+import { initializeGamesDeck, shuffleDeckGames, canPlayGamesCard } from '../lib/gamesData';
+import { initializeCalendarDeck, shuffleDeckCalendar, canPlayCalendarCard, getDayOrder, getMonthOrder } from '../lib/calendarData';
 import { useSounds } from '../lib/useSounds';
 import { ThemeProvider } from '../lib/ThemeContext';
 import ThemeSelector from '../components/game/ThemeSelector';
 import ThemeGuideArrow from '../components/game/ThemeGuideArrow';
 import { Volume2, VolumeX } from 'lucide-react';
+
+// Win condition: clear this many rows (any combination) before the deck runs out
+const CLEAR_GOAL = 3;
+
 
 export default function Game() {
   const [gameState, setGameState] = useState(null);
@@ -75,9 +82,11 @@ export default function Game() {
     sounds.playShuffle();
     setGameState({
       phase: 'setup',
+      gameMode: null,
       drawPile: [...deck],
       discardPile: [],
       flippedCard: null,
+      clearedRows: 0,
       rows: [
         { cards: [], currentNumber: null, zeroCount: 0, resetPending: false },
         { cards: [], currentNumber: null, zeroCount: 0, resetPending: false },
@@ -87,18 +96,92 @@ export default function Game() {
     });
   };
 
-  const handleSetupComplete = (selectedIndices, chosenDifficulty) => {
+  const handleSetupComplete = (selectedIndices, chosenDifficulty, chosenMode, setupDisplayCards) => {
     setDifficulty(chosenDifficulty);
+    const mode = chosenMode || 'numbers';
+
     setGameState(prev => {
+      if (mode === 'states') {
+        const startingCards = selectedIndices.map(i => setupDisplayCards[i]);
+        const freshDeck = initializeStatesDeck();
+        shuffleDeckStates(freshDeck);
+
+        const newRows = prev.rows.map((row, idx) => ({
+          cards: [startingCards[idx]],
+          currentStateId: startingCards[idx].stateId,
+          wildCount: 0,
+          resetPending: false,
+        }));
+
+        const [firstCard, ...remainingDeck] = freshDeck;
+        return {
+          ...prev,
+          phase: 'playing',
+          gameMode: 'states',
+          drawPile: remainingDeck,
+          rows: newRows,
+          flippedCard: firstCard,
+          timerStarted: false,
+        };
+      }
+
+      if (mode === 'games') {
+        const startingCards = selectedIndices.map(i => setupDisplayCards[i]);
+        const freshDeck = initializeGamesDeck();
+        shuffleDeckGames(freshDeck);
+
+        const newRows = prev.rows.map((row, idx) => ({
+          cards: [startingCards[idx]],
+          currentTags: startingCards[idx].tags,
+          wildCount: 0,
+          resetPending: false,
+        }));
+
+        const [firstCard, ...remainingDeck] = freshDeck;
+        return {
+          ...prev,
+          phase: 'playing',
+          gameMode: 'games',
+          drawPile: remainingDeck,
+          rows: newRows,
+          flippedCard: firstCard,
+          timerStarted: false,
+        };
+      }
+
+      if (mode === 'calendar') {
+        const startingCards = selectedIndices.map(i => setupDisplayCards[i]);
+        const freshDeck = initializeCalendarDeck();
+        shuffleDeckCalendar(freshDeck);
+
+        const newRows = prev.rows.map((row, idx) => ({
+          cards: [startingCards[idx]],
+          currentMonthOrder: startingCards[idx].type === 'month' ? getMonthOrder(startingCards[idx]) : null,
+          currentDayOrder: startingCards[idx].type === 'day' ? getDayOrder(startingCards[idx]) : null,
+          wildCount: 0,
+          resetPending: false,
+        }));
+
+        const [firstCard, ...remainingDeck] = freshDeck;
+        return {
+          ...prev,
+          phase: 'playing',
+          gameMode: 'calendar',
+          drawPile: remainingDeck,
+          rows: newRows,
+          flippedCard: firstCard,
+          timerStarted: false,
+        };
+      }
+
+      // Default: calendar/number mode (original behavior)
       const nonZeroSetupCards = prev.drawPile.filter(c => c.value !== 0).slice(0, 6);
       const startingCards = selectedIndices.map(i => nonZeroSetupCards[i]);
 
-      // Rebuild deck fresh with difficulty-based zero count, excluding the 4 chosen cards
       const zeroCount = chosenDifficulty === 'hard' ? 8 : chosenDifficulty === 'medium' ? 10 : 12;
       const freshDeck = initializeDeck(zeroCount);
       shuffleDeck(freshDeck);
 
-      // Remove the 4 chosen starting cards from the fresh deck
       const chosenKeys = new Set(startingCards.map(c => `${c.value}-${c.suit}`));
       const newDrawPile = [];
       const removed = new Set();
@@ -117,12 +200,12 @@ export default function Game() {
         currentNumber: startingCards[idx].value,
       }));
 
-      // Auto-flip the first card immediately
       const [firstCard, ...remainingDeck] = newDrawPile;
 
       return {
         ...prev,
         phase: 'playing',
+        gameMode: 'numbers',
         drawPile: remainingDeck,
         rows: newRows,
         flippedCard: firstCard,
@@ -143,7 +226,8 @@ export default function Game() {
   };
 
   const handlePlayCard = (rowIndex, card) => {
-    if (card.value === 0) sounds.playWild();
+    const isWildCard = card.isWild || card.isCapital || card.value === 0;
+    if (isWildCard) sounds.playWild();
     else sounds.playCardPlay();
     setGameState(prev => {
       setHistory(h => [...h, prev]);
@@ -151,9 +235,40 @@ export default function Game() {
       // Start timer on first play/discard
       if (!prev.timerStarted) startTimer();
 
+      const mode = prev.gameMode || 'numbers';
+
       const newRows = prev.rows.map((r, i) => {
         if (i !== rowIndex) return r;
         const updatedCards = [...r.cards, card];
+
+        if (mode === 'states') {
+          if (card.isCapital) {
+            return { ...r, cards: updatedCards, wildCount: r.wildCount + 1, resetPending: true };
+          }
+          return { ...r, cards: updatedCards, currentStateId: card.stateId, resetPending: false };
+        }
+
+        if (mode === 'games') {
+          if (card.isWild) {
+            return { ...r, cards: updatedCards, wildCount: r.wildCount + 1, resetPending: true };
+          }
+          return { ...r, cards: updatedCards, currentTags: card.tags, resetPending: false };
+        }
+
+        if (mode === 'calendar') {
+          if (card.isHoliday) {
+            return { ...r, cards: updatedCards, wildCount: r.wildCount + 1, resetPending: true };
+          }
+          return {
+            ...r,
+            cards: updatedCards,
+            currentMonthOrder: card.type === 'month' ? getMonthOrder(card) : r.currentMonthOrder,
+            currentDayOrder: card.type === 'day' ? getDayOrder(card) : r.currentDayOrder,
+            resetPending: false,
+          };
+        }
+
+        // calendar/number mode
         if (card.value === 0) {
           return { ...r, cards: updatedCards, zeroCount: r.zeroCount + 1, resetPending: true };
         } else {
@@ -165,24 +280,60 @@ export default function Game() {
       const prevRowCount = prev.rows[rowIndex].cards.length;
       const newRowCount = newRows[rowIndex].cards.length;
       const deckEmpty = prev.drawPile.length === 0;
+
+      // --- ROW CLEAR LOGIC ---
+      // When a row hits 20, it clears (pops back to a single fresh card)
+      // and the player's cleared-row counter ticks up. Reseed happens
+      // instantly from the draw pile so pace never slows down.
+      let finalRows = newRows;
+      let workingDrawPile = prev.drawPile;
+      let clearedRows = prev.clearedRows || 0;
+
       if (newRowCount === 20 && prevRowCount === 19 && !deckEmpty) {
         sounds.playRowComplete();
         setCompletedRowAlert(rowIndex);
+        clearedRows += 1;
+
+        // Find the first non-zero card in the draw pile to reseed with.
+        // (Wild/zero cards can't start an empty row per canPlayCard, so
+        // we never reseed with one.)
+        const reseedIdx = workingDrawPile.findIndex(c => c.value !== 0);
+        if (reseedIdx !== -1) {
+          const reseedCard = workingDrawPile[reseedIdx];
+          workingDrawPile = [
+            ...workingDrawPile.slice(0, reseedIdx),
+            ...workingDrawPile.slice(reseedIdx + 1),
+          ];
+          finalRows = newRows.map((r, i) =>
+            i === rowIndex
+              ? { cards: [reseedCard], currentNumber: reseedCard.value, zeroCount: 0, resetPending: false }
+              : r
+          );
+        }
+        // If no non-zero card remains in the draw pile, the row simply
+        // stays at its cleared 20-card state for this turn — the deck is
+        // nearly exhausted at that point anyway and the game is about to end.
       }
+      // --- END ROW CLEAR LOGIC ---
 
-      if (deckEmpty) stopTimer();
+      const stillDeckEmpty = workingDrawPile.length === 0;
+      const goalReached = clearedRows >= CLEAR_GOAL;
+      if (stillDeckEmpty || goalReached) stopTimer();
 
-      // Auto-flip next card
-      const nextFlipped = (!deckEmpty && prev.drawPile.length > 0) ? prev.drawPile[0] : null;
-      const newDrawPile = nextFlipped ? prev.drawPile.slice(1) : prev.drawPile;
+      // Auto-flip next card (drawn from whatever's left after any reseed pull)
+      // Skip flipping a new card entirely if the win goal was just reached —
+      // the game is over, no need to draw further.
+      const nextFlipped = (!stillDeckEmpty && !goalReached) ? workingDrawPile[0] : null;
+      const finalDrawPile = nextFlipped ? workingDrawPile.slice(1) : workingDrawPile;
 
       return {
         ...prev,
-        rows: newRows,
+        rows: finalRows,
         flippedCard: nextFlipped,
-        drawPile: newDrawPile,
+        drawPile: finalDrawPile,
+        clearedRows,
         timerStarted: true,
-        phase: deckEmpty ? 'ended' : 'playing',
+        phase: (stillDeckEmpty || goalReached) ? 'ended' : 'playing',
       };
     });
   };
@@ -273,6 +424,7 @@ export default function Game() {
             onPlayAgain={resetGame}
             finalTime={elapsedSeconds}
             difficulty={difficulty}
+            clearedRows={gameState.clearedRows || 0}
             totalCards={(gameState.drawPile?.length || 0) + (gameState.discardPile?.length || 0) + gameState.rows.reduce((s, r) => s + r.cards.length, 0)}
           />
         )}
@@ -315,7 +467,7 @@ function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onU
   );
 }
 
-function GameEndContent({ rows, onPlayAgain, finalTime, difficulty, totalCards }) {
+function GameEndContent({ rows, onPlayAgain, finalTime, difficulty, totalCards, clearedRows }) {
   return (
     <SessionDashboard
       rows={rows}
@@ -323,6 +475,10 @@ function GameEndContent({ rows, onPlayAgain, finalTime, difficulty, totalCards }
       finalTime={finalTime}
       difficulty={difficulty}
       totalCards={totalCards}
+      clearedRows={clearedRows}
     />
   );
 }
+/* NOTE for Terry: SessionDashboard.jsx needs a `clearedRows` prop added to
+   actually display this number — I haven't seen that file yet, so I'm
+   passing the prop here but the display piece still needs wiring in. */

@@ -4,6 +4,9 @@ import SolitaireDeck from './SolitaireDeck';
 import GameTimer from './GameTimer';
 import RowCompleteToast from './RowCompleteToast';
 import { canPlayCard } from '@/lib/deckUtils';
+import { canPlayStatesCard } from '@/lib/statesData';
+import { canPlayGamesCard } from '@/lib/gamesData';
+import { canPlayCalendarCard } from '@/lib/calendarData';
 import { Button } from '@/components/ui/button';
 import { Undo2, Pause, Play, RotateCcw, HelpCircle, X } from 'lucide-react';
 
@@ -35,8 +38,15 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
     return () => clearTimeout(timer);
   }, [flippedCardKey, difficulty]);
 
+  const gameMode = gameState.gameMode || 'numbers';
+  const checkCanPlay = (card, row) =>
+    gameMode === 'states' ? canPlayStatesCard(card, row) :
+    gameMode === 'games' ? canPlayGamesCard(card, row) :
+    gameMode === 'calendar' ? canPlayCalendarCard(card, row) :
+    canPlayCard(card, row);
+
   const validRows = flippedCard
-    ? rows.map((row, idx) => canPlayCard(flippedCard, row) ? idx : null).filter(idx => idx !== null)
+    ? rows.map((row, idx) => checkCanPlay(flippedCard, row) ? idx : null).filter(idx => idx !== null)
     : [];
 
   // Find which row (if any) the pointer is currently over, restricted to valid rows
@@ -153,6 +163,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
             onCardDragEnd={handleCardDragEnd}
             showDeckCount={showDeckCount}
             isMobile={isMobile}
+            gameMode={gameMode}
           />
         </div>
 
@@ -174,6 +185,7 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
                 rowRef={(el) => (rowRefs.current[idx] = el)}
                 isMobile={isMobile}
                 showCardCount={difficulty === 'easy'}
+                gameMode={gameMode}
               />
             ))}
           </div>

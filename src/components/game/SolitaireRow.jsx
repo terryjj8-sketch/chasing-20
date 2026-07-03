@@ -1,6 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SolitaireCard from './SolitaireCard';
+import StatesCard from './StatesCard';
+import GamesCard from './GamesCard';
+import CalendarCard from './CalendarCard';
 import WildToken from './WildToken';
 
 const accentMap = {
@@ -17,19 +20,35 @@ const FAN_OFFSET_DESKTOP = 34;
 const MOBILE_MAX_COL_H = 260;
 const DESKTOP_MAX_COL_H = 520;
 
-export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, isHinted, rowRef, isMobile, showCardCount = true }) {
+// A row "clears" when it hits 20 cards and instantly reseeds down to 1.
+// We detect that by watching for a sharp drop in card count between renders
+// (rather than tracking it via a prop, since Game.jsx already resets the
+// row's card array directly — no new prop needed here).
+const CLEAR_DROP_THRESHOLD = 10;
+
+export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, isHinted, rowRef, isMobile, showCardCount = true, gameMode = 'numbers' }) {
   const hex = accentMap[accentColor] || '#8B5CF6';
   const cards = row.cards;
   const prevCountRef = useRef(cards.length);
   const isNewCard = cards.length > prevCountRef.current;
+  const [justCleared, setJustCleared] = useState(false);
 
   const CARD_W = isMobile ? 62 : 108;
   const CARD_H = isMobile ? 88 : 154;
   const MAX_COL_H = isMobile ? MOBILE_MAX_COL_H : DESKTOP_MAX_COL_H;
 
   useEffect(() => {
+    const prevCount = prevCountRef.current;
+    // A clear looks like a sudden big drop (e.g. 20 -> 1), not the normal
+    // one-card-at-a-time growth of regular play.
+    if (prevCount - cards.length >= CLEAR_DROP_THRESHOLD) {
+      setJustCleared(true);
+      const t = setTimeout(() => setJustCleared(false), 700);
+      prevCountRef.current = cards.length;
+      return () => clearTimeout(t);
+    }
     prevCountRef.current = cards.length;
-  });
+  }, [cards.length]);
 
   // Compress the fan so all cards fit within MAX_COL_H, on both mobile and desktop.
   // Always show at least the top card fully; older cards peek above it.
@@ -66,6 +85,15 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, i
             {cards.length}
           </span>
         )}
+        {(gameMode === 'states' || gameMode === 'games' || gameMode === 'calendar') && (
+          <span
+            className="text-[10px] font-black px-1.5 py-0.5 rounded-full"
+            style={{ background: 'rgba(251,191,36,0.15)', color: '#fbbf24' }}
+            title="Wildcards used this row"
+          >
+            {row.wildCount || 0}/4 wild
+          </span>
+        )}
       </div>
 
       {/* Card column container */}
@@ -99,7 +127,13 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, i
                   className="absolute"
                   style={{ top: i * fanOffset, left: 0, zIndex: i + 1 }}
                 >
-                  {card.value === 0 ? (
+                  {gameMode === 'states' ? (
+                    <StatesCard card={card} width={CARD_W} height={CARD_H} isNew={isNewTop} animate={isNewTop} />
+                  ) : gameMode === 'games' ? (
+                    <GamesCard card={card} width={CARD_W} height={CARD_H} isNew={isNewTop} animate={isNewTop} />
+                  ) : gameMode === 'calendar' ? (
+                    <CalendarCard card={card} width={CARD_W} height={CARD_H} isNew={isNewTop} animate={isNewTop} />
+                  ) : card.value === 0 ? (
                     <WildToken size={CARD_W} isNew={isNewTop} />
                   ) : (
                     <SolitaireCard
@@ -128,6 +162,27 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, i
               style={{ background: hex }}
             >
               <span className="text-white text-[10px] font-black">✓</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Row-cleared burst: fires when the row hits 20 and instantly reseeds */}
+        <AnimatePresence>
+          {justCleared && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: 1, scale: 1.15 }}
+              exit={{ opacity: 0, scale: 1.6 }}
+              transition={{ duration: 0.35 }}
+              className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none rounded-lg"
+              style={{ background: `${hex}30` }}
+            >
+              <span
+                className="text-xl font-black"
+                style={{ color: hex, textShadow: `0 0 12px ${hex}` }}
+              >
+                ✨ CLEARED!
+              </span>
             </motion.div>
           )}
         </AnimatePresence>

@@ -1,6 +1,9 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FACTIONS } from './SolitaireCard';
+import StatesCard from './StatesCard';
+import GamesCard from './GamesCard';
+import CalendarCard from './CalendarCard';
 
 // Stock pile (deck face-down) + Waste pile (current flipped card)
 // Classic solitaire top-left placement style
@@ -63,11 +66,45 @@ function CardBack({ onClick, count, disabled, isMobile }) {
   );
 }
 
-function CardFace({ card, isPlayable, isDraggable, isMobile, onDrag, onDragEnd }) {
+function CardFace({ card, isPlayable, isDraggable, isMobile, onDrag, onDragEnd, gameMode = 'numbers' }) {
   const isZero = card.value === 0;
   const faction = FACTIONS[card.suit ?? 0];
   const { CARD_W, CARD_H } = getCardSize(isMobile);
   const fontScale = isMobile ? 1 : CARD_W / 62;
+
+  if (gameMode === 'states' || gameMode === 'games' || gameMode === 'calendar') {
+    return (
+      <motion.div
+        key={card.id}
+        initial={{ rotateY: -90, opacity: 0 }}
+        animate={{ rotateY: 0, opacity: 1 }}
+        exit={{ scale: 0.8, opacity: 0 }}
+        transition={{ duration: 0.3, type: 'spring' }}
+        drag={isDraggable}
+        dragSnapToOrigin
+        dragElastic={0.15}
+        dragMomentum={false}
+        onDrag={onDrag}
+        onDragEnd={onDragEnd}
+        whileDrag={{ scale: 1.08, zIndex: 50, cursor: 'grabbing' }}
+        style={{
+          cursor: isDraggable ? 'grab' : 'default',
+          touchAction: 'none',
+          zIndex: 10,
+          borderRadius: 8,
+          boxShadow: isPlayable ? '0 0 14px rgba(16,185,129,0.55)' : 'none',
+        }}
+      >
+        {gameMode === 'states' ? (
+          <StatesCard card={card} width={CARD_W} height={CARD_H} />
+        ) : gameMode === 'games' ? (
+          <GamesCard card={card} width={CARD_W} height={CARD_H} />
+        ) : (
+          <CalendarCard card={card} width={CARD_W} height={CARD_H} />
+        )}
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -147,7 +184,7 @@ function CardFace({ card, isPlayable, isDraggable, isMobile, onDrag, onDragEnd }
   );
 }
 
-export default function SolitaireDeck({ deckCount, flippedCard, onFlip, onDiscard, onCardDrag, onCardDragEnd, showDeckCount, isMobile }) {
+export default function SolitaireDeck({ deckCount, flippedCard, onFlip, onDiscard, onCardDrag, onCardDragEnd, showDeckCount, isMobile, gameMode = 'numbers' }) {
   const { CARD_W, CARD_H } = getCardSize(isMobile);
   return (
     <div className="flex flex-col items-center gap-2">
@@ -173,12 +210,13 @@ export default function SolitaireDeck({ deckCount, flippedCard, onFlip, onDiscar
           <AnimatePresence mode="wait">
             {flippedCard ? (
               <CardFace
-                key={`${flippedCard.value}-${flippedCard.suit}`}
+                key={flippedCard.id || `${flippedCard.value}-${flippedCard.suit}`}
                 card={flippedCard}
                 isDraggable
                 isMobile={isMobile}
                 onDrag={onCardDrag}
                 onDragEnd={onCardDragEnd}
+                gameMode={gameMode}
               />
             ) : (
               <motion.div
