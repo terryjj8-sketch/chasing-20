@@ -42,7 +42,7 @@ export default function HowToPlay() {
         {/* Goal */}
         <Section title="🎯 The Goal" delay={0.1}>
           <p className="text-foreground/80 leading-relaxed">
-            Get <span className="text-secondary font-bold">any one of your four rows</span> to reach <span className="text-secondary font-bold">20 cards</span> before the deck runs out. That's all it takes to win — but it's harder than it sounds.
+            Build <span className="text-secondary font-bold">two of your four roads</span> to <span className="text-secondary font-bold">20+ cards each</span> before the cards run out. One big road isn't enough — you have to keep two fires burning.
           </p>
         </Section>
 
@@ -51,7 +51,6 @@ export default function HowToPlay() {
           <ul className="text-foreground/80 space-y-2 leading-relaxed list-disc list-inside">
             <li>You are dealt <strong>6 cards</strong> face up.</li>
             <li>Pick <strong>4 of them</strong> — one to start each of your four rows.</li>
-            <li><strong>Zeros cannot start your rows</strong> — you must pick numbered cards.</li>
             <li>The 2 unchosen cards go back into the deck, which is then shuffled.</li>
           </ul>
         </Section>
@@ -64,7 +63,8 @@ export default function HowToPlay() {
             <li>To play it, <strong>drag the face-up card</strong> onto a valid row and release it there.</li>
             <li>Valid rows light up as you drag so you can see exactly where the card can land.</li>
             <li>To throw it away, tap <strong>Discard</strong>.</li>
-            <li>The game ends when the deck is empty.</li>
+            <li>When the draw pile runs out, <strong>your discards shuffle back in</strong> — but cards played on roads are gone from the deck for good.</li>
+            <li>The game ends when you win, or when no playable cards remain.</li>
           </ul>
         </Section>
 
@@ -88,21 +88,21 @@ export default function HowToPlay() {
           <p className="text-foreground/70 text-sm mb-2">
             Example: if a row's current card is <strong>7</strong>, you can play a <strong>6</strong>, <strong>7</strong>, or <strong>8</strong> on it.
           </p>
-          <p className="text-foreground/70 text-sm">
-            You can also play a <strong>0</strong> on any row to reset it — the next card can be any value.
-          </p>
         </Section>
 
         {/* Zeros */}
-        <Section title="✨ Zero Cards — The Wild Reset" delay={0.5}>
+        <Section title="🛣️ Merging Roads — The Secret Weapon" delay={0.5}>
           <p className="text-foreground/80 leading-relaxed mb-2">
-            Zero cards are special. Playing a zero on a row <strong>resets it</strong> — the next card played there can be <em>any</em> value.
+            Any road can be <strong>picked up and stacked onto another road</strong>. Drag a road's <strong>label</strong> (the "ROW 2" tag above the cards) onto another road.
           </p>
           <p className="text-foreground/80 leading-relaxed mb-2">
-            Each row can only receive <strong>3 zeros</strong> total. After the third zero, no more zeros can be played on that row.
+            The merge is legal when the ends connect: the target road's last card must be <strong>the same, one higher, or one lower</strong> than either end of the road you're dragging. If it only fits backwards, the road <strong>flips around automatically</strong>.
+          </p>
+          <p className="text-foreground/80 leading-relaxed mb-2">
+            Legal targets <strong>glow</strong> while you drag. After a merge, the empty road can be restarted with any playable card.
           </p>
           <p className="text-foreground/60 text-sm">
-            Use zeros wisely — they're your best tool for jumping to a new number sequence.
+            Two short roads can become one long one — sometimes the winning move isn't playing a card, it's joining two highways.
           </p>
         </Section>
 

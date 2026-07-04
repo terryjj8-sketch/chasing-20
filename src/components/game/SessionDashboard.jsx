@@ -228,7 +228,9 @@ export default function SessionDashboard({
                 YOU WIN!
               </h1>
               <p className="text-white/60 mt-1 text-sm">
-                Row {rows.findIndex(r => r.cards.length >= 20) + 1} reached 20
+                {(gameMode || 'numbers') === 'numbers'
+                  ? `Roads ${rows.map((r, i) => r.cards.length >= 20 ? i + 1 : null).filter(n => n !== null).join(' & ')} hit 20 — you caught the chase!`
+                  : `Row ${rows.findIndex(r => r.cards.length >= 20) + 1} reached 20`}
                 cards
               </p>
               <p className="text-base font-bold text-white mt-3">

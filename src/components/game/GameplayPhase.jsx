@@ -227,8 +227,16 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
             </div>
             <ol className="space-y-3 text-sm text-white/80">
               <li className="flex gap-2"><span className="font-black text-yellow-400">1.</span> A card from the deck automatically flips face-up for you.</li>
-              <li className="flex gap-2"><span className="font-black text-yellow-400">2.</span> <span className="font-bold text-white">Drag the face-up card</span> onto a row to play it there. Valid rows glow as you drag.</li>
-              <li className="flex gap-2"><span className="font-black text-yellow-400">3.</span> Got a <span className="font-bold text-yellow-300 mx-1">★ WILD</span>? Drag it onto any row to reset the counter. Don't want the card? Tap <span className="font-bold text-red-400 ml-1">Discard</span>.</li>
+              <li className="flex gap-2"><span className="font-black text-yellow-400">2.</span> <span className="font-bold text-white">Drag the face-up card</span> onto a row — it must be the <span className="font-bold text-white">same, one higher, or one lower</span> than that row's last card. Valid rows glow.</li>
+              {gameMode === 'numbers' ? (
+                <>
+                  <li className="flex gap-2"><span className="font-black text-yellow-400">3.</span> <span className="font-bold text-white">Merge rows:</span> drag a row's <span className="font-bold text-white">label</span> onto another row. If the ends connect (same/±1), the whole row stacks on — it'll even flip around to fit.</li>
+                  <li className="flex gap-2"><span className="font-black text-yellow-400">4.</span> Can't play? Tap <span className="font-bold text-red-400">Discard</span> — the deck reshuffles discards when it runs dry, but cards played on rows are gone for good.</li>
+                  <li className="flex gap-2"><span className="font-black text-yellow-400">★</span> <span className="font-bold text-yellow-300">WIN: build two rows of 20+ cards</span> before the cards run out.</li>
+                </>
+              ) : (
+                <li className="flex gap-2"><span className="font-black text-yellow-400">3.</span> Got a <span className="font-bold text-yellow-300 mx-1">★ WILD</span>? Drag it onto any row to reset the counter. Don't want the card? Tap <span className="font-bold text-red-400 ml-1">Discard</span>.</li>
+              )}
             </ol>
           </div>
         </div>

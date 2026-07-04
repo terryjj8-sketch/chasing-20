@@ -10,9 +10,26 @@ export const FACTIONS = [
   { symbol: '🌸', label: 'Dawn',   isDark: false, bg: '#fff5f8', fg: '#9d174d', accent: '#f472b6' }, // light pink
 ];
 
+const FESTIVE = [
+  { bg: '#fff7ed', fg: '#9a3412', accent: '#fb923c' }, // tangerine
+  { bg: '#ecfeff', fg: '#155e75', accent: '#22d3ee' }, // aqua
+  { bg: '#fdf4ff', fg: '#86198f', accent: '#e879f9' }, // orchid
+  { bg: '#f7fee7', fg: '#3f6212', accent: '#a3e635' }, // lime
+  { bg: '#fff1f2', fg: '#9f1239', accent: '#fb7185' }, // watermelon
+  { bg: '#eff6ff', fg: '#1e40af', accent: '#60a5fa' }, // sky
+  { bg: '#fefce8', fg: '#854d0e', accent: '#facc15' }, // sunshine
+  { bg: '#f0fdfa', fg: '#115e59', accent: '#2dd4bf' }, // mint
+  { bg: '#faf5ff', fg: '#6b21a8', accent: '#c084fc' }, // lavender
+  { bg: '#fff4e6', fg: '#92400e', accent: '#fbbf24' }, // honey
+  { bg: '#fdf2f8', fg: '#9d174d', accent: '#f472b6' }, // bubblegum
+  { bg: '#f0fdf4', fg: '#166534', accent: '#4ade80' }, // spearmint
+];
+
 export default function SolitaireCard({ value, suit, width = 52, height = 72, animate = false, isNew = false, cardIndex }) {
   const isZero = value === 0;
-  const faction = FACTIONS[suit ?? 0];
+  const base = FACTIONS[suit ?? 0];
+  const festive = FESTIVE[((value ?? 0) * 7 + (suit ?? 0) * 5) % FESTIVE.length];
+  const faction = { ...base, ...festive };
   // Scale factor relative to the 62px mobile card width these font sizes were tuned for
   const scale = width / 62;
 
@@ -22,7 +39,7 @@ export default function SolitaireCard({ value, suit, width = 52, height = 72, an
       style={{
         width,
         height,
-        background: faction.bg,
+        background: `radial-gradient(circle at 22% 28%, ${faction.accent}30 2px, transparent 2.6px), radial-gradient(circle at 72% 55%, ${faction.accent}26 1.8px, transparent 2.4px), radial-gradient(circle at 45% 82%, ${faction.accent}2c 1.5px, transparent 2px), radial-gradient(circle at 85% 18%, ${faction.accent}22 1.5px, transparent 2px), ${faction.bg}`,
         border: `2px solid ${faction.accent}55`,
         boxShadow: '0 4px 12px rgba(0,0,0,0.35)',
         flexShrink: 0,

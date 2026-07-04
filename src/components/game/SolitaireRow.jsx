@@ -29,6 +29,7 @@ const CLEAR_DROP_THRESHOLD = 10;
 export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, isHinted, rowRef, isMobile, showCardCount = true, gameMode = 'numbers', rowDraggable = false, onRowDrag, onRowDragEnd }) {
   const hex = accentMap[accentColor] || '#8B5CF6';
   const cards = row.cards;
+  const qualified = gameMode === 'numbers' && cards.length >= 20;
   const prevCountRef = useRef(cards.length);
   const isNewCard = cards.length > prevCountRef.current;
   const [justCleared, setJustCleared] = useState(false);
@@ -95,6 +96,11 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, i
             {cards.length}
           </span>
         )}
+        {qualified && (
+          <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(251,191,36,0.2)', color: '#fbbf24' }}>
+            ★ 20+
+          </span>
+        )}
         {(gameMode === 'states' || gameMode === 'games' || gameMode === 'calendar') && (
           <span
             className="text-[10px] font-black px-1.5 py-0.5 rounded-full"
@@ -114,8 +120,8 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, i
           height: columnHeight + 12,
           padding: 6,
           background: isDragOver ? `${hex}25` : isHinted ? `${hex}18` : 'rgba(255,255,255,0.03)',
-          border: isDragOver ? `2px solid ${hex}` : isHinted ? `2px solid ${hex}99` : '2px solid rgba(255,255,255,0.06)',
-          boxShadow: isDragOver ? `0 0 18px ${hex}55` : isHinted ? `0 0 22px ${hex}88, 0 0 40px ${hex}44` : undefined,
+          border: isDragOver ? `2px solid ${hex}` : isHinted ? `2px solid ${hex}99` : qualified ? '2px solid rgba(251,191,36,0.6)' : '2px solid rgba(255,255,255,0.06)',
+          boxShadow: isDragOver ? `0 0 18px ${hex}55` : isHinted ? `0 0 22px ${hex}88, 0 0 40px ${hex}44` : qualified ? '0 0 18px rgba(251,191,36,0.4)' : undefined,
           transition: 'box-shadow 0.15s, border-color 0.15s, background 0.15s, height 0.2s',
         }}
       >
