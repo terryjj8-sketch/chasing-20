@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FACTIONS } from './SolitaireCard';
+import { FACTIONS, FESTIVE } from './SolitaireCard';
 import StatesCard from './StatesCard';
 import GamesCard from './GamesCard';
 import CalendarCard from './CalendarCard';
@@ -68,7 +68,9 @@ function CardBack({ onClick, count, disabled, isMobile }) {
 
 function CardFace({ card, isPlayable, isDraggable, isMobile, onDrag, onDragEnd, gameMode = 'numbers' }) {
   const isZero = card.value === 0;
-  const faction = FACTIONS[card.suit ?? 0];
+  const base = FACTIONS[card.suit ?? 0];
+  const festive = FESTIVE[((card.value ?? 0) * 7 + (card.suit ?? 0) * 5) % FESTIVE.length];
+  const faction = { ...base, ...festive };
   const { CARD_W, CARD_H } = getCardSize(isMobile);
   const fontScale = isMobile ? 1 : CARD_W / 62;
 

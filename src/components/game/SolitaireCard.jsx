@@ -10,19 +10,15 @@ export const FACTIONS = [
   { symbol: '🌸', label: 'Dawn',   isDark: false, bg: '#fff5f8', fg: '#9d174d', accent: '#f472b6' }, // light pink
 ];
 
-const FESTIVE = [
-  { bg: '#fff7ed', fg: '#9a3412', accent: '#fb923c' }, // tangerine
-  { bg: '#ecfeff', fg: '#155e75', accent: '#22d3ee' }, // aqua
-  { bg: '#fdf4ff', fg: '#86198f', accent: '#e879f9' }, // orchid
-  { bg: '#f7fee7', fg: '#3f6212', accent: '#a3e635' }, // lime
-  { bg: '#fff1f2', fg: '#9f1239', accent: '#fb7185' }, // watermelon
-  { bg: '#eff6ff', fg: '#1e40af', accent: '#60a5fa' }, // sky
-  { bg: '#fefce8', fg: '#854d0e', accent: '#facc15' }, // sunshine
-  { bg: '#f0fdfa', fg: '#115e59', accent: '#2dd4bf' }, // mint
-  { bg: '#faf5ff', fg: '#6b21a8', accent: '#c084fc' }, // lavender
-  { bg: '#fff4e6', fg: '#92400e', accent: '#fbbf24' }, // honey
-  { bg: '#fdf2f8', fg: '#9d174d', accent: '#f472b6' }, // bubblegum
-  { bg: '#f0fdf4', fg: '#166534', accent: '#4ade80' }, // spearmint
+export const FESTIVE = [
+  { bg: '#1e8a4c', fg: '#ffffff', accent: '#a7f3c7' },
+  { bg: '#d1342f', fg: '#ffffff', accent: '#ffd3d1' },
+  { bg: '#146c3a', fg: '#ffffff', accent: '#9fe8bd' },
+  { bg: '#9e2420', fg: '#ffffff', accent: '#f6b6b3' },
+  { bg: '#2aa15c', fg: '#ffffff', accent: '#c2f2d6' },
+  { bg: '#1d4ed8', fg: '#ffffff', accent: '#bfd4ff' },
+  { bg: '#e8b021', fg: '#ffffff', accent: '#ffe9b3' },
+  { bg: '#7c3aed', fg: '#ffffff', accent: '#ddc9ff' },
 ];
 
 export default function SolitaireCard({ value, suit, width = 52, height = 72, animate = false, isNew = false, cardIndex }) {
@@ -55,11 +51,11 @@ export default function SolitaireCard({ value, suit, width = 52, height = 72, an
       {!isZero && (
         <>
           <div className="absolute top-1 left-1.5 flex flex-col items-center leading-none">
-            <span className="font-black leading-none" style={{ fontSize: 9 * scale, color: faction.fg }}>{value}</span>
+            <span className="font-black leading-none" style={{ fontSize: 9 * scale, color: '#ffffff', textShadow: '1px 1px 0 rgba(0,0,0,0.8)' }}>{value}</span>
             <span className="leading-none" style={{ fontSize: 10 * scale }}>{faction.symbol}</span>
           </div>
           <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
-            <span className="font-black leading-none" style={{ fontSize: 9 * scale, color: faction.fg }}>{value}</span>
+            <span className="font-black leading-none" style={{ fontSize: 9 * scale, color: '#ffffff', textShadow: '1px 1px 0 rgba(0,0,0,0.8)' }}>{value}</span>
             <span className="leading-none" style={{ fontSize: 10 * scale }}>{faction.symbol}</span>
           </div>
         </>
@@ -88,7 +84,7 @@ export default function SolitaireCard({ value, suit, width = 52, height = 72, an
         <div className="text-center z-10 flex flex-col items-center">
           <div
             className="font-black"
-            style={{ fontSize: 32 * scale, color: faction.fg }}
+            style={{ fontSize: 32 * scale, color: '#ffffff', textShadow: '3px 3px 0 rgba(0,0,0,0.85)' }}
           >
             {value}
           </div>
