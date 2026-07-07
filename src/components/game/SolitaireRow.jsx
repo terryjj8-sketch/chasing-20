@@ -26,7 +26,7 @@ const DESKTOP_MAX_COL_H = 520;
 // row's card array directly — no new prop needed here).
 const CLEAR_DROP_THRESHOLD = 10;
 
-export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, isHinted, rowRef, isMobile, showCardCount = true, gameMode = 'numbers', rowDraggable = false, onRowDrag, onRowDragEnd }) {
+export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, isHinted, rowRef, isMobile, showCardCount = true, gameMode = 'numbers', rowDraggable = false, onRowDrag, onRowDragEnd, onFlipRow }) {
   const hex = accentMap[accentColor] || '#8B5CF6';
   const cards = row.cards;
   const qualified = gameMode === 'numbers' && cards.length >= 20;
@@ -88,6 +88,11 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, i
         <span className="text-xs font-bold uppercase tracking-widest" style={{ color: hex }}>
           Row {rowIndex + 1}
         </span>
+        {gameMode === 'numbers' && row.called && (
+          <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(251,191,36,0.25)', color: '#fbbf24', border: '1px solid rgba(251,191,36,0.5)' }}>
+            🎯 CALLED
+          </span>
+        )}
         {showCardCount && (
           <span
             className="text-[10px] font-black px-1.5 py-0.5 rounded-full"
@@ -99,6 +104,21 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, i
         {qualified && (
           <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(251,191,36,0.2)', color: '#fbbf24' }}>
             ★ 20+
+          </span>
+        )}
+        {gameMode === 'numbers' && onFlipRow && !row.flipped && cards.length >= 2 && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onFlipRow(); }}
+            className="text-[10px] font-black px-1.5 py-0.5 rounded-full transition-all hover:scale-110"
+            style={{ background: 'rgba(56,189,248,0.15)', color: '#38bdf8', border: '1px solid rgba(56,189,248,0.4)' }}
+            title="Flip this road — the start becomes the playable end (once per road)"
+          >
+            ⇅ FLIP
+          </button>
+        )}
+        {gameMode === 'numbers' && row.flipped && (
+          <span className="text-[9px] font-bold" style={{ color: 'rgba(255,255,255,0.3)' }}>
+            ⇅ used
           </span>
         )}
         {(gameMode === 'states' || gameMode === 'games' || gameMode === 'calendar') && (
@@ -120,7 +140,7 @@ export default function SolitaireRow({ rowIndex, row, accentColor, isDragOver, i
           height: columnHeight + 12,
           padding: 6,
           background: isDragOver ? `${hex}25` : isHinted ? `${hex}18` : 'rgba(255,255,255,0.03)',
-          border: isDragOver ? `2px solid ${hex}` : isHinted ? `2px solid ${hex}99` : qualified ? '2px solid rgba(251,191,36,0.6)' : '2px solid rgba(255,255,255,0.06)',
+          border: isDragOver ? `2px solid ${hex}` : isHinted ? `2px solid ${hex}99` : qualified ? '2px solid rgba(251,191,36,0.6)' : (gameMode === 'numbers' && row.called) ? '2px solid rgba(251,191,36,0.35)' : '2px solid rgba(255,255,255,0.06)',
           boxShadow: isDragOver ? `0 0 18px ${hex}55` : isHinted ? `0 0 22px ${hex}88, 0 0 40px ${hex}44` : qualified ? '0 0 18px rgba(251,191,36,0.4)' : undefined,
           transition: 'box-shadow 0.15s, border-color 0.15s, background 0.15s, height 0.2s',
         }}

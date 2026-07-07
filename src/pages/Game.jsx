@@ -87,11 +87,12 @@ export default function Game() {
       discardPile: [],
       flippedCard: null,
       clearedRows: 0,
+      callsLocked: false,
       rows: [
-        { cards: [], currentNumber: null, zeroCount: 0, resetPending: false },
-        { cards: [], currentNumber: null, zeroCount: 0, resetPending: false },
-        { cards: [], currentNumber: null, zeroCount: 0, resetPending: false },
-        { cards: [], currentNumber: null, zeroCount: 0, resetPending: false },
+        { cards: [], currentNumber: null, zeroCount: 0, resetPending: false, called: false, flipped: false },
+        { cards: [], currentNumber: null, zeroCount: 0, resetPending: false, called: false, flipped: false },
+        { cards: [], currentNumber: null, zeroCount: 0, resetPending: false, called: false, flipped: false },
+        { cards: [], currentNumber: null, zeroCount: 0, resetPending: false, called: false, flipped: false },
       ],
     });
   };
@@ -226,6 +227,54 @@ export default function Game() {
     });
   };
 
+  // --- CALL YOUR ROADS ---
+  const awardCredits = (amount) => {
+    try {
+      const current = parseInt(localStorage.getItem('chasing20Credits') || '0', 10) || 0;
+      localStorage.setItem('chasing20Credits', String(current + amount));
+    } catch (e) { /* no localStorage - credits just don't persist */ }
+  };
+
+  const handleToggleCall = (rowIndex) => {
+    setGameState(prev => {
+      if (!prev || prev.callsLocked || (prev.gameMode || 'numbers') !== 'numbers') return prev;
+      const calledCount = prev.rows.filter(r => r.called).length;
+      const newRows = prev.rows.map((r, i) => {
+        if (i !== rowIndex) return r;
+        if (r.called) return { ...r, called: false };
+        if (calledCount >= 2) return r;
+        return { ...r, called: true };
+      });
+      return { ...prev, rows: newRows };
+    });
+  };
+
+  const handleLockCalls = () => {
+    sounds.playCardPlay();
+    setGameState(prev => {
+      if (!prev || prev.rows.filter(r => r.called).length !== 2) return prev;
+      return { ...prev, callsLocked: true };
+    });
+  };
+  // --- FLIP A ROAD (once per road per game) ---
+  const handleFlipRow = (rowIndex) => {
+    setGameState(prev => {
+      if (!prev || (prev.gameMode || 'numbers') !== 'numbers' || !prev.callsLocked) return prev;
+      const row = prev.rows[rowIndex];
+      if (!row || row.flipped || row.cards.length < 2) return prev;
+      setHistory(h => [...h, prev]);
+      sounds.playCardFlip();
+      const reversed = [...row.cards].reverse();
+      const newRows = prev.rows.map((r, i) =>
+        i === rowIndex
+          ? { ...r, cards: reversed, currentNumber: reversed[reversed.length - 1].value, flipped: true, resetPending: false }
+          : r
+      );
+      return { ...prev, rows: newRows };
+    });
+  };
+  // --- END CALL YOUR ROADS ---
+
   const handlePlayCard = (rowIndex, card) => {
     const isWildCard = card.isWild || card.isCapital || card.value === 0;
     if (isWildCard) sounds.playWild();
@@ -338,9 +387,10 @@ export default function Game() {
       }
       const stillDeckEmpty = workingDrawPile.length === 0;
       const goalReached = mode === 'numbers'
-        ? finalRows.filter(r => r.cards.length >= 20).length >= 2
+        ? finalRows.filter(r => r.called && r.cards.length >= 20).length >= 2
         : clearedRows >= CLEAR_GOAL;
       if (stillDeckEmpty || goalReached) stopTimer();
+      if (goalReached) awardCredits(100);
 
       // Auto-flip next card (drawn from whatever's left after any reseed pull)
       // Skip flipping a new card entirely if the win goal was just reached —
@@ -372,6 +422,7 @@ export default function Game() {
       const source = prev.rows[sourceIdx];
       const target = prev.rows[targetIdx];
       if (!source || !target || source.cards.length === 0 || target.cards.length === 0) return prev;
+      if (source.called && target.called) return prev;
       const chain = (a, b) => Math.abs(a.value - b.value) <= 1;
       const tEnd = target.cards[target.cards.length - 1];
       let merged = null;
@@ -384,16 +435,16 @@ export default function Game() {
       setHistory(h => [...h, prev]);
       sounds.playCardPlay();
       const newRows = prev.rows.map((r, i) =>
-        i === targetIdx ? { ...r, cards: merged, currentNumber: merged[merged.length - 1].value, resetPending: false }
-        : i === sourceIdx ? { ...r, cards: [], currentNumber: null, zeroCount: 0, resetPending: false }
+        i === targetIdx ? { ...r, cards: merged, currentNumber: merged[merged.length - 1].value, resetPending: false, called: r.called || source.called, flipped: r.flipped || source.flipped }
+        : i === sourceIdx ? { ...r, cards: [], currentNumber: null, zeroCount: 0, resetPending: false, called: false, flipped: false }
         : r
       );
       if (merged.length >= 20 && target.cards.length < 20) {
         sounds.playRowComplete();
         setCompletedRowAlert(targetIdx);
       }
-      const goalReached = newRows.filter(r => r.cards.length >= 20).length >= 2;
-      if (goalReached) stopTimer();
+      const goalReached = newRows.filter(r => r.called && r.cards.length >= 20).length >= 2;
+      if (goalReached) { stopTimer(); awardCredits(100); }
       return { ...prev, rows: newRows, phase: goalReached ? 'ended' : 'playing' };
     });
   };
@@ -503,6 +554,9 @@ export default function Game() {
             completedRowAlert={completedRowAlert}
             onClearRowAlert={() => setCompletedRowAlert(null)}
             onMergeRows={handleMergeRows}
+            onToggleCall={handleToggleCall}
+            onLockCalls={handleLockCalls}
+            onFlipRow={handleFlipRow}
           />
         ) : (
           <GameEndContent
@@ -534,7 +588,7 @@ function GameSetupContent({ gameState, onSetupComplete }) {
   );
 }
 
-function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onMergeRows, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart, difficulty, completedRowAlert, onClearRowAlert }) {
+function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onMergeRows, onToggleCall, onLockCalls, onFlipRow, onUndo, canUndo, elapsedSeconds, isPaused, onTogglePause, onRestart, difficulty, completedRowAlert, onClearRowAlert }) {
   return (
     <GameplayPhase
       gameState={gameState}
@@ -542,6 +596,9 @@ function GamePlayContent({ gameState, onFlipCard, onPlayCard, onDiscardCard, onM
       onPlayCard={onPlayCard}
       onDiscardCard={onDiscardCard}
       onMergeRows={onMergeRows}
+      onToggleCall={onToggleCall}
+      onLockCalls={onLockCalls}
+      onFlipRow={onFlipRow}
       onUndo={onUndo}
       canUndo={canUndo}
       elapsedSeconds={elapsedSeconds}

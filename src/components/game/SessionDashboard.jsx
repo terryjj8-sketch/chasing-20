@@ -101,8 +101,14 @@ export default function SessionDashboard({
   const [showNamePrompt, setShowNamePrompt] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const rows20 = rows.filter(r => r.cards.length >= 20).length;
-  const isWin = (gameMode || 'numbers') === 'numbers' ? rows20 >= 2 : rows.some(r => r.cards.length >= 20);
+  const isNumbers = (gameMode || 'numbers') === 'numbers';
+  const calledIdxs = rows.map((r, i) => (r.called ? i : null)).filter(i => i !== null);
+  const calledWinners = rows.filter(r => r.called && r.cards.length >= 20).length;
+  const isWin = isNumbers ? calledWinners >= 2 : rows.some(r => r.cards.length >= 20);
+  const creditsEarned = isNumbers && isWin ? 100 : 0;
+  const [creditTotal] = useState(() => {
+    try { return parseInt(localStorage.getItem('chasing20Credits') || '0', 10) || 0; } catch (e) { return 0; }
+  });
   const efficiency = calcEfficiency(rows, totalCards);
 
   useEffect(() => {
@@ -228,11 +234,16 @@ export default function SessionDashboard({
                 YOU WIN!
               </h1>
               <p className="text-white/60 mt-1 text-sm">
-                {(gameMode || 'numbers') === 'numbers'
-                  ? `Roads ${rows.map((r, i) => r.cards.length >= 20 ? i + 1 : null).filter(n => n !== null).join(' & ')} hit 20 — you caught the chase!`
-                  : `Row ${rows.findIndex(r => r.cards.length >= 20) + 1} reached 20`}
-                cards
+                {isNumbers
+                  ? `You called Roads ${calledIdxs.map(i => i + 1).join(' & ')} — and delivered!`
+                  : `Row ${rows.findIndex(r => r.cards.length >= 20) + 1} reached 20 cards`}
               </p>
+              {isNumbers && (
+                <div className="mt-2 inline-block px-4 py-1.5 rounded-full text-sm font-black"
+                  style={{ background: 'rgba(251,191,36,0.15)', border: '1px solid rgba(251,191,36,0.5)', color: '#fbbf24' }}>
+                  +{creditsEarned} credits · Bank: {creditTotal}
+                </div>
+              )}
               <p className="text-base font-bold text-white mt-3">
                 That was great. See if you can do it again.
               </p>
@@ -243,9 +254,20 @@ export default function SessionDashboard({
               <h1 className="text-4xl sm:text-5xl font-black text-red-400">
                 Game Over
               </h1>
+              {isNumbers && calledIdxs.length === 2 && (
+                <p className="text-white/60 mt-1 text-sm">
+                  Your called Roads {calledIdxs.map(i => i + 1).join(' & ')} finished at {calledIdxs.map(i => rows[i].cards.length).join(' & ')} cards.
+                </p>
+              )}
               <p className="text-base font-bold text-white mt-3">
                 You were so close. Let's go again.
               </p>
+              {isNumbers && (
+                <div className="mt-2 inline-block px-4 py-1.5 rounded-full text-xs font-bold"
+                  style={{ background: 'rgba(255,255,255,0.08)', color: '#94a3b8' }}>
+                  Credit bank: {creditTotal}
+                </div>
+              )}
             </>
           )}
           <div
@@ -311,7 +333,8 @@ export default function SessionDashboard({
           className="grid grid-cols-4 gap-2 w-full max-w-md mb-4"
         >
           {rows.map((row, idx) => {
-            const isWinRow = row.cards.length >= 20;
+            const isWinRow = row.cards.length >= 20 && (!isNumbers || row.called);
+            const wasCalled = isNumbers && row.called;
             return (
               <div
                 key={idx}
@@ -338,6 +361,9 @@ export default function SessionDashboard({
                   {row.cards.length}
                 </div>
                 <div className="text-[9px] text-white/40 mt-0.5">cards</div>
+                {wasCalled && (
+                  <div className="text-[9px] font-black mt-1" style={{ color: '#fbbf24' }}>🎯 CALLED</div>
+                )}
                 {isWinRow && <div className="text-lg mt-1">⭐</div>}
               </div>
             );
