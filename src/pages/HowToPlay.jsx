@@ -42,7 +42,7 @@ export default function HowToPlay() {
         {/* Goal */}
         <Section title="🎯 The Goal" delay={0.1}>
           <p className="text-foreground/80 leading-relaxed">
-            Build <span className="text-secondary font-bold">two of your four roads</span> to <span className="text-secondary font-bold">20+ cards each</span> before the cards run out. One big road isn't enough — you have to keep two fires burning.
+            Build <span className="text-secondary font-bold">two roads</span> to <span className="text-secondary font-bold">20+ cards each</span> before the cards run out. But not just any roads — the two roads <span className="text-secondary font-bold">you called</span>. An uncalled road can grow to 20 and it won't count.
           </p>
         </Section>
 
@@ -53,6 +53,19 @@ export default function HowToPlay() {
             <li>Pick <strong>4 of them</strong> — one to start each of your four rows.</li>
             <li>The 2 unchosen cards go back into the deck, which is then shuffled.</li>
           </ul>
+        </Section>
+
+        {/* Call Your Roads */}
+        <Section title="🎯 Call Your Roads" delay={0.25}>
+          <p className="text-foreground/80 leading-relaxed mb-2">
+            Before you play a single card, <strong>tap the two roads you're betting on</strong>. Look at your starting cards, read the board, and commit. Then hit <strong>LOCK IN MY ROADS</strong>.
+          </p>
+          <p className="text-foreground/80 leading-relaxed mb-2">
+            Only your called roads can win the game. Your calls are marked with a <span className="font-bold" style={{ color: '#fbbf24' }}>🎯 CALLED</span> badge for the whole game.
+          </p>
+          <p className="text-foreground/60 text-sm">
+            This is where the skill lives — anyone can get lucky, but calling your roads means predicting how the game will go. Win with your calls and you bank credits.
+          </p>
         </Section>
 
         {/* Playing */}
@@ -101,8 +114,24 @@ export default function HowToPlay() {
           <p className="text-foreground/80 leading-relaxed mb-2">
             Legal targets <strong>glow</strong> while you drag. After a merge, the empty road can be restarted with any playable card.
           </p>
+          <p className="text-foreground/80 leading-relaxed mb-2">
+            If a <span className="font-bold" style={{ color: '#fbbf24' }}>🎯 called</span> road merges into another road, <strong>your call rides along with the cards</strong>. But your two called roads will <strong>never merge with each other</strong> — you committed to building two, so build two.
+          </p>
           <p className="text-foreground/60 text-sm">
             Two short roads can become one long one — sometimes the winning move isn't playing a card, it's joining two highways.
+          </p>
+        </Section>
+
+        {/* Flip a Road */}
+        <Section title="⇅ Flip a Road — Once" delay={0.55}>
+          <p className="text-foreground/80 leading-relaxed mb-2">
+            Each road can be <strong>reversed one time per game</strong> — tap the <span className="font-bold" style={{ color: '#38bdf8' }}>⇅ FLIP</span> chip in its header and the road turns around, making its starting card the new playable end.
+          </p>
+          <p className="text-foreground/80 leading-relaxed mb-2">
+            A road that started low and climbed high can flip back down and catch all those low cards again.
+          </p>
+          <p className="text-foreground/60 text-sm">
+            One flip per road, no refunds — spend it when it counts. Merged roads share their flip: if either road already flipped, the combined road can't.
           </p>
         </Section>
 
@@ -118,8 +147,7 @@ export default function HowToPlay() {
               <ul className="text-foreground/80 text-sm space-y-1 leading-relaxed list-disc list-inside">
                 <li>Valid rows <strong>glow and pulse</strong> ~2 seconds after you flip a card, so you know where you can drag before you even start</li>
                 <li>The <strong>remaining deck count</strong> is shown on the deck</li>
-                <li>Each row shows how many <strong>zeros remain</strong> (x/3)</li>
-                <li><strong>10 zeros</strong> in the deck</li>
+                <li>Each road shows its <strong>card count</strong></li>
               </ul>
             </div>
             {/* Novice */}
@@ -130,8 +158,7 @@ export default function HowToPlay() {
               </div>
               <ul className="text-foreground/80 text-sm space-y-1 leading-relaxed list-disc list-inside">
                 <li><strong>No deck count</strong> shown — you won't know how many cards remain</li>
-                <li>Each row shows how many <strong>zeros remain</strong> (x/3)</li>
-                <li><strong>8 zeros</strong> in the deck</li>
+                <li>No road card counts — keep the count in your head</li>
               </ul>
             </div>
             {/* Pro */}
@@ -141,10 +168,9 @@ export default function HowToPlay() {
                 <span className="font-black text-base" style={{ color: '#ec4899' }}>Pro</span>
               </div>
               <ul className="text-foreground/80 text-sm space-y-1 leading-relaxed list-disc list-inside">
-                <li><strong>No hints</strong> — you must figure out valid rows yourself</li>
+                <li><strong>No hints</strong> — you must figure out valid roads yourself</li>
                 <li><strong>No deck count</strong> shown</li>
-                <li>Each row still shows how many <strong>zeros remain</strong> (x/3)</li>
-                <li><strong>6 zeros</strong> in the deck</li>
+                <li>No road card counts either — you're on your own</li>
               </ul>
             </div>
           </div>
@@ -160,10 +186,11 @@ export default function HowToPlay() {
         {/* Tips */}
         <Section title="💡 Tips" delay={0.8}>
           <ul className="text-foreground/80 space-y-2 leading-relaxed list-disc list-inside">
-            <li>Focus your effort on <strong>one or two rows</strong> — spreading evenly rarely wins.</li>
-            <li>Save zeros for when you're stuck, not just for convenience.</li>
-            <li>Discarding is sometimes the right move — don't force bad plays.</li>
-            <li>The deck size varies by difficulty: <strong>90 cards (Beginner)</strong>, <strong>88 cards (Novice)</strong>, <strong>86 cards (Pro)</strong>. Getting to 20 in one row means using roughly 1 in 4-4.5 cards wisely.</li>
+            <li>Pour your cards into your <strong>called roads</strong> — the other two are support, not destinations.</li>
+            <li>Uncalled roads make great <strong>feeders</strong>: grow one, then merge it into a called road when the ends line up.</li>
+            <li>Don't call two roads that are headed the <strong>same direction</strong> — they can never merge, and they'll fight over the same cards.</li>
+            <li>Save your <strong>flips</strong> for when a road truly stalls — you only get one per road.</li>
+            <li>Discarding is sometimes the right move, but the reshuffles are <strong>limited</strong> — don't burn cards carelessly.</li>
           </ul>
         </Section>
 

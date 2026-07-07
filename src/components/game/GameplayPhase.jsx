@@ -263,7 +263,8 @@ export default function GameplayPhase({ gameState, onPlayCard, onDiscardCard, on
               {gameMode === 'numbers' ? (
                 <>
                   <li className="flex gap-2"><span className="font-black text-yellow-400">3.</span> <span className="font-bold text-white">Merge rows:</span> drag a row's <span className="font-bold text-white">label</span> onto another row. If the ends connect (same/±1), the whole row stacks on — it'll even flip around to fit.</li>
-                  <li className="flex gap-2"><span className="font-black text-yellow-400">4.</span> Can't play? Tap <span className="font-bold text-red-400">Discard</span> — the deck reshuffles discards when it runs dry, but cards played on rows are gone for good.</li>
+                  <li className="flex gap-2"><span className="font-black text-yellow-400">4.</span> <span className="font-bold text-white">Flip a road:</span> tap its <span className="font-bold" style={{ color: '#38bdf8' }}>⇅ FLIP</span> chip to reverse it — the start becomes the playable end. Once per road.</li>
+                  <li className="flex gap-2"><span className="font-black text-yellow-400">5.</span> Can't play? Tap <span className="font-bold text-red-400">Discard</span> — the deck reshuffles discards when it runs dry, but cards played on rows are gone for good.</li>
                   <li className="flex gap-2"><span className="font-black text-yellow-400">★</span> <span className="font-bold text-yellow-300">WIN: build your two CALLED roads to 20+ cards</span> before the deck runs out.</li>
                 </>
               ) : (
