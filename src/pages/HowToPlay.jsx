@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Home } from 'lucide-react';
 
 const Section = ({ title, children, delay = 0 }) => (
   <motion.div
@@ -22,8 +22,16 @@ export default function HowToPlay() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80 flex flex-col">
       {/* Banner */}
-      <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 border-b border-primary/30 px-4 py-3 text-center">
-        <div className="text-sm font-semibold tracking-widest text-primary">
+      <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 border-b border-primary/30 px-4 py-3 flex items-center justify-center gap-3">
+        <a
+          href="https://openshuffleplay.com"
+          className="p-1.5 rounded-lg transition-all shrink-0"
+          style={{ background: 'rgba(255,255,255,0.08)' }}
+          title="Home"
+        >
+          <Home className="w-4 h-4 text-primary" />
+        </a>
+        <div className="text-sm font-semibold tracking-widest text-primary text-center">
           chasing 20 the most difficult solitaire game you'll ever play
         </div>
       </div>

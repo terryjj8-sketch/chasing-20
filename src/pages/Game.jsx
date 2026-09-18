@@ -8,7 +8,7 @@ import { useSounds } from '../lib/useSounds';
 import { ThemeProvider } from '../lib/ThemeContext';
 import ThemeSelector from '../components/game/ThemeSelector';
 import ThemeGuideArrow from '../components/game/ThemeGuideArrow';
-import { Volume2, VolumeX } from 'lucide-react';
+import { Volume2, VolumeX, Home } from 'lucide-react';
 
 export default function Game() {
   const [gameState, setGameState] = useState(null);
@@ -233,6 +233,14 @@ export default function Game() {
       <div className="bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 border-b border-primary/30 px-4 py-3 backdrop-blur flex items-center justify-center gap-6">
         <ThemeGuideArrow />
         <div className="flex items-center gap-2">
+          <a
+            href="https://openshuffleplay.com"
+            className="p-1.5 rounded-lg transition-all"
+            style={{ background: 'rgba(255,255,255,0.08)' }}
+            title="Home"
+          >
+            <Home className="w-4 h-4 text-primary" />
+          </a>
           <ThemeSelector />
           <button
             onClick={() => setSoundEnabled(s => !s)}
